@@ -4,7 +4,7 @@ import os
 
 
 from PySide6.QtCore import Qt, QDir
-from PySide6.QtGui import QIcon, QAction, QKeySequence
+from PySide6.QtGui import QIcon, QAction, QKeySequence, QPixmap
 from PySide6.QtWidgets import QMainWindow, QToolBar, QStatusBar, QFileDialog, QTabWidget
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QWidget
@@ -24,6 +24,7 @@ __version__ = "0.1"
 __author__ = "Tim Churchfield"
 
 from colourpaletteextractor import model
+from colourpaletteextractor.view import otherviews
 
 resources_dir = "resources"
 
@@ -38,8 +39,7 @@ class MainView(QMainWindow):
         print(FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), resources_dir))
         # TODO fix exception handling
     QDir.addSearchPath("icons", os.path.join(resources_path, "icons"))
-
-
+    QDir.addSearchPath("images", os.path.join(resources_path, "images"))
 
     def __init__(self, parent=None):
         """Initializer."""
@@ -86,23 +86,35 @@ class MainView(QMainWindow):
     def _set_main_window_properties(self):
         """Set the properties of the main window of the GUI."""
         self.setWindowTitle("Colour Palette Extractor")
-        self.setFixedSize(235, 235)
+        # self.setFixedSize(235, 235)
+        self.adjustSize()
 
     def _create_central_widget(self):
         """Create the central widget and add it to the main window."""
 
-        self._generalLayout = QVBoxLayout()
-        self.central_widget = QTabWidget()
-        self.central_widget.setDocumentMode(True)
-        self.central_widget.setTabsClosable(True)
+        # self._generalLayout = QVBoxLayout()
+        # self._central_widget = QWidget(self)
+        # self.setCentralWidget(self._central_widget)
+        # self._central_widget.setLayout(self._generalLayout)
 
-        # self._centralWidget = QWidget(self)
-        self.setCentralWidget(self.central_widget)
-        # self._centralWidget.setLayout(self._generalLayout)
+        # self._generalLayout = QVBoxLayout()
+        self.tabs = QTabWidget()
+        self.tabs.setDocumentMode(True)
+        self.tabs.setTabsClosable(True)
+        # self.tabs.setLayout(self._generalLayout)
 
+        self.setCentralWidget(self.tabs)
+
+        # self._generalLayout.addWidget(self.tabs)
+
+        # Create new tab
+        self.i = self.tabs.addTab(otherviews.TabWidget(), "Test label")
         # Add widgets to central widget
+
         # self._create_display()
         # self._create_buttons()
+
+
 
     def _create_display(self):
         """Create and add the display for the calculator."""
@@ -217,7 +229,7 @@ class MainView(QMainWindow):
         count = 0
         for file_type in supported_file_types:
             if count != 0:
-                string = string + ", "
+                string = string + " "
             string = string + file_type
             count += 1
         string = string + ")"

@@ -44,9 +44,9 @@ class ColourPaletteExtractorController:
         # self._view.buttons['C'].clicked.connect(self._view.clear_display)
 
         # Tabs
-        self._view.central_widget.tabBarDoubleClicked.connect(self._view.tab_open_doubleclick)
-        self._view.central_widget.currentChanged.connect(self._view.current_tab_changed)
-        self._view.central_widget.tabCloseRequested.connect(self._view.close_current_tab)
+        self._view.tabs.tabBarDoubleClicked.connect(self._view.tab_open_doubleclick)
+        self._view.tabs.currentChanged.connect(self._view.current_tab_changed)
+        self._view.tabs.tabCloseRequested.connect(self._view.close_current_tab)
 
 
         # Menu items
@@ -56,8 +56,11 @@ class ColourPaletteExtractorController:
     def _open_file(self):
         """Add new image."""
         supported_files = self._model.supported_image_types
-        file_name = self._view.show_file_dialog_box(supported_files)
-        self._model.add_image(file_name)
+        file_name, _ = self._view.show_file_dialog_box(supported_files)
+        if file_name != "":
+            self._model.add_image(file_name)
+        else:
+            print("No image selected")
 
     def _save_file(self):
         """Save palette and image together."""
