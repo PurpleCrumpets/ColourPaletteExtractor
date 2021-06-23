@@ -1,6 +1,7 @@
 from PySide6.QtGui import QPixmap, Qt, QImage
 from PySide6.QtWidgets import QFileDialog, QWidget, QLabel, QSizePolicy, QVBoxLayout, QLineEdit
-# import qimage2ndarray
+from colourpaletteextractor.view import mainview as vw
+
 
 __version__ = "0.1"
 __author__ = "Tim Churchfield"
@@ -57,9 +58,7 @@ class ImageDisplay(QLabel):
         super(ImageDisplay, self).__init__(parent)
 
         if image_data is None:
-            self.pixmap = QPixmap("images:800px-University_of_St_Andrews_arms.svg.png")  # TODO - dummy image for now
-            print(self.pixmap)
-
+            self.pixmap = QPixmap(vw.MainView.default_new_tab_image) # TODO - dummy image for now
         else:
             self.pixmap = image_data.get_image_as_q_image()
 

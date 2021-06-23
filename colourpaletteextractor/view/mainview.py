@@ -32,14 +32,18 @@ resources_dir = "resources"
 class MainView(QMainWindow):
     """The main window of the colour palette extractor tool"""
 
+
+
     resources_path = os.path.join(os.path.dirname(__file__), resources_dir,)
 
-    QDir.setCurrent(resources_path)
-    if not QDir.setCurrent(resources_path):
-        print(FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), resources_dir))
-        # TODO fix exception handling
-    QDir.addSearchPath("icons", os.path.join(resources_path, "icons"))
-    QDir.addSearchPath("images", os.path.join(resources_path, "images"))
+    # QDir.setCurrent(resources_path)
+    # if not QDir.setCurrent(resources_path):
+    #     print(FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), resources_dir))
+    #     # TODO fix exception handling
+    # QDir.addSearchPath("icons", os.path.join(resources_path, "icons"))
+    # QDir.addSearchPath("images", os.path.join(resources_path, "images"))
+
+    default_new_tab_image = "images:800px-University_of_St_Andrews_arms.svg.png"
 
     def __init__(self, parent=None):
         """Initializer."""
@@ -48,6 +52,13 @@ class MainView(QMainWindow):
         # .html os.environ['QT_MAC_WANTS_LAYER'] = '1'
 
         super(MainView, self).__init__(parent)
+
+        QDir.setCurrent(MainView.resources_path)
+        if not QDir.setCurrent(MainView.resources_path):
+            print(FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), resources_dir))
+            # TODO fix exception handling
+        QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons"))
+        QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
 
         self.i = None
 
@@ -110,7 +121,6 @@ class MainView(QMainWindow):
         # self._generalLayout.addWidget(self.tabs)
 
         # Create new tab to greet user
-        self.i = self.tabs.addTab(otherviews.NewTab(), "Test label")
         # Add widgets to central widget
 
         # self._create_display()
@@ -136,6 +146,10 @@ class MainView(QMainWindow):
         self._select_algorithm_action = QAction(QIcon("icons:color-palette-outline.svg"), "&Select Algorithm...", self)
         self._select_algorithm_action.setShortcut("Ctrl+A")
 
+        # Generate Colour Palette
+        self.generate_palette_action = QAction(QIcon("icons:reload-outline.svg"), "&Generate Colour Palette", self)
+        self.generate_palette_action.setShortcut("Ctrl+G")
+
         # View Saliency Map
         self._view_map_action = QAction(QIcon("icons:layers-outline.svg"), "&Saliency Map...", self, checkable=True)
         self._view_map_action.setChecked(False)
@@ -155,6 +169,7 @@ class MainView(QMainWindow):
         # Edit Menu
         self.menu = self.menuBar().addMenu("&Edit")
         self.menu.addAction(self._select_algorithm_action)
+        self.menu.addAction(self.generate_palette_action)
 
         # View Menu
         self.menu = self.menuBar().addMenu("&View")
@@ -163,8 +178,14 @@ class MainView(QMainWindow):
     def _create_toolbar(self):
         """Add toolbar to the main window."""
         tools = QToolBar()
+        tools.setToolButtonStyle(Qt.ToolButtonIconOnly)
         self.addToolBar(tools)
-        tools.addAction("Exit")
+        tools.addAction("Exit") # TODO: Doesn't currently do anything!
+        tools.addSeparator()
+        tools.addAction(self._select_algorithm_action)
+        tools.addSeparator()
+        tools.addAction(self.generate_palette_action)
+        tools.addSeparator()
 
     def _create_status_bar(self):
         """Add status bar to the main window."""
@@ -190,21 +211,32 @@ class MainView(QMainWindow):
     def tab_open_doubleclick(self, i):
         print("Double click")
 
-
     def current_tab_changed(self, i):
+        """Update current tab index."""
         print("tab changed")
+        self.i = self.tabs.currentIndex()
+        # print("Current index: ", i)
+        # TODO: more things may need to change (ie highlight show map to show that it is on for that image)
+
 
     def close_current_tab(self, i):
-        print("close current tab")
+        # print("close current tab")
         # if self.tabs.count() < 2:
         #     return
         # TODO: set background to be something with instructions in case there are no tabs
 
         self.tabs.removeTab(i)
+        self.i = self.tabs.currentIndex()
+        return self.i
 
     def create_new_tab(self, image_data=None, label="Blank"):
-        self.i = self.tabs.addTab(otherviews.NewTab(image_data), label)
 
+        if image_data is None:
+            label = "Blank"
+        else:
+            label = image_data.name
+
+        self.i = self.tabs.addTab(otherviews.NewTab(image_data), label)
         self.tabs.setCurrentIndex(self.i)
 
 

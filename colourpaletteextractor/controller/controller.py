@@ -1,9 +1,11 @@
 # Import partial to conect signals with methods that need to take extra arguments
 from functools import partial
 
+from PySide6.QtCore import QDir, QFileInfo
 from PySide6.QtWidgets import QFileDialog
 
 from colourpaletteextractor.model import model as md
+from colourpaletteextractor.view import mainview as vw
 
 
 class ColourPaletteExtractorController:
@@ -17,11 +19,14 @@ class ColourPaletteExtractorController:
         # Connect signals and slots
         self._connect_signals()
 
+        # Signal creation of instructions tab
+        # self._open_file(True)
+        self._create_default_tab()
+
     def _calculate_result(self):
         """Evaluate expressions."""
         result = self._model.evaluate_expression(self._view.display_text())
         self._view.set_display_text(result)
-
 
     def _build_expression(self, sub_exp):
         """Build expression."""
@@ -46,17 +51,42 @@ class ColourPaletteExtractorController:
         # Tabs
         self._view.tabs.tabBarDoubleClicked.connect(self._view.tab_open_doubleclick)
         self._view.tabs.currentChanged.connect(self._view.current_tab_changed)
-        self._view.tabs.tabCloseRequested.connect(self._view.close_current_tab)
-
+        self._view.tabs.tabCloseRequested.connect(self._close_current_tab)
 
         # Menu items
         self._view.open_action.triggered.connect(self._open_file)
         self._view.save_action.triggered.connect(self._save_file)
+        self._view.generate_palette_action.triggered.connect(self._generate_colour_palette)
+
+    def _create_default_tab(self):
+        default_file = vw.MainView.default_new_tab_image
+        default_file = QFileInfo(default_file).absoluteFilePath()
+        new_image_data = self._model.add_image(default_file)
+
+        if new_image_data is not None:
+            # Create new tab linked to image
+            self._view.create_new_tab()
+            # TODO: This is effectively cheating...
+
+    def _close_current_tab(self, i):
+
+        # Remove image and resources from list save in model
+        self._model.remove_image(i)
+
+        # Close selected tab in GUI
+        i = self._view.close_current_tab(i)
+
+        # Create new default tab if all removed
+        if i == -1:
+            self._create_default_tab()
+
 
     def _open_file(self):
         """Add new image."""
+
         supported_files = self._model.supported_image_types
         file_name, _ = self._view.show_file_dialog_box(supported_files)
+
         new_image_data = None
         if file_name != "":
             new_image_data = self._model.add_image(file_name)
@@ -67,10 +97,12 @@ class ColourPaletteExtractorController:
             # Create new tab linked to image
             self._view.create_new_tab(new_image_data)
 
-
-
-
-
     def _save_file(self):
         """Save palette and image together."""
         print("Not implemented")
+
+    def _generate_colour_palette(self):
+        print("Generating colour palette")
+
+        # Get image associated with selected tab
+        # self._model

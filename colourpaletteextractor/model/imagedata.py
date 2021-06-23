@@ -7,21 +7,44 @@ from skimage import io, color
 
 class ImageData:
 
-    def __init__(self, file_name_and_path):
+    # default_file =
+
+    def __init__(self, file_name_and_path=None):
         """Constructor."""
 
         # TODO: Need to check that the image has been saved using three colour channels (assuming RGB)
+        # TODO: Check colour space and adapt to that
         # Otherwise - remove alpha channel in the case of PNG images
         # Convert from greyscale to rgb as well
         # viewer = ImageViewer(self._image)
         # viewer.show()
 
-        self._image = io.imread(file_name_and_path)
+        if file_name_and_path is None:
+            # self._image =
+            print("None")
+        else:
+            self._image = io.imread(file_name_and_path)
 
-        self._name = os.path.basename(file_name_and_path)
-        while "." in self._name:
-            self._name = os.path.splitext(self._name)[0]
-        # TODO: what happens if the file has no extension?
+            if self._image.shape == 4:
+                self._remove_alpha_channel()
+
+            self._name = os.path.basename(file_name_and_path)
+            while "." in self._name:
+                self._name = os.path.splitext(self._name)[0]
+            # TODO: what happens if the file has no extension?
+
+    def get_image_as_q_image(self):
+        height, width, channel = self._image.shape
+        bytes_per_line = 3 * width
+        return QImage(self._image.data, width, height, bytes_per_line, QImage.Format_RGB888)
+
+    def _remove_alpha_channel(self):
+        self._image = color.rgba2rgb(self._image)
+
+
+
+    def _check_colour_space(self):
+        print("Checking colour space")
 
         # rgb = io.imread(file_name_and_path)
         # (r, g, b) = rgb[0, 0]
@@ -39,7 +62,10 @@ class ImageData:
 
         # print("Done!")
 
-    def get_image_as_q_image(self):
-        height, width, channel = self._image.shape
-        bytes_per_line = 3 * width
-        return QImage(self._image.data, width, height, bytes_per_line, QImage.Format_RGB888)
+    @property
+    def image(self):
+        return self._image
+
+    @property
+    def name(self):
+        return self._name

@@ -2,7 +2,7 @@
 import errno
 import os
 from sys import argv
-from re import search
+
 
 from colourpaletteextractor.model import imagedata
 from colourpaletteextractor.model.algorithms import nieves2020
@@ -13,7 +13,7 @@ class ColourPaletteExtractorModel:
     supported_image_types = {"png", "jpg"}
 
     def __init__(self, algorithm=None):
-        self.images = []
+        self._images = []
         if algorithm is None:
             self._algorithm = nieves2020.Nieves2020()  # Default algorithm
         else:
@@ -44,13 +44,23 @@ class ColourPaletteExtractorModel:
             # TODO: Throw exception
 
     def add_image(self, file_name_and_path):
-        """Add a new image """
+        """Add a new image to the list of images."""
 
         # Create new ImageData object to hold image (and later the colour palette)
         new_image = imagedata.ImageData(file_name_and_path)
-        self.images.append(new_image)
+        self._images.append(new_image)
 
         return new_image
+
+    def remove_image(self, i):
+        """Remove image from list of images by its index."""
+        self._images.pop(i)
+
+
+    def get_image(self, index):
+        self._images.size
+        print("Not implemented")
+
 
 
 if __name__ == "__main__":
@@ -101,3 +111,5 @@ if __name__ == "__main__":
     # If provided with a second argument - this is used to control the algorithm used to extract
 
     # model.add_image()
+
+
