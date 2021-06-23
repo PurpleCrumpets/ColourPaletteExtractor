@@ -1,8 +1,8 @@
 # Import partial to conect signals with methods that need to take extra arguments
-from functools import partial
+# from functools import partial
 
-from PySide6.QtCore import QDir, QFileInfo
-from PySide6.QtWidgets import QFileDialog
+from PySide2.QtCore import QDir, QFileInfo
+# from PySide2.QtWidgets import QFileDialog
 
 from colourpaletteextractor.model import model as md
 from colourpaletteextractor.view import mainview as vw

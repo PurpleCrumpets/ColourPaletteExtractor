@@ -1,2 +1,4 @@
 /.idea/
 /venv/
+/colourpaletteextractor/build/__main__/
+/colourpaletteextractor/dist/__main__/

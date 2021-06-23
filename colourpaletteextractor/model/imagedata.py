@@ -1,5 +1,5 @@
 import os.path
-from PySide6.QtGui import QImage
+from PySide2.QtGui import QImage
 from skimage import io, color
 # from skimage.viewer import ImageViewer
 # from cv2 import imread, imshow, waitKey, COLOR_BGR2GRAY, cvtColor, split, COLOR_BGR2LAB

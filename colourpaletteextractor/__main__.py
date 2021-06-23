@@ -5,7 +5,7 @@
 
 import sys
 
-from PySide6.QtWidgets import QApplication
+from PySide2.QtWidgets import QApplication
 
 from view import mainview
 from controller import controller
@@ -39,4 +39,4 @@ controller = controller.ColourPaletteExtractorController(model=model, view=view)
 view.show()
 
 # Run application's event loop (or main loop)
-sys.exit(app.exec())
+sys.exit(app.exec_())

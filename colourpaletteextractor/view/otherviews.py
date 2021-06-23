@@ -1,5 +1,5 @@
-from PySide6.QtGui import QPixmap, Qt, QImage
-from PySide6.QtWidgets import QFileDialog, QWidget, QLabel, QSizePolicy, QVBoxLayout, QLineEdit
+from PySide2.QtGui import QPixmap, Qt, QImage
+from PySide2.QtWidgets import QFileDialog, QWidget, QLabel, QSizePolicy, QVBoxLayout, QLineEdit
 from colourpaletteextractor.view import mainview as vw
 
 

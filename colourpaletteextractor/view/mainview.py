@@ -1,24 +1,23 @@
 import errno
-import sys
+# import sys
 import os
 
-
-from PySide6.QtCore import Qt, QDir
-from PySide6.QtGui import QIcon, QAction, QKeySequence, QPixmap
-from PySide6.QtWidgets import QMainWindow, QToolBar, QStatusBar, QFileDialog, QTabWidget
-from PySide6.QtWidgets import QLabel
-from PySide6.QtWidgets import QWidget
-from PySide6.QtWidgets import QPushButton
-from PySide6.QtWidgets import QLineEdit
-from PySide6.QtWidgets import QComboBox
-from PySide6.QtWidgets import QRadioButton
-from PySide6.QtWidgets import QSpinBox
+from PySide2.QtCore import Qt, QDir
+from PySide2.QtGui import QIcon, QKeySequence
+from PySide2.QtWidgets import QMainWindow, QToolBar, QStatusBar, QFileDialog, QTabWidget, QAction
+# from PySide2.QtWidgets import QLabel
+# from PySide2.QtWidgets import QWidget
+from PySide2.QtWidgets import QPushButton
+from PySide2.QtWidgets import QLineEdit
+# from PySide2.QtWidgets import QComboBox
+# from PySide2.QtWidgets import QRadioButton
+# from PySide2.QtWidgets import QSpinBox
 
 # Layouts
-from PySide6.QtWidgets import QHBoxLayout
-from PySide6.QtWidgets import QVBoxLayout
-from PySide6.QtWidgets import QGridLayout
-from PySide6.QtWidgets import QFormLayout
+# from PySide2.QtWidgets import QHBoxLayout
+# from PySide2.QtWidgets import QVBoxLayout
+from PySide2.QtWidgets import QGridLayout
+# from PySide2.QtWidgets import QFormLayout
 
 __version__ = "0.1"
 __author__ = "Tim Churchfield"
@@ -49,7 +48,9 @@ class MainView(QMainWindow):
         """Initializer."""
 
         # Show GUI when using a Mac: https://www.loekvandenouweland.com/content/pyside2-big-sur-does-not-show-window
-        # .html os.environ['QT_MAC_WANTS_LAYER'] = '1'
+        # .html
+        #
+        os.environ['QT_MAC_WANTS_LAYER'] = '1'
 
         super(MainView, self).__init__(parent)
 
