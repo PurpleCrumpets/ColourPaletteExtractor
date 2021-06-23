@@ -1,5 +1,6 @@
-from PySide6.QtGui import QPixmap, Qt
+from PySide6.QtGui import QPixmap, Qt, QImage
 from PySide6.QtWidgets import QFileDialog, QWidget, QLabel, QSizePolicy, QVBoxLayout, QLineEdit
+# import qimage2ndarray
 
 __version__ = "0.1"
 __author__ = "Tim Churchfield"
@@ -16,21 +17,21 @@ class AlgorithmDialogBox(QWidget):
     #     options = QFileDialog.Options()
 
 
-class TabWidget(QWidget):
+class NewTab(QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, image_data=None, parent=None):
         """Constructor."""
-        super(TabWidget, self).__init__(parent)
+        super(NewTab, self).__init__(parent)
 
         self._generalLayout = QVBoxLayout(self)
-        self._create_image_display()  # Display Image
+        self._create_image_display(image_data)  # Display Image
         self._create_palette_display()  # Display colour palette
 
         self.resize(165, 200)
 
-    def _create_image_display(self):
+    def _create_image_display(self, image_data):
         """Create and add image display."""
-        self.image_display = ImageDisplay()
+        self.image_display = ImageDisplay(image_data)
 
         # Add display to the general layout
         self._generalLayout.addWidget(self.image_display)
@@ -51,12 +52,18 @@ class TabWidget(QWidget):
 
 class ImageDisplay(QLabel):
 
-    def __init__(self, parent=None):
+    def __init__(self, image_data=None, parent=None):
         """Constructor."""
         super(ImageDisplay, self).__init__(parent)
 
-        self.pixmap = QPixmap("images:800px-University_of_St_Andrews_arms.svg.png")  # TODO - dummy image for now
-        self.setPixmap(self.pixmap)
+        if image_data is None:
+            self.pixmap = QPixmap("images:800px-University_of_St_Andrews_arms.svg.png")  # TODO - dummy image for now
+            print(self.pixmap)
+
+        else:
+            self.pixmap = image_data.get_image_as_q_image()
+
+        self.setPixmap(QPixmap(self.pixmap))
         # self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         # self.setScaledContents(True)
         self.resize(165, 100)

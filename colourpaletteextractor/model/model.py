@@ -1,15 +1,23 @@
 # TODO: add ability to run the model by itself, without the GUI using __main__
+import errno
+import os
+from sys import argv
+from re import search
+
 from colourpaletteextractor.model import imagedata
 from colourpaletteextractor.model.algorithms import nieves2020
 
 
 class ColourPaletteExtractorModel:
     ERROR_MSG = "Error! :'("
-    supported_image_types = {"*.png", "*.jpg"}
+    supported_image_types = {"png", "jpg"}
 
-    def __init__(self):
+    def __init__(self, algorithm=None):
         self.images = []
-        self._algorithm = nieves2020.Nieves2020()  # Default algorithm
+        if algorithm is None:
+            self._algorithm = nieves2020.Nieves2020()  # Default algorithm
+        else:
+            print("Algorithm not None")  # TODO: add new algorithm
 
     def evaluate_expression(self, expression):
         """slot function.
@@ -39,5 +47,57 @@ class ColourPaletteExtractorModel:
         """Add a new image """
 
         # Create new ImageData object to hold image (and later the colour palette)
-        self.images.append(imagedata.ImageData(file_name_and_path))
+        new_image = imagedata.ImageData(file_name_and_path)
+        self.images.append(new_image)
 
+        return new_image
+
+
+if __name__ == "__main__":
+
+    # data_dir = "data"
+    # print(__file__)
+    # os.getcwd() - where script executed from!
+    # print(argv[0])  # Gives you absolute path to the file that was run - this could be useful later on
+
+    file_name = argv[1]
+
+    if len(argv) == 3:
+        model_type = argv[2]
+
+    model = ColourPaletteExtractorModel()
+
+
+    if os.path.isfile(file_name) is False:
+        raise FileNotFoundError(
+            errno.ENOENT, os.strerror(errno.ENOENT), file_name)
+        # TODO: explain why the file is invalid (ie make sure that there are no spaces in the names of folders etc)
+        # Put it in quotes
+    else:
+        model.add_image(file_name)
+
+    print("Done!")
+
+    # print(os.path.isfile(file_name))
+
+    # # Check if file is an image
+    # found = False
+    # for file_type in model.supported_image_types:
+    #     file_type = "." + file_type
+    #     if search(file_type, file_name):
+    #         found = True
+    #         # model.add_image()
+    #         break
+    # Check if file can be found
+    #
+    #
+    # # Check if file is a path
+    # if os.path.isdir(file_name):
+    #     print("Found directory")
+
+    # TODO Check inputs
+    # If provided with a directory, apply to all valid files inside
+    # Else if just a file - just do that one
+    # If provided with a second argument - this is used to control the algorithm used to extract
+
+    # model.add_image()

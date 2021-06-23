@@ -57,10 +57,19 @@ class ColourPaletteExtractorController:
         """Add new image."""
         supported_files = self._model.supported_image_types
         file_name, _ = self._view.show_file_dialog_box(supported_files)
+        new_image_data = None
         if file_name != "":
-            self._model.add_image(file_name)
+            new_image_data = self._model.add_image(file_name)
         else:
             print("No image selected")
+
+        if new_image_data is not None:
+            # Create new tab linked to image
+            self._view.create_new_tab(new_image_data)
+
+
+
+
 
     def _save_file(self):
         """Save palette and image together."""

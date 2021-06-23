@@ -49,6 +49,8 @@ class MainView(QMainWindow):
 
         super(MainView, self).__init__(parent)
 
+        self.i = None
+
         # test = QDir.addSearchPath("icons", ".view/resources/icons")
         # print(test)
 
@@ -107,63 +109,12 @@ class MainView(QMainWindow):
 
         # self._generalLayout.addWidget(self.tabs)
 
-        # Create new tab
-        self.i = self.tabs.addTab(otherviews.TabWidget(), "Test label")
+        # Create new tab to greet user
+        self.i = self.tabs.addTab(otherviews.NewTab(), "Test label")
         # Add widgets to central widget
 
         # self._create_display()
         # self._create_buttons()
-
-
-
-    def _create_display(self):
-        """Create and add the display for the calculator."""
-        self.display = QLineEdit()
-
-        # Set display properties
-        self.display.setFixedHeight(35)
-        self.display.setAlignment(Qt.AlignRight)
-        self.display.setReadOnly(True)
-
-        # Add display to the general layout
-        self._generalLayout.addWidget(self.display)
-
-    def _create_buttons(self):
-        """Create and add the buttons for the calculator."""
-        self.buttons = {}
-        _button_layout = QGridLayout()
-
-        # Button text | position in the QGridLayout
-        _buttons = {"7": (0, 0),
-                    "8": (0, 1),
-                    "9": (0, 2),
-                    "/": (0, 3),
-                    "C": (0, 4),
-                    "4": (1, 0),
-                    "5": (1, 1),
-                    "6": (1, 2),
-                    "*": (1, 3),
-                    "(": (1, 4),
-                    "1": (2, 0),
-                    "2": (2, 1),
-                    "3": (2, 2),
-                    "-": (2, 3),
-                    ")": (2, 4),
-                    "0": (3, 0),
-                    "00": (3, 1),
-                    ".": (3, 2),
-                    "+": (3, 3),
-                    "=": (3, 4),
-                    }
-
-        # Create buttons and add them to the QGridLayout
-        for btn_text, pos in _buttons.items():
-            self.buttons[btn_text] = QPushButton(btn_text)
-            self.buttons[btn_text].setFixedSize(40, 40)
-            _button_layout.addWidget(self.buttons[btn_text], pos[0], pos[1])
-
-        # Add buttons to the general layout
-        self._generalLayout.addLayout(_button_layout)
 
     def _create_actions(self):
         """Define actions and keyboard shortcuts."""
@@ -230,7 +181,7 @@ class MainView(QMainWindow):
         for file_type in supported_file_types:
             if count != 0:
                 string = string + " "
-            string = string + file_type
+            string = string + "*." + file_type
             count += 1
         string = string + ")"
 
@@ -245,6 +196,68 @@ class MainView(QMainWindow):
 
     def close_current_tab(self, i):
         print("close current tab")
+        # if self.tabs.count() < 2:
+        #     return
+        # TODO: set background to be something with instructions in case there are no tabs
+
+        self.tabs.removeTab(i)
+
+    def create_new_tab(self, image_data=None, label="Blank"):
+        self.i = self.tabs.addTab(otherviews.NewTab(image_data), label)
+
+        self.tabs.setCurrentIndex(self.i)
+
+
+
+    def _create_display(self):
+        """Create and add the display for the calculator."""
+        self.display = QLineEdit()
+
+        # Set display properties
+        self.display.setFixedHeight(35)
+        self.display.setAlignment(Qt.AlignRight)
+        self.display.setReadOnly(True)
+
+        # Add display to the general layout
+        self._generalLayout.addWidget(self.display)
+
+    def _create_buttons(self):
+        """Create and add the buttons for the calculator."""
+        self.buttons = {}
+        _button_layout = QGridLayout()
+
+        # Button text | position in the QGridLayout
+        _buttons = {"7": (0, 0),
+                    "8": (0, 1),
+                    "9": (0, 2),
+                    "/": (0, 3),
+                    "C": (0, 4),
+                    "4": (1, 0),
+                    "5": (1, 1),
+                    "6": (1, 2),
+                    "*": (1, 3),
+                    "(": (1, 4),
+                    "1": (2, 0),
+                    "2": (2, 1),
+                    "3": (2, 2),
+                    "-": (2, 3),
+                    ")": (2, 4),
+                    "0": (3, 0),
+                    "00": (3, 1),
+                    ".": (3, 2),
+                    "+": (3, 3),
+                    "=": (3, 4),
+                    }
+
+        # Create buttons and add them to the QGridLayout
+        for btn_text, pos in _buttons.items():
+            self.buttons[btn_text] = QPushButton(btn_text)
+            self.buttons[btn_text].setFixedSize(40, 40)
+            _button_layout.addWidget(self.buttons[btn_text], pos[0], pos[1])
+
+        # Add buttons to the general layout
+        self._generalLayout.addLayout(_button_layout)
+
 
 
 
