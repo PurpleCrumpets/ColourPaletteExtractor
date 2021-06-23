@@ -52,15 +52,23 @@ class ColourPaletteExtractorModel:
 
         return new_image
 
-    def remove_image(self, i):
+    def remove_image_data(self, i):
         """Remove image from list of images by its index."""
         self._images.pop(i)
 
 
-    def get_image(self, index):
-        self._images.size
-        print("Not implemented")
+    def _get_image(self, index):
+        print("Retrieving image...")
+        image_data = self._images[index]
+        return image_data.image.copy()
 
+
+
+    def generate_palette(self, i):
+        print("Generating colour palette for image ", i)
+
+        image = self._get_image(i)
+        self._algorithm.generate_colour_palette(image)
 
 
 if __name__ == "__main__":

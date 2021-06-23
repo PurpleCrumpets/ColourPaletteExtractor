@@ -60,7 +60,7 @@ class MainView(QMainWindow):
         QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons"))
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
 
-        self.i = None
+        self._i = None
 
         # test = QDir.addSearchPath("icons", ".view/resources/icons")
         # print(test)
@@ -214,7 +214,7 @@ class MainView(QMainWindow):
     def current_tab_changed(self, i):
         """Update current tab index."""
         print("tab changed")
-        self.i = self.tabs.currentIndex()
+        self._i = self.tabs.currentIndex()
         # print("Current index: ", i)
         # TODO: more things may need to change (ie highlight show map to show that it is on for that image)
 
@@ -226,8 +226,8 @@ class MainView(QMainWindow):
         # TODO: set background to be something with instructions in case there are no tabs
 
         self.tabs.removeTab(i)
-        self.i = self.tabs.currentIndex()
-        return self.i
+        self._i = self.tabs.currentIndex()
+        return self._i
 
     def create_new_tab(self, image_data=None, label="Blank"):
 
@@ -236,10 +236,13 @@ class MainView(QMainWindow):
         else:
             label = image_data.name
 
-        self.i = self.tabs.addTab(otherviews.NewTab(image_data), label)
-        self.tabs.setCurrentIndex(self.i)
+        self._i = self.tabs.addTab(otherviews.NewTab(image_data), label)
+        self.tabs.setCurrentIndex(self._i)
 
-
+    @property
+    def i(self):
+        """Getter for tab index number."""
+        return self._i
 
     def _create_display(self):
         """Create and add the display for the calculator."""

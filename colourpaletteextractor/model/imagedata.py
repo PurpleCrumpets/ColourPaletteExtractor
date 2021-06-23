@@ -33,6 +33,10 @@ class ImageData:
                 self._name = os.path.splitext(self._name)[0]
             # TODO: what happens if the file has no extension?
 
+    @property
+    def image(self):
+        return self._image
+
     def get_image_as_q_image(self):
         height, width, channel = self._image.shape
         bytes_per_line = 3 * width

@@ -71,7 +71,7 @@ class ColourPaletteExtractorController:
     def _close_current_tab(self, i):
 
         # Remove image and resources from list save in model
-        self._model.remove_image(i)
+        self._model.remove_image_data(i)
 
         # Close selected tab in GUI
         i = self._view.close_current_tab(i)
@@ -102,7 +102,10 @@ class ColourPaletteExtractorController:
         print("Not implemented")
 
     def _generate_colour_palette(self):
-        print("Generating colour palette")
+        """Generate colour palette for current open image."""
+        i = self._view.i
+        self._model.generate_palette(i)
 
+        # TODO: prevent instructions page from showing the colour palette
         # Get image associated with selected tab
         # self._model
