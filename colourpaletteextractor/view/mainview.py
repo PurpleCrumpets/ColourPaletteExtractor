@@ -1,5 +1,5 @@
 import errno
-# import sys
+import sys
 import os
 
 from PySide2.QtCore import Qt, QDir
@@ -7,8 +7,7 @@ from PySide2.QtGui import QIcon, QKeySequence
 from PySide2.QtWidgets import QMainWindow, QToolBar, QStatusBar, QFileDialog, QTabWidget, QAction
 # from PySide2.QtWidgets import QLabel
 # from PySide2.QtWidgets import QWidget
-from PySide2.QtWidgets import QPushButton
-from PySide2.QtWidgets import QLineEdit
+from PySide2.QtWidgets import QPushButton, QLineEdit
 # from PySide2.QtWidgets import QComboBox
 # from PySide2.QtWidgets import QRadioButton
 # from PySide2.QtWidgets import QSpinBox
@@ -31,9 +30,17 @@ resources_dir = "resources"
 class MainView(QMainWindow):
     """The main window of the colour palette extractor tool"""
 
+    if getattr(sys, "frozen", False):
+        # If the application is run as a bundle, the PyInstaller bootloader extends the sys module
+        # by a flag frozen=Truer and sets the app path into variable _MEIPASS'.
+        resources_path = sys._MEIPASS
+        print(resources_path)
+        resources_path = os.path.join(sys._MEIPASS, resources_dir, )
+    else:
+        resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
+        print(resources_path)
 
-
-    resources_path = os.path.join(os.path.dirname(__file__), resources_dir,)
+    # resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
 
     # QDir.setCurrent(resources_path)
     # if not QDir.setCurrent(resources_path):
@@ -50,7 +57,7 @@ class MainView(QMainWindow):
         # Show GUI when using a Mac: https://www.loekvandenouweland.com/content/pyside2-big-sur-does-not-show-window
         # .html
         #
-        os.environ['QT_MAC_WANTS_LAYER'] = '1'
+        os.environ['QT_MAC_WANTS_LAYER'] = '1' # TODO: Check if this is necessary
 
         super(MainView, self).__init__(parent)
 
@@ -60,6 +67,7 @@ class MainView(QMainWindow):
             # TODO fix exception handling
         QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons"))
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
+        print(QDir.searchPaths("images"))
 
         self._i = None
 

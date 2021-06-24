@@ -2,3 +2,6 @@
 /venv/
 /colourpaletteextractor/build/__main__/
 /colourpaletteextractor/dist/__main__/
+/colourpaletteextractor/dist/__main__
+/colourpaletteextractor/__main__.spec
+/colourpaletteextractor/ColourPaletteExtractor.spec
