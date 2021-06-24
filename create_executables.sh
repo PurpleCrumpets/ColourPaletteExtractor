@@ -7,7 +7,7 @@ NAME="ColourPaletteExtractor"
 OUTPUT_DIR=/Users/tim/Documents/ColourPaletteExtractor-Executables
 
 # Connect to virtual Python environment
-source ./venv/bin/activate
+source /Users/tim/PythonVirtualEnvironments/ColourPaletteExtraction/bin/activate
 
 # Build application
 echo "Building $NAME app using __main__.py file..."
@@ -20,7 +20,7 @@ pyinstaller __main__.py --onefile \
 --distpath $OUTPUT_DIR/dist \
 --add-data './view/resources:resources' \
 --name $NAME \
---icon=color-palette-outline.icns \
+--icon=app_icon.icns \
 --windowed \
 --noconfirm
 

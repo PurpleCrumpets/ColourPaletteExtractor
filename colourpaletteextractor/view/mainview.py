@@ -34,8 +34,8 @@ class MainView(QMainWindow):
         # If the application is run as a bundle, the PyInstaller bootloader extends the sys module
         # by a flag frozen=Truer and sets the app path into variable _MEIPASS'.
         resources_path = sys._MEIPASS
-        print(resources_path)
         resources_path = os.path.join(sys._MEIPASS, resources_dir, )
+        print(resources_path)
     else:
         resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
         print(resources_path)
@@ -67,7 +67,6 @@ class MainView(QMainWindow):
             # TODO fix exception handling
         QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons"))
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
-        print(QDir.searchPaths("images"))
 
         self._i = None
 
