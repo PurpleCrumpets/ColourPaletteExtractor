@@ -3,7 +3,6 @@ import errno
 import os
 from sys import argv
 
-
 from colourpaletteextractor.model import imagedata
 from colourpaletteextractor.model.algorithms import nieves2020
 
@@ -56,13 +55,11 @@ class ColourPaletteExtractorModel:
         """Remove image from list of images by its index."""
         self._images.pop(i)
 
-
     def _get_image(self, index):
         print("Retrieving image...")
         image_data = self._images[index]
         return image_data.image.copy()
-
-
+        # TODO: Add checks for the index in case it is out of range
 
     def generate_palette(self, i):
         print("Generating colour palette for image ", i)
@@ -85,7 +82,6 @@ if __name__ == "__main__":
 
     model = ColourPaletteExtractorModel()
 
-
     if os.path.isfile(file_name) is False:
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), file_name)
@@ -94,7 +90,17 @@ if __name__ == "__main__":
     else:
         model.add_image(file_name)
 
-    print("Done!")
+    print("Added image!")
+
+    # Get colour palette of the image (image 0 in list)
+    # print(len(model._images))
+    model.generate_palette(0)
+
+
+
+
+
+
 
     # print(os.path.isfile(file_name))
 
@@ -119,5 +125,3 @@ if __name__ == "__main__":
     # If provided with a second argument - this is used to control the algorithm used to extract
 
     # model.add_image()
-
-
