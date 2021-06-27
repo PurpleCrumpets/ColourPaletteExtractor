@@ -70,6 +70,8 @@ class ColourPaletteExtractorModel:
 
 if __name__ == "__main__":
 
+
+
     # data_dir = "data"
     # print(__file__)
     # os.getcwd() - where script executed from!
