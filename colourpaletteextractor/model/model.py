@@ -65,9 +65,12 @@ class ColourPaletteExtractorModel:
         print("Generating colour palette for image ", i)
 
         image = self._get_image(i)
-        new_image, relevant_cubes = self._algorithm.generate_colour_palette(image)
+        recoloured_image, colour_palette = self._algorithm.generate_colour_palette(image)
 
-        print(new_image.shape, len(relevant_cubes))
+        self._images[i].recoloured_image = recoloured_image
+        self._images[i].colour_palette = colour_palette
+
+        print(recoloured_image.shape, len(colour_palette))
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 # import pyximport; pyximport.install()
 import numpy as np
 from skimage import color
+from skimage import img_as_ubyte
 import time
 
 from colourpaletteextractor.model.algorithms import cielabcube, palettealgorithm
@@ -54,9 +55,17 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         #     print("Something as changed!")
 
         # Convert image back into rgb
-        new_image = self._convert_lab_2_rgb(lab)
+        recoloured_image = self._convert_lab_2_rgb(lab)
 
-        return new_image, relevant_cubes
+        # Get colour palette as a list of rgb colours
+        colour_palette = []
+        for cube in relevant_cubes:
+            print("Old colour: ", cube.mean_colour)
+            colour = self._convert_lab_2_rgb(cube.mean_colour)  # Scale to 8-bit
+            print("New colour: ", colour)
+            colour_palette.append(colour)
+
+        return recoloured_image, colour_palette
 
 
 
@@ -74,8 +83,12 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
     @staticmethod
     def _convert_lab_2_rgb(image):
         """Convert an CIELAB image into the RGB colour space."""
+        new_image = color.lab2rgb(image, illuminant="D65")
 
-        return color.lab2rgb(image, illuminant="D65")
+        # Scaling to 8-bit
+        new_image = img_as_ubyte(new_image)
+
+        return new_image
 
     @staticmethod
     def _get_c_stars(lab):
@@ -146,7 +159,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                 # cube = cielabcube.get_cielab_cube(self._cubes, pixel_coordinates)
                 cube.add_pixel_to_cube(pixel, c_star)
 
-        print("--- %s seconds for Python cube assignment loop---" % (time.time() - start_time))
+        print("--- %s seconds for Python cube assignment loop ---" % (time.time() - start_time))
 
         # print(len(self._cubes[0, 0, 0].pixels))
         # print(self._cubes[0, 0, 0].get_cube_coordinates())
@@ -273,4 +286,4 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                 # TODO: this technically might not be the nearest colour...
 
 
-        print("--- %s seconds for Python pixel colour update loop---" % (time.time() - start_time))
+        print("--- %s seconds for Python pixel colour update loop ---" % (time.time() - start_time))

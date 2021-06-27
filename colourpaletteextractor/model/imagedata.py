@@ -1,4 +1,6 @@
 import os.path
+
+import numpy as np
 from PySide2.QtGui import QImage
 from skimage import io, color
 # from skimage.viewer import ImageViewer
@@ -33,9 +35,28 @@ class ImageData:
                 self._name = os.path.splitext(self._name)[0]
             # TODO: what happens if the file has no extension?
 
+        self._recoloured_image = None
+        self._colour_palette = []
+
     @property
     def image(self):
         return self._image
+
+    @property
+    def recoloured_image(self):
+        return self._recoloured_image
+
+    @recoloured_image.setter
+    def recoloured_image(self, value):
+        self._recoloured_image = value
+
+    @property
+    def colour_palette(self):
+        return self._colour_palette
+
+    @colour_palette.setter
+    def colour_palette(self, value):
+        self._colour_palette = value
 
     def get_image_as_q_image(self):
         height, width, channel = self._image.shape
@@ -44,8 +65,6 @@ class ImageData:
 
     def _remove_alpha_channel(self):
         self._image = color.rgba2rgb(self._image)
-
-
 
     def _check_colour_space(self):
         print("Checking colour space")
@@ -65,10 +84,6 @@ class ImageData:
         # print("Pixel at (0, 0) - Red: {}, Green: {}, Blue: {}".format(r, g, b))
 
         # print("Done!")
-
-    @property
-    def image(self):
-        return self._image
 
     @property
     def name(self):
