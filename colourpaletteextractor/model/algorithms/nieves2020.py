@@ -60,9 +60,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         # Get colour palette as a list of rgb colours
         colour_palette = []
         for cube in relevant_cubes:
-            print("Old colour: ", cube.mean_colour)
             colour = self._convert_lab_2_rgb(cube.mean_colour)  # Scale to 8-bit
-            print("New colour: ", colour)
             colour_palette.append(colour)
 
         return recoloured_image, colour_palette

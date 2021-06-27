@@ -1,5 +1,7 @@
 from PySide2.QtGui import QPixmap, Qt, QImage
 from PySide2.QtWidgets import QFileDialog, QWidget, QLabel, QSizePolicy, QVBoxLayout, QLineEdit
+
+from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.view import mainview as vw
 
 
@@ -60,11 +62,18 @@ class ImageDisplay(QLabel):
         if image_data is None:
             self.pixmap = QPixmap(vw.MainView.default_new_tab_image) # TODO - dummy image for now
         else:
-            self.pixmap = image_data.get_image_as_q_image()
+            self.pixmap = image_data.get_image_as_q_image(image_data.image)
 
         self.setPixmap(QPixmap(self.pixmap))
         # self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         # self.setScaledContents(True)
         self.resize(165, 100)
+
+    def update_image(self, image):
+        self.pixmap = ImageData.get_image_as_q_image(image)
+        self.setPixmap(QPixmap(self.pixmap))
+        self.resize(165, 100)
+
+
 
     # def _create_actions(self):

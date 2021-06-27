@@ -57,6 +57,7 @@ class ColourPaletteExtractorController:
         self._view.open_action.triggered.connect(self._open_file)
         self._view.save_action.triggered.connect(self._save_file)
         self._view.generate_palette_action.triggered.connect(self._generate_colour_palette)
+        self._view.toggle_recoloured_image_action.triggered.connect(self._toggle_recoloured_image)
 
     def _create_default_tab(self):
         default_file = vw.MainView.default_new_tab_image
@@ -109,3 +110,24 @@ class ColourPaletteExtractorController:
         # TODO: prevent instructions page from showing the colour palette
         # Get image associated with selected tab
         # self._model
+
+    def _toggle_recoloured_image(self):
+        print("Toggling image")
+        # TODO: grey button out until palette has been generated
+        i = self._view.i
+
+        image_data = self._model.images[i]
+
+        if image_data.show_original_image:
+            image = image_data.recoloured_image
+        else:
+            image = image_data.image
+
+
+        image_data.toggle_show_original_image()
+        tab = self._view.tabs.currentWidget()
+        tab.image_display.update_image(image)
+        tab.update()
+
+
+

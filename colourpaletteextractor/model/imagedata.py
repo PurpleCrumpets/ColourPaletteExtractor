@@ -37,6 +37,14 @@ class ImageData:
 
         self._recoloured_image = None
         self._colour_palette = []
+        self._show_original_image = True
+
+    @property
+    def show_original_image(self):
+        return self._show_original_image
+
+    def toggle_show_original_image(self):
+        self._show_original_image = not self._show_original_image
 
     @property
     def image(self):
@@ -58,10 +66,13 @@ class ImageData:
     def colour_palette(self, value):
         self._colour_palette = value
 
-    def get_image_as_q_image(self):
-        height, width, channel = self._image.shape
+    @staticmethod
+    def get_image_as_q_image(image):
+        # height, width, channel = self._image.shape
+        height, width, channel = image.shape
         bytes_per_line = 3 * width
-        return QImage(self._image.data, width, height, bytes_per_line, QImage.Format_RGB888)
+        # return QImage(self._image.data, width, height, bytes_per_line, QImage.Format_RGB888)
+        return QImage(image.data, width, height, bytes_per_line, QImage.Format_RGB888)
 
     def _remove_alpha_channel(self):
         self._image = color.rgba2rgb(self._image)

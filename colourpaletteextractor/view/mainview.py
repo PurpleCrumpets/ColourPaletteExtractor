@@ -4,7 +4,7 @@ import os
 
 from PySide2.QtCore import Qt, QDir
 from PySide2.QtGui import QIcon, QKeySequence
-from PySide2.QtWidgets import QMainWindow, QToolBar, QStatusBar, QFileDialog, QTabWidget, QAction
+from PySide2.QtWidgets import QMainWindow, QToolBar, QStatusBar, QFileDialog, QTabWidget, QAction, QToolButton
 # from PySide2.QtWidgets import QLabel
 # from PySide2.QtWidgets import QWidget
 from PySide2.QtWidgets import QPushButton, QLineEdit
@@ -35,10 +35,10 @@ class MainView(QMainWindow):
         # by a flag frozen=Truer and sets the app path into variable _MEIPASS'.
         resources_path = sys._MEIPASS
         resources_path = os.path.join(sys._MEIPASS, resources_dir, )
-        print(resources_path)
+        # print(resources_path)
     else:
         resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
-        print(resources_path)
+        # print(resources_path)
 
     # resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
 
@@ -163,6 +163,11 @@ class MainView(QMainWindow):
         self._view_map_action.setChecked(False)
         self._view_map_action.setShortcut("Ctrl+Meta+M")
 
+        # Toggle original-recoloured image
+        self.toggle_recoloured_image_action = QAction(QIcon("icons:eye-outline.svg"), "&Show Recoloured Image", self, checkable=True)
+        self.toggle_recoloured_image_action.setChecked(False)
+        self.toggle_recoloured_image_action.setShortcut("Ctrl+T")
+
     def _create_menu(self):
         """Add menu bar to the main window."""
 
@@ -182,17 +187,24 @@ class MainView(QMainWindow):
         # View Menu
         self.menu = self.menuBar().addMenu("&View")
         self.menu.addAction(self._view_map_action)
+        self.menu.addAction(self.toggle_recoloured_image_action)
 
     def _create_toolbar(self):
         """Add toolbar to the main window."""
         tools = QToolBar()
         tools.setToolButtonStyle(Qt.ToolButtonIconOnly)
         self.addToolBar(tools)
-        tools.addAction("Exit") # TODO: Doesn't currently do anything!
+        tools.addAction("Exit")  # TODO: Doesn't currently do anything!
         tools.addSeparator()
         tools.addAction(self._select_algorithm_action)
         tools.addSeparator()
         tools.addAction(self.generate_palette_action)
+        tools.addSeparator()
+
+        toggle_recoloured_image_button = QToolButton(self)
+        toggle_recoloured_image_button.setIcon(QIcon("icons:eye-outline.svg"))
+        toggle_recoloured_image_button.setDefaultAction(self.toggle_recoloured_image_action)
+        tools.addWidget(toggle_recoloured_image_button)
         tools.addSeparator()
 
     def _create_status_bar(self):
@@ -300,6 +312,8 @@ class MainView(QMainWindow):
 
         # Add buttons to the general layout
         self._generalLayout.addLayout(_button_layout)
+
+    # TODO: add progress bar when getting colour palette
 
 
 

@@ -61,6 +61,10 @@ class ColourPaletteExtractorModel:
         return image_data.image.copy()
         # TODO: Add checks for the index in case it is out of range
 
+    @property
+    def images(self):
+        return self._images
+
     def generate_palette(self, i):
         print("Generating colour palette for image ", i)
 
