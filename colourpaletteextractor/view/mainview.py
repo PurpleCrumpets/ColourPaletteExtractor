@@ -22,7 +22,6 @@ from PySide2.QtWidgets import QGridLayout
 __version__ = "0.1"
 __author__ = "Tim Churchfield"
 
-from colourpaletteextractor import model
 from colourpaletteextractor.view import otherviews
 
 resources_dir = "resources"
@@ -41,15 +40,6 @@ class MainView(QMainWindow):
         resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
         # print(resources_path)
 
-    # resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
-
-    # QDir.setCurrent(resources_path)
-    # if not QDir.setCurrent(resources_path):
-    #     print(FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), resources_dir))
-    #     # TODO fix exception handling
-    # QDir.addSearchPath("icons", os.path.join(resources_path, "icons"))
-    # QDir.addSearchPath("images", os.path.join(resources_path, "images"))
-
     default_new_tab_image = "images:800px-University_of_St_Andrews_arms.svg.png"
 
     def __init__(self, parent=None):
@@ -57,7 +47,6 @@ class MainView(QMainWindow):
 
         # Show GUI when using a Mac: https://www.loekvandenouweland.com/content/pyside2-big-sur-does-not-show-window
         # .html
-        #
         os.environ['QT_MAC_WANTS_LAYER'] = '1' # TODO: Check if this is necessary
 
         super(MainView, self).__init__(parent)
@@ -76,7 +65,6 @@ class MainView(QMainWindow):
 
         QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons", icon_dir))
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
-        # print(QDir.searchPaths("icons"))
 
         self._i = None  # Tab counter
         self._create_gui()  # Generate GUI components
@@ -114,7 +102,7 @@ class MainView(QMainWindow):
         """Set the properties of the main window of the GUI."""
         self.setWindowTitle("Colour Palette Extractor")
         # self.setFixedSize(235, 235)
-        self.adjustSize()
+        # self.adjustSize()
 
     def _create_central_widget(self):
         """Create the central widget and add it to the main window."""
