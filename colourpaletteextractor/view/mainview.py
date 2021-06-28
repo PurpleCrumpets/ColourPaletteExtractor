@@ -1,6 +1,7 @@
 import errno
 import sys
 import os
+import darkdetect
 
 from PySide2.QtCore import Qt, QDir
 from PySide2.QtGui import QIcon, QKeySequence
@@ -52,7 +53,7 @@ class MainView(QMainWindow):
     default_new_tab_image = "images:800px-University_of_St_Andrews_arms.svg.png"
 
     def __init__(self, parent=None):
-        """Initializer."""
+        """Constructor."""
 
         # Show GUI when using a Mac: https://www.loekvandenouweland.com/content/pyside2-big-sur-does-not-show-window
         # .html
@@ -61,19 +62,24 @@ class MainView(QMainWindow):
 
         super(MainView, self).__init__(parent)
 
+        # Setting icon path based on whether the system's dark mode/light mode is in use
+        if darkdetect.isDark():
+            icon_dir = "dark_mode"
+        else:
+            icon_dir = "light_mode"
+
+        # Setting paths to resources
         QDir.setCurrent(MainView.resources_path)
         if not QDir.setCurrent(MainView.resources_path):
             print(FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), resources_dir))
             # TODO fix exception handling
-        QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons"))
+
+        QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons", icon_dir))
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
+        # print(QDir.searchPaths("icons"))
 
-        self._i = None
-
-        # test = QDir.addSearchPath("icons", ".view/resources/icons")
-        # print(test)
-
-        self._create_gui()
+        self._i = None  # Tab counter
+        self._create_gui()  # Generate GUI components
 
     def set_display_text(self, text):
         """Set display's text."""
@@ -166,6 +172,7 @@ class MainView(QMainWindow):
         # Toggle original-recoloured image
         self.toggle_recoloured_image_action = QAction(QIcon("icons:eye-outline.svg"), "&Show Recoloured Image", self, checkable=True)
         self.toggle_recoloured_image_action.setChecked(False)
+        self.toggle_recoloured_image_action.setDisabled(True)  # Initially disabled by default
         self.toggle_recoloured_image_action.setShortcut("Ctrl+T")
 
     def _create_menu(self):
@@ -204,12 +211,14 @@ class MainView(QMainWindow):
         toggle_recoloured_image_button = QToolButton(self)
         toggle_recoloured_image_button.setIcon(QIcon("icons:eye-outline.svg"))
         toggle_recoloured_image_button.setDefaultAction(self.toggle_recoloured_image_action)
+        toggle_recoloured_image_button.setAutoRaise(True)
         tools.addWidget(toggle_recoloured_image_button)
         tools.addSeparator()
 
     def _create_status_bar(self):
         """Add status bar to the main window."""
-        status = QStatusBar()
+        status = otherviews.StatusBar()
+        # status = QStatusBar()
         status.showMessage("I am the status bar")  # TODO: save the version number somewhere
         self.setStatusBar(status)
 
@@ -235,6 +244,14 @@ class MainView(QMainWindow):
         """Update current tab index."""
         print("tab changed")
         self._i = self.tabs.currentIndex()
+
+        # Enable/disable toggle button for displaying recoloured image
+        tab = self.tabs.currentWidget()
+        if tab.toggle_recoloured_image:
+            self.toggle_recoloured_image_action.setDisabled(False)
+        else:
+            self.toggle_recoloured_image_action.setDisabled(True)
+
         # print("Current index: ", i)
         # TODO: more things may need to change (ie highlight show map to show that it is on for that image)
 

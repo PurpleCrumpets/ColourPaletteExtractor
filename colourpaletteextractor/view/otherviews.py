@@ -1,5 +1,6 @@
 from PySide2.QtGui import QPixmap, Qt, QImage
-from PySide2.QtWidgets import QFileDialog, QWidget, QLabel, QSizePolicy, QVBoxLayout, QLineEdit
+from PySide2.QtWidgets import QFileDialog, QWidget, QLabel, QSizePolicy, QVBoxLayout, QLineEdit, QProgressBar, \
+    QStatusBar
 
 from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.view import mainview as vw
@@ -29,6 +30,7 @@ class NewTab(QWidget):
         self._generalLayout = QVBoxLayout(self)
         self._create_image_display(image_data)  # Display Image
         self._create_palette_display()  # Display colour palette
+        self._toggle_recoloured_image = False  # Initially no recoloured image associated with tab
 
         self.resize(165, 200)
 
@@ -51,6 +53,13 @@ class NewTab(QWidget):
 
         # Add display to the general layout
         self._generalLayout.addWidget(self.display)
+
+    @property
+    def toggle_recoloured_image(self):
+        return self._toggle_recoloured_image
+
+    def enable_toggle_recoloured_image(self):
+        self._toggle_recoloured_image = True
 
 
 class ImageDisplay(QLabel):
@@ -75,5 +84,17 @@ class ImageDisplay(QLabel):
         self.resize(165, 100)
 
 
+class StatusBar(QStatusBar):
 
-    # def _create_actions(self):
+    def __init__(self, parent=None):
+        """Constructor."""
+
+        super(StatusBar, self).__init__(parent)
+
+
+class ProgressBar(QProgressBar):
+
+    def __init__(self, parent=None):
+
+        super(ProgressBar, self).__init__(parent)
+

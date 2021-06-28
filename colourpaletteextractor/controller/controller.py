@@ -107,12 +107,17 @@ class ColourPaletteExtractorController:
         i = self._view.i
         self._model.generate_palette(i)
 
+        # Enable toggle button for showing recoloured image
+        tab = self._view.tabs.currentWidget()
+        tab.enable_toggle_recoloured_image()
+        self._view.toggle_recoloured_image_action.setDisabled(False)
+
+
         # TODO: prevent instructions page from showing the colour palette
         # Get image associated with selected tab
         # self._model
 
     def _toggle_recoloured_image(self):
-        print("Toggling image")
         # TODO: grey button out until palette has been generated
         i = self._view.i
 
@@ -122,7 +127,6 @@ class ColourPaletteExtractorController:
             image = image_data.recoloured_image
         else:
             image = image_data.image
-
 
         image_data.toggle_show_original_image()
         tab = self._view.tabs.currentWidget()
