@@ -24,6 +24,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
     def generate_colour_palette(self, image):
         print("Generating colour palette...")
 
+        print(image.shape)
         # Remove alpha channel in case it has not already been removed
 
         # Step 1: Compute L*, a*, b* and C* of each pixel (under D65 illuminant)
@@ -82,9 +83,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
     def _convert_lab_2_rgb(image):
         """Convert an CIELAB image into the RGB colour space."""
         new_image = color.lab2rgb(image, illuminant="D65")
-
-        # Scaling to 8-bit
-        new_image = img_as_ubyte(new_image)
+        new_image = img_as_ubyte(new_image)  # Scaling to 8-bits per channel
 
         return new_image
 
@@ -113,9 +112,20 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         b_star_max = cube_assignments[:, :, 2].max()
         b_star_min = cube_assignments[:, :, 2].min()
 
-        # print("l: " + str(l_star_max) + "," + str(l_star_min))
-        # print("a: " + str(a_star_max) + "," + str(a_star_min))
-        # print("b: " + str(b_star_max) + "," + str(b_star_min))
+        print("l: " + str(l_star_max) + "," + str(l_star_min))
+        print("a: " + str(a_star_max) + "," + str(a_star_min))
+        print("b: " + str(b_star_max) + "," + str(b_star_min))
+
+        # Maxing sure ranges are valid and always include 0 in the range
+        l_star_min = 0
+        if a_star_min > 0:
+            a_star_min = 0
+        if b_star_min > 0:
+            b_star_min = 0
+        if a_star_max < 0:
+            a_star_max = 0
+        if b_star_max < 0:
+            b_star_max = 0
 
         l_star_range = l_star_max - l_star_min + 1
         a_star_range = a_star_max - a_star_min + 1
@@ -127,6 +137,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
             for a_star in range(a_star_min, a_star_max + 1):
                 for b_star in range(b_star_min, b_star_max + 1):
                     # Generate new cube
+                    # print(l_star, a_star, b_star)
                     self._cubes[l_star, a_star, b_star] = cielabcube.CielabCube(l_star, a_star, b_star)
                     # This approach works as negative l_Star will be assigned to the far right of the cube and work back
                     # TODO: Optimisation section - talk about how storing cubes in a np.array is faster to find

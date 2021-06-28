@@ -252,6 +252,13 @@ class MainView(QMainWindow):
         else:
             self.toggle_recoloured_image_action.setDisabled(True)
 
+        # Load toggle button state (pressed/not pressed) for tab
+        if tab.toggle_recoloured_image_pressed:
+            self.toggle_recoloured_image_action.setChecked(True)
+        else:
+            self.toggle_recoloured_image_action.setChecked(False)
+
+
         # print("Current index: ", i)
         # TODO: more things may need to change (ie highlight show map to show that it is on for that image)
 
@@ -269,7 +276,7 @@ class MainView(QMainWindow):
     def create_new_tab(self, image_data=None, label="Blank"):
 
         if image_data is None:
-            label = "Blank"
+            label = "How to Extract Colour Palette"
         else:
             label = image_data.name
 

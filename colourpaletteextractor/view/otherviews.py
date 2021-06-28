@@ -30,7 +30,9 @@ class NewTab(QWidget):
         self._generalLayout = QVBoxLayout(self)
         self._create_image_display(image_data)  # Display Image
         self._create_palette_display()  # Display colour palette
+
         self._toggle_recoloured_image = False  # Initially no recoloured image associated with tab
+        self._toggle_recoloured_image_pressed = False
 
         self.resize(165, 200)
 
@@ -60,6 +62,13 @@ class NewTab(QWidget):
 
     def enable_toggle_recoloured_image(self):
         self._toggle_recoloured_image = True
+
+    @property
+    def toggle_recoloured_image_pressed(self):
+        return self._toggle_recoloured_image_pressed
+
+    def change_toggle_recoloured_image_pressed(self):
+        self._toggle_recoloured_image_pressed = not self._toggle_recoloured_image_pressed
 
 
 class ImageDisplay(QLabel):

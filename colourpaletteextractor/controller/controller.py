@@ -123,6 +123,7 @@ class ColourPaletteExtractorController:
 
         image_data = self._model.images[i]
 
+        # Selecting new image
         if image_data.show_original_image:
             image = image_data.recoloured_image
         else:
@@ -131,6 +132,7 @@ class ColourPaletteExtractorController:
         image_data.toggle_show_original_image()
         tab = self._view.tabs.currentWidget()
         tab.image_display.update_image(image)
+        tab.change_toggle_recoloured_image_pressed()
         tab.update()
 
 
