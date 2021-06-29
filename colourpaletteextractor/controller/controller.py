@@ -50,7 +50,8 @@ class ColourPaletteExtractorController:
 
         # Tabs
         self._view.tabs.tabBarDoubleClicked.connect(self._view.tab_open_doubleclick)
-        self._view.tabs.currentChanged.connect(self._view.current_tab_changed)
+        # self._view.tabs.currentChanged.connect(self._view.current_tab_changed)
+        self._view.tabs.currentChanged.connect(self.current_tab_changed)
         self._view.tabs.tabCloseRequested.connect(self._close_current_tab)
 
         # Menu items
@@ -112,6 +113,11 @@ class ColourPaletteExtractorController:
         tab.enable_toggle_recoloured_image()
         self._view.toggle_recoloured_image_action.setDisabled(False)
 
+        # Add colours to colour palette
+        image_data = self._model.images[i]
+        colour_palette = image_data.colour_palette
+        self._view.colour_palette_dock.add_colour_palette(colour_palette)
+
 
         # TODO: prevent instructions page from showing the colour palette
         # Get image associated with selected tab
@@ -134,6 +140,44 @@ class ColourPaletteExtractorController:
         tab.image_display.update_image(image)
         tab.change_toggle_recoloured_image_pressed()
         tab.update()
+
+    def _get_colour_palette(self):
+        i = self._view.i
+
+        image_data = self._model.images[i]
+
+        return image_data.colour_palette
+
+
+    def current_tab_changed(self, i):
+        """Update current tab index."""
+        print("tab changed to:", i)
+
+        self._view.i = self._view.tabs.currentIndex()
+        # self._i = self.tabs.currentIndex()
+
+        # Enable/disable toggle button for displaying recoloured image
+        tab = self._view.tabs.currentWidget()
+        if tab.toggle_recoloured_image:
+            self._view.toggle_recoloured_image_action.setDisabled(False)
+        else:
+            self._view.toggle_recoloured_image_action.setDisabled(True)
+
+        # Load toggle button state (pressed/not pressed) for tab
+        if tab.toggle_recoloured_image_pressed:
+            self._view.toggle_recoloured_image_action.setChecked(True)
+        else:
+            self._view.toggle_recoloured_image_action.setChecked(False)
+
+        # Reload colour palette
+        colour_palette = self._get_colour_palette()
+        self._view.colour_palette_dock.add_colour_palette(colour_palette)
+
+
+
+        # print("Current index: ", i)
+        # TODO: more things may need to change (ie highlight show map to show that it is on for that image)
+
 
 
 
