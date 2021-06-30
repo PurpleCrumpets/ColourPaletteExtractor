@@ -64,6 +64,11 @@ class CielabCube:
         self._relevant = value
         # TODO: Add check to make sure boolean
 
+    @property
+    def l_stars(self):
+        pixel_array = np.array(self._pixels)
+        return pixel_array[:, 0]  # First column of each row representing a pixel
+
 
     @property
     def c_stars(self):
@@ -76,20 +81,22 @@ class CielabCube:
             return c_stars_array.mean()
         # TODO: add checks
 
+    def get_l_star_percentile_value(self, percentile):
+        pixel_array = np.array(self._pixels)
+        l_stars_array = pixel_array[:, 0]  # First column of each row representing a pixel
 
-
-
-
-    def get_c_star_percentile(self, percentile):
-        c_stars_array = np.array(self._c_stars)
-
-        if c_stars_array.size != 0:
-            return np.percentile(c_stars_array, 50)
+        if l_stars_array.size != 0:
+            return np.percentile(l_stars_array, percentile)
         else:
             return 0
 
+    def get_c_star_percentile_value(self, percentile):
+        c_stars_array = np.array(self._c_stars)
 
-
+        if c_stars_array.size != 0:
+            return np.percentile(c_stars_array, percentile)
+        else:
+            return 0
 
     def get_cube_coordinates(self):
         return [self._l_star_coord, self._a_star_coord, self._b_star_coord]
