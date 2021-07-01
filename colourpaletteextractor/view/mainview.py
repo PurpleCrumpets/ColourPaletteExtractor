@@ -101,7 +101,7 @@ class MainView(QMainWindow):
         self.setCentralWidget(self.tabs)
 
     def _create_colour_palette_dock(self):
-        self.colour_palette_dock = otherviews.ColourPaletteDock()
+        self.colour_palette_dock = otherviews.ColourPaletteDock(self)
         self.addDockWidget(Qt.RightDockWidgetArea, self.colour_palette_dock)
 
     def _create_actions(self):

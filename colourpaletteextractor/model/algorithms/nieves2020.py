@@ -39,7 +39,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         self._min_l_star = Nieves2020.MIN_L_STAR
 
         # 3-D array to be populated with CIELAB cubes
-        self._cubes = np.empty([0, 0, 0], dtype=cielabcube.CielabCube)
+        # self._cubes = np.empty([0, 0, 0], dtype=cielabcube.CielabCube)
 
     def generate_colour_palette(self, image):
         print("Generating colour palette...")
@@ -55,19 +55,19 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         # print(pixel_count)
 
         # Step 2: Divide CIELAB colour space into cubes
-        cube_assignments = self._divide_cielab_space(lab)
+        cubes, cube_assignments = self._divide_cielab_space(lab)
 
         # Steps 3-12: Determine if cube colour is relevant
-        self._assign_pixels_to_cube(lab, cube_assignments, c_stars)
-        self._set_cubes_relevance_status(pixel_count, c_stars)
+        self._assign_pixels_to_cube(lab, cubes, cube_assignments, c_stars)
+        self._set_cubes_relevance_status(cubes, pixel_count, c_stars)
 
         # Step 13: Obtain relevant colours
-        relevant_cubes = self._get_relevant_cubes()
+        relevant_cubes = self._get_relevant_cubes(cubes)
         print("Number of relevant colours:", len(relevant_cubes))
 
         # Step 14-19: Segmenting image in terms of relevant colours
         # old_lab = lab.copy()
-        self._update_pixel_colours(lab, cube_assignments, relevant_cubes)
+        self._update_pixel_colours(lab, cubes, cube_assignments, relevant_cubes)
 
         # if np.array_equal(old_lab, lab):
         #     print("Nothing has changed")
@@ -147,28 +147,28 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         b_star_range = b_star_max - b_star_min + 1
 
         # Generating required cubes and adding them to the 3D array of cubes
-        self._cubes = np.empty([l_star_range, a_star_range, b_star_range], dtype=cielabcube.CielabCube)
+        cubes = np.empty([l_star_range, a_star_range, b_star_range], dtype=cielabcube.CielabCube)
         for l_star in range(l_star_min, l_star_max + 1):
             for a_star in range(a_star_min, a_star_max + 1):
                 for b_star in range(b_star_min, b_star_max + 1):
                     # Generate new cube
                     # print(l_star, a_star, b_star)
-                    self._cubes[l_star, a_star, b_star] = cielabcube.CielabCube(l_star, a_star, b_star)
+                    cubes[l_star, a_star, b_star] = cielabcube.CielabCube(l_star, a_star, b_star)
                     # This approach works as negative l_Star will be assigned to the far right of the cube and work back
                     # TODO: Optimisation section - talk about how storing cubes in a np.array is faster to find
                     #   them again, rather than in a list that must be iterated through each time
 
-        print(self._cubes.size)
-        return cube_assignments
+        print(cubes.size, "CIELAB cubes generated...")
+        return cubes, cube_assignments
 
-    def _assign_pixels_to_cube(self, lab, cube_assignments, c_stars):
+    def _assign_pixels_to_cube(self, lab, cubes, cube_assignments, c_stars):
         """Add each pixel to their assigned CIELAB cube."""
 
         # Using Cython
         # start_time = time.time()
-        # nieves2020cython.divide_cielab_space(lab, cube_assignments, self._cubes)
+        # nieves2020cython.divide_cielab_space(lab, cube_assignments, cubes)
         # print("--- %s seconds for Cython ---" % (time.time() - start_time))
-        # print(len(self._cubes[0, 0, 0].pixels))
+        # print(len(cubes[0, 0, 0].pixels))
 
         # Using Python
         start_time = time.time()
@@ -181,15 +181,15 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                 pixel = lab[i, j]
                 c_star = c_stars[i, j]
                 pixel_coordinates = cube_assignments[i, j]
-                cube = self._cubes[pixel_coordinates[0], pixel_coordinates[1], pixel_coordinates[2]]
+                cube = cubes[pixel_coordinates[0], pixel_coordinates[1], pixel_coordinates[2]]
                 cube.add_pixel_to_cube(pixel, c_star)
 
         print("--- %s seconds for Python cube assignment loop ---" % (time.time() - start_time))
 
-        # print(len(self._cubes[0, 0, 0].pixels))
-        # print(self._cubes[0, 0, 0].get_cube_coordinates())
+        # print(len(cubes[0, 0, 0].pixels))
+        # print(cubes[0, 0, 0].get_cube_coordinates())
 
-    def _set_cubes_relevance_status(self, pixel_count, c_stars):
+    def _set_cubes_relevance_status(self, cubes, pixel_count, c_stars):
         """Determine which CIELAB cubes are deemed to be relevant, and change their
         status to reflect this."""
 
@@ -204,9 +204,9 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
 
         # Dimensions of matrix of cubes
-        l_star_dim = self._cubes.shape[0]
-        a_star_dim = self._cubes.shape[1]
-        b_star_dim = self._cubes.shape[2]
+        l_star_dim = cubes.shape[0]
+        a_star_dim = cubes.shape[1]
+        b_star_dim = cubes.shape[2]
         # print(l_star_dim, a_star_dim, b_star_dim)
 
         tot_pixels = 0
@@ -214,7 +214,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         for i in range(l_star_dim):
             for j in range(a_star_dim):
                 for k in range(b_star_dim):
-                    cube = self._cubes[i, j, k]
+                    cube = cubes[i, j, k]
 
                     # Step 4: Get cube pixel count
                     num_pixels = len(cube.pixels)
@@ -270,18 +270,18 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
             print("Dimensions don't match")
             # TODO: throw exception here
 
-    def _get_relevant_cubes(self):
+    def _get_relevant_cubes(self, cubes):
         relevant_cubes = []
         num_relevant_cubes = 0
 
-        l_star_dim = self._cubes.shape[0]
-        a_star_dim = self._cubes.shape[1]
-        b_star_dim = self._cubes.shape[2]
+        l_star_dim = cubes.shape[0]
+        a_star_dim = cubes.shape[1]
+        b_star_dim = cubes.shape[2]
 
         for i in range(l_star_dim):
             for j in range(a_star_dim):
                 for k in range(b_star_dim):
-                    cube = self._cubes[i, j, k]
+                    cube = cubes[i, j, k]
 
                     if cube.relevant:
                         relevant_cubes.append(cube)
@@ -292,7 +292,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         else:
             return np.array([])
 
-    def _update_pixel_colours(self, lab, cube_assignments, relevant_cubes):
+    def _update_pixel_colours(self, lab, cubes, cube_assignments, relevant_cubes):
 
         # Get array of relevant_cube mean colours
         relevant_cubes_mean_colours = []
@@ -313,7 +313,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         #                                       relevant_cubes,
         #                                       relevant_cube_coordinates,
         #                                       relevant_cubes_mean_colours,
-        #                                       self._cubes)
+        #                                       cubes)
         # print("--- %s seconds for Cython pixel colour update loop ---" % (time.time() - start_time))
 
         # # Python Implementation
@@ -329,7 +329,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
                 # Alternative approach, check if pixel is in the relevant cube by finding the
                 # cube it was assigned and checking if it is a relevant cube
-                cube = self._cubes[pixel_coordinates[0], pixel_coordinates[1], pixel_coordinates[2]]
+                cube = cubes[pixel_coordinates[0], pixel_coordinates[1], pixel_coordinates[2]]
 
                 if cube.relevant:
                     lab[i, j] = cube.mean_colour

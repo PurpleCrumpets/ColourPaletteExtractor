@@ -1,5 +1,4 @@
-from PySide2.QtCore import QPoint
-from PySide2.QtGui import QPixmap, Qt, QImage, QPainter, QColor
+from PySide2.QtGui import QPixmap, Qt, QColor
 from PySide2.QtWidgets import QFileDialog, QWidget, QLabel, QSizePolicy, QVBoxLayout, QLineEdit, QProgressBar, \
     QStatusBar, QDockWidget, QScrollArea
 from PySide2.examples.widgets.layouts import flowlayout
@@ -167,62 +166,109 @@ class ColourPaletteDock(QDockWidget):
 
         super(ColourPaletteDock, self).__init__(parent)
 
+        self._parent = parent
+
         self._colour_palette = []
 
+        self._set_colour_palette_dock_properties()
+
+        # Initial Colour Palette Display
+        self._help_label = QLabel()
+        self._help_label.setText("The colours")
+        self.setWidget(self._help_label)
+
+        # Colour Palette Panel and Layout for adding the colours in the palette to
+        self._set_colour_palette_panel()
+
+        # Scroll Area (encompasses colour palette panel)
+        self._set_scroll_area()
+
+    def _set_colour_palette_dock_properties(self):
         self.setWindowTitle("Colour Palette")
         self.setMinimumWidth(85)
         self.setMinimumHeight(85)
         # self.resize(175, 175)
 
-        self._help_label = QLabel()
-        self._help_label.setText("The colours")
+    def _set_colour_palette_panel(self):
+        self._colour_palette_panel = QWidget()
 
-        # self._palette_widget = QWidget()
-
-        self.setWidget(self._help_label)
-
-        # Layout for adding colours in palette to
         self._colour_palette_layout = flowlayout.FlowLayout()
+        self._colour_palette_layout.setContentsMargins(15, 15, 15, 15)
+        self._colour_palette_panel.setLayout(self._colour_palette_layout)
+
+    def _set_scroll_area(self):
+        self._scroll_area = QScrollArea()
+        self._scroll_area.setWidgetResizable(True)
+        self._scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        # scroll_area.setContentsMargins(50, 50, 50, 50)
+        self._scroll_area.setWidget(self._colour_palette_panel)
 
 
-    def add_colour_palette(self, colour_palette):
+
+    def add_colour_palette(self, colour_palette, image_id):
         # self._colour_palette = colour_palette
 
-        # Clear old palette
-        # from: https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt
-        for i in reversed(range(self._colour_palette_layout.count())):
-            self._colour_palette_layout.itemAt(i).widget().setParent(None)
+        update_palette = self._check_given_image_id_matches_with_current_tab(image_id)
+        print("Update colour palette for given tab:", update_palette)
 
-        # Colour Palette Panel
-        colour_palette_panel = QWidget()
-        # colour_palette_layout = flowlayout.FlowLayout()
-        self._colour_palette_layout.setContentsMargins(15, 15, 15, 15)
-        colour_palette_panel.setLayout(self._colour_palette_layout)
+        if update_palette:  # Updating GUI representation of colour palette
 
-        # Scroll Area (encompasses colour palette panel)
-        scroll_area = QScrollArea()
+            # Clear old palette
+            # from: https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt
+            for i in reversed(range(self._colour_palette_layout.count())):
+                self._colour_palette_layout.itemAt(i).widget().setParent(None)
 
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        # scroll_area.setContentsMargins(50, 50, 50, 50)
-        scroll_area.setWidget(colour_palette_panel)
+            # Colour Palette Panel
+            # colour_palette_panel = QWidget()
+            # # colour_palette_layout = flowlayout.FlowLayout()
+            # self._colour_palette_layout.setContentsMargins(15, 15, 15, 15)
+            # colour_palette_panel.setLayout(self._colour_palette_layout)
 
-        self.setWidget(scroll_area)
+            # Scroll Area (encompasses colour palette panel)
+            # scroll_area = QScrollArea()
+            # scroll_area.setWidgetResizable(True)
+            # scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+            # scroll_area.setContentsMargins(50, 50, 50, 50)
 
-        # Adding colours to the colour palette panel
-        for colour in colour_palette:
-            # print(colour)
-            red = colour[0]
-            green = colour[1]
-            blue = colour[2]
-            # TODO: Add checks to make sure that colours are valid, only three channels etc.
+            # self._scroll_area.setWidget(self._colour_palette_panel)
+            self.setWidget(self._scroll_area)
 
-            # print('add colours')
-            pixmap = QPixmap(80, 80)
-            pixmap.fill(QColor(red, green, blue))
 
-            label = QLabel()
-            label.setPixmap(QPixmap(pixmap))
-            self._colour_palette_layout.addWidget(label)
 
-            # self.resize(175, 175)
+            # Adding colours to the colour palette panel
+            for colour in colour_palette:
+                # print(colour)
+                red = colour[0]
+                green = colour[1]
+                blue = colour[2]
+                # TODO: Add checks to make sure that colours are valid, only three channels etc.
+
+                # print('add colours')
+                pixmap = QPixmap(80, 80)
+                pixmap.fill(QColor(red, green, blue))
+
+                label = QLabel()
+                label.setPixmap(QPixmap(pixmap))
+                self._colour_palette_layout.addWidget(label)
+
+                # self.resize(175, 175)
+
+
+    def _check_given_image_id_matches_with_current_tab(self, image_id):
+        print(self._parent)
+
+        if self._parent is not None:
+            tab = self._parent.tabs.currentWidget()
+            tab_image_id = tab.image_id
+
+            if tab_image_id == image_id:
+                return True
+
+        return False
+
+
+
+
+
+
+

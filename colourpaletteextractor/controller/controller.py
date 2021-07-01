@@ -1,5 +1,6 @@
 # Import partial to connect signals with methods that need to take extra arguments
-# from functools import partial
+from functools import partial
+import time
 
 from PySide2.QtCore import QDir, QFileInfo, QRunnable, Slot, QThreadPool
 # from PySide2.QtWidgets import QFileDialog
@@ -40,7 +41,7 @@ class ColourPaletteExtractorController(QRunnable):
         # Menu items
         self._view.open_action.triggered.connect(self._open_file)
         self._view.save_action.triggered.connect(self._save_file)
-        self._view.generate_palette_action.triggered.connect(self._generate_colour_palette)
+        self._view.generate_palette_action.triggered.connect(self._generate_colour_palette_worker)
         self._view.toggle_recoloured_image_action.triggered.connect(self._toggle_recoloured_image)
 
     def _create_default_tab(self):
@@ -94,8 +95,39 @@ class ColourPaletteExtractorController(QRunnable):
         """Save palette and image together."""
         print("Not implemented")
 
-    def _generate_colour_palette(self):
+
+
+
+
+
+
+
+    def _generate_colour_palette_worker(self):
+
+        worker = Worker(self._generate_colour_palette, test="Worlds")  # Execute main function
+        # worker.signals.result.connect(self.print_output)  # Uses the result of the main function
+        worker.signals.finished.connect(self._update_colour_palette_of_gui)  # Function called at the very end
+        # worker.signals.progress.connect(self.progress_fn)  # Intermediate Progress
+        self._thread_pool.start(worker)
+
+        # TODO: lock button to generate palette until after it has finished
+        # TODO: add cancel button?
+
+
+    def _update_colour_palette_of_gui(self, colour_palette, image_id):
+        self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id)
+
+        # Check if toggle button for the recoloured image should be enabled for the current tab
+        tab = self._view.tabs.currentWidget()
+        current_image_id = tab.image_id
+
+        if image_id == current_image_id:
+            self._view.toggle_recoloured_image_action.setDisabled(False)
+
+    def _generate_colour_palette(self, test, progress_callback=None):
         """Generate colour palette for current open image."""
+
+        print(test)
 
         # Get image data for the current tab
         tab = self._view.tabs.currentWidget()
@@ -104,14 +136,19 @@ class ColourPaletteExtractorController(QRunnable):
         # Generate colour palette
         self._model.generate_palette(image_id)
 
-        # Enable toggle button for showing recoloured image
+        # Enable toggle button for showing recoloured image for the tab
         tab.enable_toggle_recoloured_image()
-        self._view.toggle_recoloured_image_action.setDisabled(False)
 
         # Add colour palette to the GUI representation of the colour palette
         image_data = self._model.get_image_data(image_id)
         colour_palette = image_data.colour_palette
-        self._view.colour_palette_dock.add_colour_palette(colour_palette)
+
+        return colour_palette, image_id
+
+        # self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id)
+        # TODO: check tab matched before showing the colour palette ^
+
+
 
         # TODO: prevent instructions page from showing the colour palette
 
@@ -152,6 +189,7 @@ class ColourPaletteExtractorController(QRunnable):
 
         # Enable/disable toggle button for displaying recoloured image
         tab = self._view.tabs.currentWidget()
+        image_id = tab.image_id
         if tab.toggle_recoloured_image:
             self._view.toggle_recoloured_image_action.setDisabled(False)
         else:
@@ -165,7 +203,7 @@ class ColourPaletteExtractorController(QRunnable):
 
         # Reload colour palette
         colour_palette = self._get_colour_palette(tab)
-        self._view.colour_palette_dock.add_colour_palette(colour_palette)
+        self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id)
 
         # TODO: more things may need to change (ie highlight show map to show that it is on for that image)
 
