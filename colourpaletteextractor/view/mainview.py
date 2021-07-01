@@ -5,19 +5,7 @@ import darkdetect
 
 from PySide2.QtCore import Qt, QDir
 from PySide2.QtGui import QIcon, QKeySequence
-from PySide2.QtWidgets import QMainWindow, QToolBar, QStatusBar, QFileDialog, QTabWidget, QAction, QToolButton, QFrame
-# from PySide2.QtWidgets import QLabel
-# from PySide2.QtWidgets import QWidget
-from PySide2.QtWidgets import QPushButton, QLineEdit
-# from PySide2.QtWidgets import QComboBox
-# from PySide2.QtWidgets import QRadioButton
-# from PySide2.QtWidgets import QSpinBox
-
-# Layouts
-# from PySide2.QtWidgets import QHBoxLayout
-# from PySide2.QtWidgets import QVBoxLayout
-from PySide2.QtWidgets import QGridLayout
-# from PySide2.QtWidgets import QFormLayout
+from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton
 
 __version__ = "0.1"
 __author__ = "Tim Churchfield"
@@ -33,20 +21,19 @@ class MainView(QMainWindow):
     if getattr(sys, "frozen", False):
         # If the application is run as a bundle, the PyInstaller bootloader extends the sys module
         # by a flag frozen=Truer and sets the app path into variable _MEIPASS'.
-        resources_path = sys._MEIPASS
+        # resources_path = sys._MEIPASS
         resources_path = os.path.join(sys._MEIPASS, resources_dir, )
-        # print(resources_path)
+
     else:
         resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
-        # print(resources_path)
 
-    default_new_tab_image = "images:800px-University_of_St_Andrews_arms.svg.png"
+    default_new_tab_image = "images:800px-University_of_St_Andrews_arms.jpg"
 
     def __init__(self, parent=None):
         """Constructor."""
 
-        # Show GUI when using a Mac: https://www.loekvandenouweland.com/content/pyside2-big-sur-does-not-show-window
-        # .html
+        # Show GUI when using a Mac:
+        # https://www.loekvandenouweland.com/content/pyside2-big-sur-does-not-show-window.html
         os.environ['QT_MAC_WANTS_LAYER'] = '1' # TODO: Check if this is necessary
 
         super(MainView, self).__init__(parent)
@@ -66,17 +53,9 @@ class MainView(QMainWindow):
         QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons", icon_dir))
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
 
-        self._i = None  # Tab counter
         self._create_gui()  # Generate GUI components
 
-    @property
-    def i(self):
-        """Getter for tab index number."""
-        return self._i
 
-    @i.setter
-    def i(self, value):
-        self._i = value
 
     def _create_gui(self):
         """Assemble the GUI components."""
@@ -111,7 +90,6 @@ class MainView(QMainWindow):
     def _set_main_window_properties(self):
         """Set the properties of the main window of the GUI."""
         self.setWindowTitle("Colour Palette Extractor")
-
 
     def _create_central_widget(self):
         """Create the central widget and add it to the main window."""
@@ -204,14 +182,13 @@ class MainView(QMainWindow):
     def _create_status_bar(self):
         """Add status bar to the main window."""
         status = otherviews.StatusBar()
-        # status = QStatusBar()
         status.showMessage("I am the status bar")  # TODO: save the version number somewhere
         self.setStatusBar(status)
 
     def show_file_dialog_box(self, supported_file_types):
         """Show dialog box for importing images."""
 
-        # Creating string of support file types
+        # Creating string of support file types from provided list of file types
         string = "Images ("
         count = 0
         for file_type in supported_file_types:
@@ -226,79 +203,21 @@ class MainView(QMainWindow):
     def tab_open_doubleclick(self, i):
         print("Double click")
 
-    def close_current_tab(self, i):
-        # print("close current tab")
-        # if self.tabs.count() < 2:
-        #     return
-        # TODO: set background to be something with instructions in case there are no tabs
+    def close_current_tab(self, tab_index):
+        self.tabs.removeTab(tab_index)
 
-        self.tabs.removeTab(i)
-        self._i = self.tabs.currentIndex()
-        return self._i
+        return self.tabs.currentIndex()
 
-    def create_new_tab(self, image_data=None, label="Blank"):
+    def create_new_tab(self, image_id, image_data):
 
-        if image_data is None:
-            label = "How to Extract Colour Palette"
-        else:
-            label = image_data.name
+        # if image_data is None:
+        #     label = "How to Extract Colour Palette"
+        # else:
+        #     label = image_data.name
 
-        self._i = self.tabs.addTab(otherviews.NewTab(image_data), label)
-        self.tabs.setCurrentIndex(self._i)
+        label = image_data.name
 
-    # def _create_display(self):
-    #     """Create and add the display for the calculator."""
-    #     self.display = QLineEdit()
-    #
-    #     # Set display properties
-    #     self.display.setFixedHeight(35)
-    #     self.display.setAlignment(Qt.AlignRight)
-    #     self.display.setReadOnly(True)
-    #
-    #     # Add display to the general layout
-    #     self._generalLayout.addWidget(self.display)
-
-    # def _create_buttons(self):
-    #     """Create and add the buttons for the calculator."""
-    #     self.buttons = {}
-    #     _button_layout = QGridLayout()
-    #
-    #     # Button text | position in the QGridLayout
-    #     _buttons = {"7": (0, 0),
-    #                 "8": (0, 1),
-    #                 "9": (0, 2),
-    #                 "/": (0, 3),
-    #                 "C": (0, 4),
-    #                 "4": (1, 0),
-    #                 "5": (1, 1),
-    #                 "6": (1, 2),
-    #                 "*": (1, 3),
-    #                 "(": (1, 4),
-    #                 "1": (2, 0),
-    #                 "2": (2, 1),
-    #                 "3": (2, 2),
-    #                 "-": (2, 3),
-    #                 ")": (2, 4),
-    #                 "0": (3, 0),
-    #                 "00": (3, 1),
-    #                 ".": (3, 2),
-    #                 "+": (3, 3),
-    #                 "=": (3, 4),
-    #                 }
-    #
-    #     # Create buttons and add them to the QGridLayout
-    #     for btn_text, pos in _buttons.items():
-    #         self.buttons[btn_text] = QPushButton(btn_text)
-    #         self.buttons[btn_text].setFixedSize(40, 40)
-    #         _button_layout.addWidget(self.buttons[btn_text], pos[0], pos[1])
-    #
-    #     # Add buttons to the general layout
-    #     self._generalLayout.addLayout(_button_layout)
-
-    # TODO: add progress bar when getting colour palette
-
-
-
-
-
-
+        # Create and add new tab to GUI
+        new_tab = otherviews.NewTab(image_id=image_id, image_data=image_data)
+        new_tab_index = self.tabs.addTab(new_tab, label)
+        self.tabs.setCurrentIndex(new_tab_index)

@@ -12,7 +12,11 @@ class ColourPaletteExtractorModel:
     supported_image_types = {"png", "jpg"}
 
     def __init__(self, algorithm=None):
-        self._images = []
+
+        self._image_data_id_counter = 0
+        self._image_data_id_dictionary = {}
+
+        # self._images = []
         if algorithm is None:
             self._algorithm = nieves2020.Nieves2020()  # Default algorithm
         else:
@@ -43,36 +47,49 @@ class ColourPaletteExtractorModel:
             # TODO: Throw exception
 
     def add_image(self, file_name_and_path):
-        """Add a new image to the list of images."""
+        """From the path to an image, create a new image_data object and add it to the
+         dictionary of image_data objects with a new ID number."""
 
         # Create new ImageData object to hold image (and later the colour palette)
-        new_image = imagedata.ImageData(file_name_and_path)
-        self._images.append(new_image)
+        new_image_data = imagedata.ImageData(file_name_and_path)
 
-        return new_image
+        # Add to image dictionary
+        new_image_data_id = ("Tab_" + str(self._image_data_id_counter))
+        self._image_data_id_counter += 1
+        self._image_data_id_dictionary[new_image_data_id] = new_image_data
+        # TODO: Add checks to make sure new key doesn't overwrite a current key
 
-    def remove_image_data(self, i):
+        return new_image_data_id, new_image_data
+
+    def remove_image_data(self, image_data_id):
         """Remove image from list of images by its index."""
-        self._images.pop(i)
+        # self._images.pop(i)
+        self._image_data_id_dictionary.pop(image_data_id)
+        # TODO: add checks if not found
 
-    def _get_image(self, index):
+    def _get_image_copy(self, image_data_id):
         print("Retrieving image...")
-        image_data = self._images[index]
+        # image_data = self._images[index]
+        image_data = self._image_data_id_dictionary.get(image_data_id)
+
         return image_data.image.copy()
         # TODO: Add checks for the index in case it is out of range
 
+    def get_image_data(self, image_data_id):
+        return self._image_data_id_dictionary.get(image_data_id)
+
     @property
-    def images(self):
-        return self._images
+    def image_data_id_dictionary(self):
+        return self._image_data_id_dictionary
 
-    def generate_palette(self, i):
-        print("Generating colour palette for image ", i)
+    def generate_palette(self, image_data_id):
+        print("Generating colour palette for image:", image_data_id)
 
-        image = self._get_image(i)
+        image = self._get_image_copy(image_data_id)
         recoloured_image, colour_palette = self._algorithm.generate_colour_palette(image)
 
-        self._images[i].recoloured_image = recoloured_image
-        self._images[i].colour_palette = colour_palette
+        self._image_data_id_dictionary[image_data_id].recoloured_image = recoloured_image
+        self._image_data_id_dictionary[image_data_id].colour_palette = colour_palette
 
         print(recoloured_image.shape, len(colour_palette))
 

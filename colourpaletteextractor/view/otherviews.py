@@ -25,10 +25,11 @@ class AlgorithmDialogBox(QWidget):
 
 class NewTab(QWidget):
 
-    def __init__(self, image_data=None, parent=None):
+    def __init__(self, image_id=None, image_data=None, parent=None):
         """Constructor."""
         super(NewTab, self).__init__(parent)
 
+        self._image_id = image_id
         self._generalLayout = QVBoxLayout(self)
         self._create_image_display(image_data)  # Display Image
         # self._create_palette_display()  # Display colour palette
@@ -36,7 +37,13 @@ class NewTab(QWidget):
         self._toggle_recoloured_image = False  # Initially no recoloured image associated with tab
         self._toggle_recoloured_image_pressed = False
 
+
+
         # self.resize(165, 200)
+
+    @property
+    def image_id(self):
+        return self._image_id
 
     def _create_image_display(self, image_data):
         """Create and add image display."""
@@ -75,7 +82,7 @@ class NewTab(QWidget):
 
 class ImageDisplay(QLabel):
 
-    def __init__(self, image_data=None, parent=None):
+    def __init__(self, image_data, parent=None):
         """Constructor."""
         super(ImageDisplay, self).__init__(parent)
 
@@ -84,16 +91,24 @@ class ImageDisplay(QLabel):
         self.setMinimumSize(300, 300)
 
         # Add image to QLabel
-        if image_data is None:
-            self.pixmap = QPixmap(vw.MainView.default_new_tab_image) # TODO - dummy image for now
-        else:
-            self.pixmap = image_data.get_image_as_q_image(image_data.image)
+        # if image_data is None:
+        #     print("No image data")
+        #     self.pixmap = QPixmap(vw.MainView.default_new_tab_image) # TODO - dummy image for now
+        #     image = self.pixmap
+        # else:
+        #     self.pixmap = image_data.get_image_as_q_image(image_data.image)
+        #     image = QPixmap(self.pixmap)
+        #     image = self.pixmap
 
-        self.setPixmap(QPixmap(self.pixmap))
+        self.pixmap = image_data.get_image_as_q_image(image_data.image)
+        image = QPixmap(self.pixmap)
+        # image = QPixmap(self.pixmap)
+        self.setPixmap(image.scaled(self.width(), self.height(), Qt.KeepAspectRatio))
 
         # Set image properties
         self._set_image_properties()
         # self.pixmap.scaledToHeight(self.height(), Qt.SmoothTransformation)
+
 
 
         # self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
@@ -102,8 +117,9 @@ class ImageDisplay(QLabel):
 
     def _set_image_properties(self):
         """Set the properties of the displayed image."""
-        self.pixmap.scaled(self.width(), self.height(), Qt.KeepAspectRatio)  # Aspect ration not maintained
-        self.setScaledContents(True)
+        # self.pixmap.scaled(self.width(), self.height(), Qt.KeepAspectRatio)  # Aspect ration not maintained
+        # self.setScaledContents(True)
+        pass
 
 
     def update_image(self, image):
