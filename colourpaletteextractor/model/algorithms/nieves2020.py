@@ -294,22 +294,20 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
     def _update_pixel_colours(self, lab, cube_assignments, relevant_cubes):
 
-        # Get array of relevant_cube coordinates
-        relevant_cube_coordinates = []
-        for cube in relevant_cubes:
-            relevant_cube_coordinates.append(cube.coordinates)
-
-        relevant_cube_coordinates = np.array(relevant_cube_coordinates)
-
         # Get array of relevant_cube mean colours
         relevant_cubes_mean_colours = []
         for cube in relevant_cubes:
             relevant_cubes_mean_colours.append(cube.mean_colour)
-
         relevant_cubes_mean_colours = np.array(relevant_cubes_mean_colours)
 
         # Cython Implementation
         # start_time = time.time()
+        # Get array of relevant_cube coordinates
+        # relevant_cube_coordinates = []
+        # for cube in relevant_cubes:
+        #     relevant_cube_coordinates.append(cube.coordinates)
+        # relevant_cube_coordinates = np.array(relevant_cube_coordinates)
+
         # nieves2020cython.update_pixel_colours(lab,
         #                                       cube_assignments,
         #                                       relevant_cubes,
@@ -335,24 +333,41 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
                 if cube.relevant:
                     lab[i, j] = cube.mean_colour
-                    pixel_relevant = True
+                    # pixel_relevant = True
                 else:
                     # Calculate closest relevant cube and use the mean colour for the pixel
-                    pixel = lab[i, j]
-                    euclidean_distances = []
 
-                    for relevant_cube in relevant_cubes:
+                    # start_time = time.time()
+                    pixel = np.full((relevant_cubes_mean_colours.shape[0], lab.shape[2]), lab[i, j])
+                    euclidean_distances = np.linalg.norm(pixel - relevant_cubes_mean_colours, axis=1)
+                    # min_distance = np.min(euclidean_distances)
+                    min_distance_index = np.argmin(euclidean_distances)
+                    # print("--- %s seconds for new Python pixel colour update loop ---" % (time.time() - start_time))
 
-                        euclidean_distance = np.linalg.norm(pixel - relevant_cube.mean_colour)  # TODO: vectorise this!
-                        euclidean_distances.append(euclidean_distance)
 
-                        # TODO: What happens if there is a tie?
 
-                    min_distance = min(euclidean_distances)
-                    min_distance_index = euclidean_distances.index(min_distance)
+
+                    # start_time = time.time()
+                    # pixel = lab[i, j]
+                    # euclidean_distances = []
+                    # for relevant_cube in relevant_cubes:
+                    #     euclidean_distance = np.linalg.norm(pixel - relevant_cube.mean_colour)  # TODO: vectorise this!
+                    #     euclidean_distances.append(euclidean_distance)
+                    #
+                    #     # TODO: What happens if there is a tie?
+                    #
+                    # # print(min(euclidean_distances))
+                    # min_distance = min(euclidean_distances)
+                    # min_distance_index = euclidean_distances.index(min_distance)
+                    # print("--- %s seconds for old Python pixel colour update loop ---" % (time.time() - start_time))
+
+
+
+
 
                     # Updating pixel's colour with the closest colour
-                    new_pixel_colour = relevant_cubes[min_distance_index].mean_colour
+                    # new_pixel_colour = relevant_cubes[min_distance_index].mean_colour
+                    new_pixel_colour = relevant_cubes_mean_colours[min_distance_index]
                     lab[i, j] = new_pixel_colour
 
 
