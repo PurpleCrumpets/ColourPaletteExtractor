@@ -255,7 +255,6 @@ class ColourPaletteDock(QDockWidget):
 
 
     def _check_given_image_id_matches_with_current_tab(self, image_id):
-        print(self._parent)
 
         if self._parent is not None:
             tab = self._parent.tabs.currentWidget()
@@ -265,10 +264,3 @@ class ColourPaletteDock(QDockWidget):
                 return True
 
         return False
-
-
-
-
-
-
-

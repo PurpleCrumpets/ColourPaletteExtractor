@@ -128,6 +128,10 @@ class MainView(QMainWindow):
         self.generate_palette_action = QAction(QIcon("icons:reload-outline.svg"), "&Generate Colour Palette", self)
         self.generate_palette_action.setShortcut("Ctrl+G")
 
+        # Generate All Colour Palettes
+        self.generate_all_action = QAction("&Generate All Colour Palettes", self)
+        self.generate_all_action.setShortcut("Ctrl+Meta+G")
+
         # View Saliency Map
         self._view_map_action = QAction(QIcon("icons:layers-outline.svg"), "&Saliency Map...", self, checkable=True)
         self._view_map_action.setChecked(False)
@@ -153,7 +157,9 @@ class MainView(QMainWindow):
         # Edit Menu
         self.menu = self.menuBar().addMenu("&Edit")
         self.menu.addAction(self._select_algorithm_action)
+        self.menu.addSeparator()
         self.menu.addAction(self.generate_palette_action)
+        self.menu.addAction(self.generate_all_action)
 
         # View Menu
         self.menu = self.menuBar().addMenu("&View")

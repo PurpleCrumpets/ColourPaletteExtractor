@@ -41,7 +41,8 @@ class ColourPaletteExtractorController(QRunnable):
         # Menu items
         self._view.open_action.triggered.connect(self._open_file)
         self._view.save_action.triggered.connect(self._save_file)
-        self._view.generate_palette_action.triggered.connect(self._generate_colour_palette_worker)
+        self._view.generate_palette_action.triggered.connect(partial(self._generate_colour_palette_worker, None))
+        self._view.generate_all_action.triggered.connect(self._generate_all_palettes)
         self._view.toggle_recoloured_image_action.triggered.connect(self._toggle_recoloured_image)
 
     def _create_default_tab(self):
@@ -96,15 +97,20 @@ class ColourPaletteExtractorController(QRunnable):
         print("Not implemented")
 
 
+    def _generate_all_palettes(self):
+        num_tabs = self._view.tabs.count()
+        for i in range(num_tabs):
 
+            tab = self._view.tabs.widget(i)
+            self._generate_colour_palette_worker(tab)
 
+    def _generate_colour_palette_worker(self, tab=None):
 
+        if tab is None:
+            worker = Worker(self._generate_colour_palette, tab=None)  # Execute main function
+        else:
+            worker = Worker(self._generate_colour_palette, tab=tab)  # Execute main function
 
-
-
-    def _generate_colour_palette_worker(self):
-
-        worker = Worker(self._generate_colour_palette, test="Worlds")  # Execute main function
         # worker.signals.result.connect(self.print_output)  # Uses the result of the main function
         worker.signals.finished.connect(self._update_colour_palette_of_gui)  # Function called at the very end
         # worker.signals.progress.connect(self.progress_fn)  # Intermediate Progress
@@ -113,24 +119,13 @@ class ColourPaletteExtractorController(QRunnable):
         # TODO: lock button to generate palette until after it has finished
         # TODO: add cancel button?
 
-
-    def _update_colour_palette_of_gui(self, colour_palette, image_id):
-        self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id)
-
-        # Check if toggle button for the recoloured image should be enabled for the current tab
-        tab = self._view.tabs.currentWidget()
-        current_image_id = tab.image_id
-
-        if image_id == current_image_id:
-            self._view.toggle_recoloured_image_action.setDisabled(False)
-
-    def _generate_colour_palette(self, test, progress_callback=None):
+    def _generate_colour_palette(self, tab, progress_callback=None):
         """Generate colour palette for current open image."""
 
-        print(test)
+        if tab is None:
+            # Get image data for the current tab
+            tab = self._view.tabs.currentWidget()
 
-        # Get image data for the current tab
-        tab = self._view.tabs.currentWidget()
         image_id = tab.image_id
 
         # Generate colour palette
@@ -145,12 +140,19 @@ class ColourPaletteExtractorController(QRunnable):
 
         return colour_palette, image_id
 
-        # self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id)
-        # TODO: check tab matched before showing the colour palette ^
-
-
-
         # TODO: prevent instructions page from showing the colour palette
+
+    def _update_colour_palette_of_gui(self, colour_palette, image_id):
+        self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id)
+
+        # Check if toggle button for the recoloured image should be enabled for the current tab
+        tab = self._view.tabs.currentWidget()
+        current_image_id = tab.image_id
+
+        if image_id == current_image_id:
+            self._view.toggle_recoloured_image_action.setDisabled(False)
+
+
 
     def _toggle_recoloured_image(self):
 
