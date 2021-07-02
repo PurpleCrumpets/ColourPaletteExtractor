@@ -5,7 +5,7 @@ import darkdetect
 
 from PySide2.QtCore import Qt, QDir
 from PySide2.QtGui import QIcon, QKeySequence
-from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton
+from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, QSizePolicy
 
 __version__ = "0.1"
 __author__ = "Tim Churchfield"
@@ -108,24 +108,27 @@ class MainView(QMainWindow):
         """Define actions and keyboard shortcuts."""
 
         # Open
-        self.open_action = QAction(QIcon("icons:folder-open-outline.svg"), "&Open Image...", self)
+        self.open_action = QAction(QIcon("icons:folder-open-outline.svg"), "&Open Image(s)...", self)
         self.open_action.setShortcut("Ctrl+O")
         self.open_action.setStatusTip("Open new image") # TODO: currently doesn't do anything...
 
         # Save
         self.save_action = QAction(QIcon("icons:save-outline.svg"), "&Save Image with Palette...", self)
         self.save_action.setShortcut("Ctrl+S")
+        self.save_action.setDisabled(True)
 
         # Print
         self._print_action = QAction(QIcon("icons:print-outline.svg"), "&Print...", self)
         self._print_action.setShortcut(QKeySequence.Print)
+        self._print_action.setDisabled(True)  # TODO: Needs to be implemented
 
         # Select Algorithm
-        self._select_algorithm_action = QAction(QIcon("icons:color-palette-outline.svg"), "&Select Algorithm...", self)
+        self._select_algorithm_action = QAction(QIcon("icons:settings-outline.svg"), "&Select Algorithm...", self)
         self._select_algorithm_action.setShortcut("Ctrl+A")
+        self._select_algorithm_action.setDisabled(True)  # TODO: Needs to be implemented
 
         # Generate Colour Palette
-        self.generate_palette_action = QAction(QIcon("icons:reload-outline.svg"), "&Generate Colour Palette", self)
+        self.generate_palette_action = QAction(QIcon("icons:color-palette-outline.svg"), "&Generate Colour Palette", self)
         self.generate_palette_action.setShortcut("Ctrl+G")
 
         # Generate All Colour Palettes
@@ -135,6 +138,7 @@ class MainView(QMainWindow):
         # View Saliency Map
         self._view_map_action = QAction(QIcon("icons:layers-outline.svg"), "&Saliency Map...", self, checkable=True)
         self._view_map_action.setChecked(False)
+        self._view_map_action.setDisabled(True)
         self._view_map_action.setShortcut("Ctrl+Meta+M")
 
         # Toggle original-recoloured image
@@ -147,7 +151,7 @@ class MainView(QMainWindow):
         """Add menu bar to the main window."""
 
         # Main Menu
-        self.menu = self.menuBar().addMenu("&Menu")
+        self.menu = self.menuBar().addMenu("&File")
         self.menu.addAction(self.open_action)
         self.menu.addSeparator()
         self.menu.addAction(self.save_action)
@@ -160,20 +164,25 @@ class MainView(QMainWindow):
         self.menu.addSeparator()
         self.menu.addAction(self.generate_palette_action)
         self.menu.addAction(self.generate_all_action)
+        self.menu.addSeparator()
 
         # View Menu
         self.menu = self.menuBar().addMenu("&View")
         self.menu.addAction(self._view_map_action)
         self.menu.addAction(self.toggle_recoloured_image_action)
+        self.menu.addSeparator()
+        self.menu.addSeparator()
 
     def _create_toolbar(self):
         """Add toolbar to the main window."""
         tools = QToolBar()
         tools.setToolButtonStyle(Qt.ToolButtonIconOnly)
+
+        # Left-aligned actions
         self.addToolBar(tools)
         tools.addAction("Exit")  # TODO: Doesn't currently do anything!
-        tools.addSeparator()
-        tools.addAction(self._select_algorithm_action)
+
+
         tools.addSeparator()
         tools.addAction(self.generate_palette_action)
         tools.addSeparator()
@@ -184,6 +193,15 @@ class MainView(QMainWindow):
         toggle_recoloured_image_button.setAutoRaise(True)
         tools.addWidget(toggle_recoloured_image_button)
         tools.addSeparator()
+
+        # Adding spacer
+        spacer = QWidget()
+        spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        tools.addWidget(spacer)
+
+        # Right-aligned actions
+        tools.addAction(self._select_algorithm_action)
+
 
     def _create_status_bar(self):
         """Add status bar to the main window."""
