@@ -89,6 +89,8 @@ class ImageDisplay(QLabel):
         self.setAlignment(Qt.AlignCenter)
         self.setMinimumSize(300, 300)
 
+        self.image_height = self.height()
+
         # Add image to QLabel
         # if image_data is None:
         #     print("No image data")
@@ -100,9 +102,9 @@ class ImageDisplay(QLabel):
         #     image = self.pixmap
 
         self.pixmap = image_data.get_image_as_q_image(image_data.image)
-        image = QPixmap(self.pixmap)
+        self.image = QPixmap(self.pixmap)
         # image = QPixmap(self.pixmap)
-        self.setPixmap(image.scaled(self.width(), self.height(), Qt.KeepAspectRatio))
+        self.setPixmap(self.image.scaled(self.width(), self.height(), Qt.KeepAspectRatio))
 
         # Set image properties
         self._set_image_properties()
@@ -119,6 +121,12 @@ class ImageDisplay(QLabel):
         # self.pixmap.scaled(self.width(), self.height(), Qt.KeepAspectRatio)  # Aspect ration not maintained
         # self.setScaledContents(True)
         pass
+
+    def zoom_image(self, height_change):
+        self.image_height += height_change
+        scaled_pixmap = self.image.scaledToHeight(self.image_height)
+        self.setPixmap(scaled_pixmap)
+
 
 
     def update_image(self, image):
