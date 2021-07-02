@@ -147,6 +147,17 @@ class MainView(QMainWindow):
         self.toggle_recoloured_image_action.setDisabled(True)  # Initially disabled by default
         self.toggle_recoloured_image_action.setShortcut("Ctrl+T")
 
+        # Exit GUI
+        self.exit_action = QAction(QIcon("icons:exit-outline.svg"), "Quit Colour Palette Extractor", self)
+        # TODO: Add a a dialog - are you sure you want to quit?
+
+        # Zoom in and out
+        self.zoom_in_action = QAction(QIcon("icons:add-circle-outline.svg"), "Zoom In", self)
+        self.zoom_in_action.setShortcut(QKeySequence.ZoomIn)
+        self.zoom_out_action = QAction(QIcon("icons:remove-circle-outline.svg"), "Zoom Out", self)
+        self.zoom_out_action.setShortcut(QKeySequence.ZoomOut)
+
+
     def _create_menu(self):
         """Add menu bar to the main window."""
 
@@ -168,10 +179,13 @@ class MainView(QMainWindow):
 
         # View Menu
         self.menu = self.menuBar().addMenu("&View")
+        self.menu.addAction(self.zoom_in_action)
+        self.menu.addAction(self.zoom_out_action)
+        self.menu.addSeparator()
         self.menu.addAction(self._view_map_action)
         self.menu.addAction(self.toggle_recoloured_image_action)
         self.menu.addSeparator()
-        self.menu.addSeparator()
+
 
     def _create_toolbar(self):
         """Add toolbar to the main window."""
@@ -180,10 +194,6 @@ class MainView(QMainWindow):
 
         # Left-aligned actions
         self.addToolBar(tools)
-        tools.addAction("Exit")  # TODO: Doesn't currently do anything!
-
-
-        tools.addSeparator()
         tools.addAction(self.generate_palette_action)
         tools.addSeparator()
 
@@ -194,6 +204,16 @@ class MainView(QMainWindow):
         tools.addWidget(toggle_recoloured_image_button)
         tools.addSeparator()
 
+        zoom_in_button = QToolButton(self)
+        zoom_in_button.setDefaultAction(self.zoom_in_action)
+        tools.addWidget(zoom_in_button)
+
+        zoom_out_button = QToolButton(self)
+        zoom_out_button.setDefaultAction(self.zoom_out_action)
+        tools.addWidget(zoom_out_button)
+
+
+
         # Adding spacer
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
@@ -201,6 +221,13 @@ class MainView(QMainWindow):
 
         # Right-aligned actions
         tools.addAction(self._select_algorithm_action)
+        tools.addSeparator()
+
+        exit_button = QToolButton(self)
+        exit_button.setIcon(QIcon("icons:exit-outline.svg"))
+        exit_button.setDefaultAction(self.exit_action)
+        exit_button.setAutoRaise(True)
+        tools.addWidget(exit_button)
 
 
     def _create_status_bar(self):
