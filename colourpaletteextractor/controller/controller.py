@@ -78,19 +78,21 @@ class ColourPaletteExtractorController(QRunnable):
         """Add new image."""
 
         supported_files = self._model.supported_image_types
-        file_name, _ = self._view.show_file_dialog_box(supported_files)
+        file_names, _ = self._view.show_file_dialog_box(supported_files)
 
-        new_image_data_id = None
-        new_image_data = None
+        for file_name in file_names:
 
-        if file_name != "":
-            new_image_data_id, new_image_data = self._model.add_image(file_name)
-        else:
-            print("No image selected")
+            new_image_data_id = None
+            new_image_data = None
 
-        if new_image_data is not None:
-            # Create new tab linked to the image
-            self._create_new_tab(new_image_data_id=new_image_data_id, new_image_data=new_image_data)
+            if file_name != "":
+                new_image_data_id, new_image_data = self._model.add_image(file_name)
+            else:
+                print("No image selected")
+
+            if new_image_data is not None:
+                # Create new tab linked to the image
+                self._create_new_tab(new_image_data_id=new_image_data_id, new_image_data=new_image_data)
 
     def _save_file(self):
         """Save palette and image together."""
