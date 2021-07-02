@@ -22,6 +22,7 @@ pyinstaller __main__.py --onefile \
 --name $NAME \
 --icon=app_icon.icns \
 --windowed \
---noconfirm
+--noconfirm \
+--onedir
 
 echo "Finished!"
