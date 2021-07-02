@@ -2,5 +2,5 @@ setuptools~=57.0.0
 Cython~=0.29.23
 PySide2~=5.15.2
 numpy~=1.21.0
-scikit-image~=0.18.1
+scikit-image~=0.18.2
 darkdetect~=0.3.1

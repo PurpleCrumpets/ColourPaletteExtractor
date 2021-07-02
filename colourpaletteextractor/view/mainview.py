@@ -113,7 +113,7 @@ class MainView(QMainWindow):
         self.open_action.setStatusTip("Open new image") # TODO: currently doesn't do anything...
 
         # Save
-        self.save_action = QAction(QIcon("icons:save-outline.svg"), "&Save Image with Palette...", self)
+        self.save_action = QAction(QIcon("icons:save-outline.svg"), "&Save Results...", self)
         self.save_action.setShortcut("Ctrl+S")
         self.save_action.setDisabled(True)
 
