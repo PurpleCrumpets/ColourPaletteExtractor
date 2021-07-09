@@ -4,3 +4,4 @@ PySide2~=5.15.2
 numpy~=1.21.0
 scikit-image~=0.18.2
 darkdetect~=0.3.1
+QDarkStyle~=3.0.2

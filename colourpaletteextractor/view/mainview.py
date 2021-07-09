@@ -2,6 +2,7 @@ import errno
 import sys
 import os
 import darkdetect
+import qdarkstyle
 
 from PySide2.QtCore import Qt, QDir
 from PySide2.QtGui import QIcon, QKeySequence
@@ -13,6 +14,7 @@ __author__ = "Tim Churchfield"
 from colourpaletteextractor.view import otherviews
 
 resources_dir = "resources"
+
 
 
 class MainView(QMainWindow):
@@ -28,13 +30,14 @@ class MainView(QMainWindow):
         resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
 
     default_new_tab_image = "images:800px-University_of_St_Andrews_arms.jpg"
+    app_icon = "app_icon"
 
     def __init__(self, parent=None):
         """Constructor."""
 
         # Show GUI when using a Mac:
         # https://www.loekvandenouweland.com/content/pyside2-big-sur-does-not-show-window.html
-        os.environ['QT_MAC_WANTS_LAYER'] = '1' # TODO: Check if this is necessary
+        os.environ['QT_MAC_WANTS_LAYER'] = '1'  # TODO: Check if this is necessary
 
         super(MainView, self).__init__(parent)
 
@@ -43,6 +46,15 @@ class MainView(QMainWindow):
             icon_dir = "dark_mode"
         else:
             icon_dir = "light_mode"
+
+        # Setting application theme
+        dark_stylesheet = qdarkstyle.load_stylesheet_pyside2()
+        self.setStyleSheet(dark_stylesheet)
+
+        # Set application icon
+        if sys.platform == "win32":
+            icon_name = MainView.app_icon + ".ico"
+            self.setWindowIcon(QIcon(icon_name))
 
         # Setting paths to resources
         QDir.setCurrent(MainView.resources_path)

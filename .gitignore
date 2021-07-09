@@ -4,3 +4,6 @@
 /colourpaletteextractor/dist/__main__
 /colourpaletteextractor/__main__.spec
 /colourpaletteextractor/ColourPaletteExtractor.spec
+/venv/
+/ColourPaletteExtractor-Executables/
+/ColourPaletteExtractor.spec
