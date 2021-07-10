@@ -122,7 +122,7 @@ if __name__ == "__main__":
 
     # Get colour palette of the image (image 0 in list)
     # print(len(model._images))
-    model.generate_palette(0)
+    model.generate_palette("Tab_0")
 
 
 

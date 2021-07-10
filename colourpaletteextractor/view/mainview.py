@@ -2,8 +2,9 @@ import errno
 import sys
 import os
 import darkdetect
+import qdarkstyle
 
-from PySide2.QtCore import Qt, QDir
+from PySide2.QtCore import Qt, QDir, QEvent
 from PySide2.QtGui import QIcon, QKeySequence
 from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, QSizePolicy
 
@@ -13,6 +14,7 @@ __author__ = "Tim Churchfield"
 from colourpaletteextractor.view import otherviews
 
 resources_dir = "resources"
+
 
 
 class MainView(QMainWindow):
@@ -28,13 +30,14 @@ class MainView(QMainWindow):
         resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
 
     default_new_tab_image = "images:800px-University_of_St_Andrews_arms.jpg"
+    app_icon = "app_icon"
 
     def __init__(self, parent=None):
         """Constructor."""
 
         # Show GUI when using a Mac:
         # https://www.loekvandenouweland.com/content/pyside2-big-sur-does-not-show-window.html
-        os.environ['QT_MAC_WANTS_LAYER'] = '1' # TODO: Check if this is necessary
+        os.environ['QT_MAC_WANTS_LAYER'] = '1'  # TODO: Check if this is necessary
 
         super(MainView, self).__init__(parent)
 
@@ -43,6 +46,16 @@ class MainView(QMainWindow):
             icon_dir = "dark_mode"
         else:
             icon_dir = "light_mode"
+
+        # Set Windows 10 specific settings
+        if sys.platform == "win32":
+            # Set application icon
+            icon_name = MainView.app_icon + ".ico"
+            self.setWindowIcon(QIcon(icon_name))
+
+            # Set application theme
+            dark_stylesheet = qdarkstyle.load_stylesheet_pyside2()
+            self.setStyleSheet(dark_stylesheet)
 
         # Setting paths to resources
         QDir.setCurrent(MainView.resources_path)
@@ -156,6 +169,9 @@ class MainView(QMainWindow):
         self.zoom_in_action.setShortcut(QKeySequence.ZoomIn)
         self.zoom_out_action = QAction(QIcon("icons:remove-circle-outline.svg"), "Zoom Out", self)
         self.zoom_out_action.setShortcut(QKeySequence.ZoomOut)
+
+        # TODO: Add button for fit to view and reset?
+        #  from: https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html
 
 
     def _create_menu(self):
@@ -272,3 +288,6 @@ class MainView(QMainWindow):
         new_tab = otherviews.NewTab(image_id=image_id, image_data=image_data)
         new_tab_index = self.tabs.addTab(new_tab, label)
         self.tabs.setCurrentIndex(new_tab_index)
+
+
+

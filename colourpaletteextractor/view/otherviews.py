@@ -1,4 +1,5 @@
-from PySide2.QtGui import QPixmap, Qt, QColor
+from PySide2.QtCore import QEvent, QPointF
+from PySide2.QtGui import QPixmap, Qt, QColor, QPalette, QNativeGestureEvent, QPaintEvent
 from PySide2.QtWidgets import QFileDialog, QWidget, QLabel, QSizePolicy, QVBoxLayout, QLineEdit, QProgressBar, \
     QStatusBar, QDockWidget, QScrollArea
 from PySide2.examples.widgets.layouts import flowlayout
@@ -22,23 +23,37 @@ class AlgorithmDialogBox(QWidget):
     #     options = QFileDialog.Options()
 
 
-class NewTab(QWidget):
+# class NewTab(QWidget):
+class NewTab(QScrollArea):
 
     def __init__(self, image_id=None, image_data=None, parent=None):
         """Constructor."""
         super(NewTab, self).__init__(parent)
 
         self._image_id = image_id
-        self._generalLayout = QVBoxLayout(self)
-        self._create_image_display(image_data)  # Display Image
+        # self._generalLayout = QVBoxLayout(self)
+        self._zoom_level = 1
+
+        # self._create_image_display(image_data)  # Display Image
         # self._create_palette_display()  # Display colour palette
+
+        self.image_display = ImageDisplay(image_data, self)
+        # self._generalLayout.addWidget(self.image_display)
+        self.setWidget(self.image_display)
 
         self._toggle_recoloured_image = False  # Initially no recoloured image associated with tab
         self._toggle_recoloured_image_pressed = False
 
+        # Setting properties to allow scrolling of image
+        self.setWidgetResizable(False)
 
+    @property
+    def zoom_level(self):
+        return self._zoom_level
 
-        # self.resize(165, 200)
+    @zoom_level.setter
+    def zoom_level(self, value):
+        self._zoom_level = value
 
     @property
     def image_id(self):
@@ -78,43 +93,74 @@ class NewTab(QWidget):
     def change_toggle_recoloured_image_pressed(self):
         self._toggle_recoloured_image_pressed = not self._toggle_recoloured_image_pressed
 
+    def get_slider_positions(self):
+        return QPointF(self.horizontalScrollBar().value(), self.verticalScrollBar().value())
+
+    def set_slider_positions(self, x_position, y_position):
+        self.horizontalScrollBar().setValue(x_position)
+        self.verticalScrollBar().setValue(y_position)
+
 
 class ImageDisplay(QLabel):
+
+    zoom_factor = 1.25
+    zoom_out_factor = 0.8  # TODO: Not in use, see: https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html
 
     def __init__(self, image_data, parent=None):
         """Constructor."""
         super(ImageDisplay, self).__init__(parent)
 
+        self._parent = parent
+
         # Set QLabel properties
         self.setAlignment(Qt.AlignCenter)
-        self.setMinimumSize(300, 300)
+        self.setMinimumSize(300, 300)  # TODO: This breaks images that are zoomed out too far
 
         self.image_height = self.height()
 
-        # Add image to QLabel
-        # if image_data is None:
-        #     print("No image data")
-        #     self.pixmap = QPixmap(vw.MainView.default_new_tab_image) # TODO - dummy image for now
-        #     image = self.pixmap
-        # else:
-        #     self.pixmap = image_data.get_image_as_q_image(image_data.image)
-        #     image = QPixmap(self.pixmap)
-        #     image = self.pixmap
-
         self.pixmap = image_data.get_image_as_q_image(image_data.image)
         self.image = QPixmap(self.pixmap)
-        # image = QPixmap(self.pixmap)
-        self.setPixmap(self.image.scaled(self.width(), self.height(), Qt.KeepAspectRatio))
+        self.setPixmap(QPixmap(self.pixmap))
+        self.setScaledContents(True)
 
         # Set image properties
-        self._set_image_properties()
-        # self.pixmap.scaledToHeight(self.height(), Qt.SmoothTransformation)
+        # self._set_image_properties()
 
+    def event(self, event):
+        if event.type() == QEvent.NativeGesture:
+            # print(event.gestureType(), event.pos(), event.value())
 
+            if event.gestureType() == Qt.NativeGestureType.ZoomNativeGesture:
 
-        # self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        # self.setScaledContents(True)
-        # self.resize(165, 100)
+                mouse_pos = event.pos()  # Mouse position relative to QLabel
+                widget = self._parent
+
+                # Current scroll bar locations
+                old_scroll_bar_pos = widget.get_slider_positions()
+
+                # Mouse position relative to image
+                old_image_pos = old_scroll_bar_pos + mouse_pos
+                relative_image_pos_x = old_image_pos.x() / self.size().width()
+                relative_image_pos_y = old_image_pos.y() / self.size().height()
+
+                # Zooming Image
+                new_zoom_factor = 1 + event.value()
+                self.zoom_in(new_zoom_factor)
+
+                # Updating position of the scroll bar
+                new_x_scroll = (relative_image_pos_x * self.size().width()) - mouse_pos.x()
+                new_y_scroll = (relative_image_pos_y * self.size().height()) - mouse_pos.y()
+
+                widget.set_slider_positions(new_x_scroll, new_y_scroll)
+
+        return super().event(event)
+
+    # def mousePressEvent(self, event):
+    #
+    #     if event.buttons() == Qt.LeftButton:
+    #         print(event.pos())
+    #
+    #     return super().event(event)
 
     def _set_image_properties(self):
         """Set the properties of the displayed image."""
@@ -122,34 +168,30 @@ class ImageDisplay(QLabel):
         # self.setScaledContents(True)
         pass
 
-    def zoom_image(self, height_change):
-        self.image_height += height_change
-        scaled_pixmap = self.image.scaledToHeight(self.image_height)
-        self.setPixmap(scaled_pixmap)
+    def zoom_in(self, zoom_factor=zoom_factor):
+        # Adapted from: https://stackoverflow.com/questions/53193010/how-to-resize-a-qlabel-with-pixmap-inside-a-qscrollarea
 
+        old_size = self.size()
+        self.resize(zoom_factor * self.size())
+        self._update_zoom_level(zoom_factor, old_size)
 
+    def zoom_out(self, zoom_factor=zoom_out_factor):
+        # Adapted from: https://stackoverflow.com/questions/53193010/how-to-resize-a-qlabel-with-pixmap-inside-a-qscrollarea
+        old_size = self.size()
+        self.resize(zoom_factor * self.size())
+        self._update_zoom_level(zoom_factor, old_size)
+
+    def _update_zoom_level(self, zoom_factor, old_size):
+
+        new_size = self.size()
+
+        # Updating current zoom level of the image
+        if old_size != new_size:
+            self._parent.zoom_level = self._parent.zoom_level * zoom_factor
 
     def update_image(self, image):
         self.pixmap = ImageData.get_image_as_q_image(image)
         self.setPixmap(QPixmap(self.pixmap))
-        # self.resize(165, 100)
-
-    # def paintEvent(self, paint_event):
-    #     print("This is a paint event")
-        # painter = QPainter(self)
-        # painter.drawPixmap(self.rect(), self.pixmap)
-
-    # def paintEvent(self, event):
-    #     # Adapted from: https://robonobodojo.wordpress.com/2018/07/01/automatic-image-sizing-with-pyside/
-    #     size = self.size()
-    #     painter = QPainter(self)
-    #     point = QPoint(0, 0)
-    #     scaled_picture = self.pixmap.scaled(size, Qt.KeepAspectRatio, transformMode=Qt.SmoothTransformation)
-    #     point.setX((size.width() - scaled_picture.width()) / 2)
-    #     point.setY(size.height() - scaled_picture.height() / 2)
-    #     print(point.x() , " ", point.y())
-    #     painter.drawPixmap(point, scaled_picture)
-
 
 class StatusBar(QStatusBar):
 

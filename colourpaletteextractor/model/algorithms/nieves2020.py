@@ -80,8 +80,11 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         # Get colour palette as a list of rgb colours
         colour_palette = []
         for cube in relevant_cubes:
+            print("New colour")
+            print(cube.mean_colour)
             colour = self._convert_lab_2_rgb(cube.mean_colour)  # Scale to 8-bit
             colour_palette.append(colour)
+            print(colour)
 
         return recoloured_image, colour_palette
 
@@ -253,10 +256,10 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                         if (c_star_cube_count > secondary_threshold_pixel_count) \
                                 or (l_star_cube_count > secondary_threshold_pixel_count):
                             cube.relevant = True
+                            print(c_star_cube_count, l_star_cube_count, threshold_pixel_count, num_pixels)
+
                         else:
                             cube.relevant = False
-
-
 
                         # mean_l_star = cube.mean_colour[0]
                         # mean_c_star = cube.calculate_mean_c_star()

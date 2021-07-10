@@ -46,8 +46,10 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.toggle_recoloured_image_action.triggered.connect(self._toggle_recoloured_image)
 
         # Zooming in and out of image
-        self._view.zoom_in_action.triggered.connect(partial(self._zoom, "in"))
-        self._view.zoom_out_action.triggered.connect(partial(self._zoom, "out"))
+        # self._view.zoom_in_action.triggered.connect(partial(self._zoom, "in"))
+        # self._view.zoom_out_action.triggered.connect(partial(self._zoom, "out"))
+        self._view.zoom_in_action.triggered.connect(self._zoom_in)
+        self._view.zoom_out_action.triggered.connect(self._zoom_out)
 
         self._view.exit_action.triggered.connect(self._close_app)
 
@@ -68,16 +70,26 @@ class ColourPaletteExtractorController(QRunnable):
             self._create_new_tab(new_image_data_id, new_image_data)
             # TODO: This is effectively cheating...
 
+    def _zoom_in(self):
+        tab = self._view.tabs.currentWidget()
+        image_display = tab.image_display
+        image_display.zoom_in()
+
+    def _zoom_out(self):
+        tab = self._view.tabs.currentWidget()
+        image_display = tab.image_display
+        image_display.zoom_out()
+
+
     def _zoom(self, zoom_direction):
-        print("Zoom in button pressed")
         tab = self._view.tabs.currentWidget()
         image_display = tab.image_display
 
-        if zoom_direction == "in":
-            zoom_amount = 100
-        elif zoom_direction == "out":
-            zoom_amount = -100
-        image_display.zoom_image(zoom_amount)
+        # if zoom_direction == "in":
+        #     zoom_amount = 100
+        # elif zoom_direction == "out":
+        #     zoom_amount = -100
+        # image_display.zoom_image(zoom_amount)
 
         # TODO: throw exception, save zzom amout to the model
 
