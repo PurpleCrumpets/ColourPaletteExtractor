@@ -5,6 +5,7 @@
 
 import sys
 
+import qdarkstyle
 from PySide2.QtWidgets import QApplication
 
 from view import mainview
