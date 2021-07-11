@@ -2,7 +2,7 @@
 from functools import partial
 import time
 
-from PySide2.QtCore import QDir, QFileInfo, QRunnable, Slot, QThreadPool
+from PySide2.QtCore import QDir, QFileInfo, QRunnable, Slot, QThreadPool, QThread
 # from PySide2.QtWidgets import QFileDialog
 from colourpaletteextractor.controller.worker import Worker
 from colourpaletteextractor.model import model as md
@@ -141,6 +141,7 @@ class ColourPaletteExtractorController(QRunnable):
         worker.signals.finished.connect(self._update_colour_palette_of_gui)  # Function called at the very end
         worker.signals.progress.connect(self._update_progress_bar)  # Intermediate Progress
         self._thread_pool.start(worker)
+        print("Started worker")
 
         # TODO: lock button to generate palette until after it has finished
         # TODO: add cancel button?

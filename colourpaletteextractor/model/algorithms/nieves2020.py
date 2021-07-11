@@ -62,8 +62,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         cubes, cube_assignments = self._divide_cielab_space(lab, 10)  # Progress = 10%
 
         # Steps 3-12: Determine if cube colour is relevant
-        self._assign_pixels_to_cube(lab, cubes, cube_assignments, c_stars, 25)  # Progress = 20%
-        self._set_cubes_relevance_status(cubes, pixel_count, c_stars, 40)  # Progress = 30%
+        self._assign_pixels_to_cube(lab, cubes, cube_assignments, c_stars, 25)  # Progress = 25%
+        self._set_cubes_relevance_status(cubes, pixel_count, c_stars, 40)  # Progress = 40%
 
         # Step 13: Obtain relevant colours
         relevant_cubes = self._get_relevant_cubes(cubes, 50)
@@ -71,7 +71,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
         # Step 14-19: Segmenting image in terms of relevant colours
         # old_lab = lab.copy()
-        self._update_pixel_colours(lab, cubes, cube_assignments, relevant_cubes, 90)
+        self._update_pixel_colours(lab, cubes, cube_assignments, relevant_cubes, 90)  # Progress = 90%
 
         # if np.array_equal(old_lab, lab):
         #     print("Nothing has changed")
@@ -173,11 +173,11 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                     #   them again, rather than in a list that must be iterated through each time
 
             # Update progress bar (every other loop to reduce GUI thread burden)
-            if update_progress:
-                self._increment_progress(increment_percent)
-                update_progress = False
+            if update_progress == 3:
+                self._increment_progress(4 * increment_percent)
+                update_progress = 0
             else:
-                update_progress = True
+                update_progress += 1
 
         # Set progress bar (prevent rounding issues)
         self._set_progress(final_percent)
@@ -215,7 +215,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
             # Update progress bar (every fourth loop to reduce GUI thread burden)
             if update_progress == 3:
-                self._increment_progress(increment_percent)
+                self._increment_progress(4 * increment_percent)
                 update_progress = 0
             else:
                 update_progress += 1
@@ -346,7 +346,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
             # Update progress bar (every fourth loop to reduce GUI thread burden)
             if update_progress == 3:
-                self._increment_progress(increment_percent)
+                self._increment_progress(4 * increment_percent)
                 update_progress = 0
             else:
                 update_progress += 1
@@ -478,7 +478,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
             # Update progress bar (every fourth loop to reduce GUI thread burden)
             if update_progress == 3:
-                self._increment_progress(increment_percent)
+                self._increment_progress(4 * increment_percent)
                 update_progress = 0
             else:
                 update_progress += 1

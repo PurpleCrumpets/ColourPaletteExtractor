@@ -122,6 +122,11 @@ class MainView(QMainWindow):
     def _create_actions(self):
         """Define actions and keyboard shortcuts."""
 
+        if sys.platform == "darwin":
+            meta_key = "Meta"
+        else:
+            meta_key = "Alt"
+
         # Open
         self.open_action = QAction(QIcon("icons:folder-open-outline.svg"), "&Open Image(s)...", self)
         self.open_action.setShortcut("Ctrl+O")
@@ -148,13 +153,13 @@ class MainView(QMainWindow):
 
         # Generate All Colour Palettes
         self.generate_all_action = QAction("&Generate All Colour Palettes", self)
-        self.generate_all_action.setShortcut("Ctrl+Meta+G")
+        self.generate_all_action.setShortcut("Ctrl+" + meta_key + "+G")
 
         # View Saliency Map
         self._view_map_action = QAction(QIcon("icons:layers-outline.svg"), "&Saliency Map...", self, checkable=True)
         self._view_map_action.setChecked(False)
         self._view_map_action.setDisabled(True)
-        self._view_map_action.setShortcut("Ctrl+Meta+M")
+        self._view_map_action.setShortcut("Ctrl+" + meta_key + "+M")
 
         # Toggle original-recoloured image
         self.toggle_recoloured_image_action = QAction(QIcon("icons:eye-outline.svg"), "&Show Recoloured Image", self, checkable=True)

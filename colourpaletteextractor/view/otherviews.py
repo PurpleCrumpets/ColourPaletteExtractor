@@ -121,6 +121,7 @@ class AboutBox(QMessageBox):
 
         # Set icon
         self.setIconPixmap(QPixmap("icons:about-small.png"))
+        self.setWindowIcon(QIcon("icons:about-small.png"))
 
         # Set text
         self.setWindowTitle("About ColourPaletteExtractor")
