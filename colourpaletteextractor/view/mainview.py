@@ -11,7 +11,8 @@ from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QA
 __version__ = "0.1"
 __author__ = "Tim Churchfield"
 
-from colourpaletteextractor.view import otherviews
+from colourpaletteextractor.view import otherviews, tabview
+
 
 resources_dir = "resources"
 
@@ -114,7 +115,7 @@ class MainView(QMainWindow):
         self.setCentralWidget(self.tabs)
 
     def _create_colour_palette_dock(self):
-        self.colour_palette_dock = otherviews.ColourPaletteDock(self)
+        self.colour_palette_dock = tabview.ColourPaletteDock(self)
         self.addDockWidget(Qt.RightDockWidgetArea, self.colour_palette_dock)
 
     def _create_actions(self):
@@ -249,7 +250,7 @@ class MainView(QMainWindow):
     def _create_status_bar(self):
         """Add status bar to the main window."""
         status = otherviews.StatusBar()
-        status.showMessage("I am the status bar")  # TODO: save the version number somewhere
+        # status.showMessage("I am the status bar")  # TODO: save the version number somewhere
         self.setStatusBar(status)
 
     def show_file_dialog_box(self, supported_file_types):
@@ -285,7 +286,7 @@ class MainView(QMainWindow):
         label = image_data.name
 
         # Create and add new tab to GUI
-        new_tab = otherviews.NewTab(image_id=image_id, image_data=image_data)
+        new_tab = tabview.NewTab(image_id=image_id, image_data=image_data)
         new_tab_index = self.tabs.addTab(new_tab, label)
         self.tabs.setCurrentIndex(new_tab_index)
 
