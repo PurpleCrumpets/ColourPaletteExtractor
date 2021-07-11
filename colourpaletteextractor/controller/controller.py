@@ -39,6 +39,7 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.tabs.tabCloseRequested.connect(self._close_current_tab)
 
         # Menu items
+        self._view.about_action.triggered.connect(self._about_box)
         self._view.open_action.triggered.connect(self._open_file)
         self._view.save_action.triggered.connect(self._save_file)
         self._view.generate_palette_action.triggered.connect(partial(self._generate_colour_palette_worker, None))
@@ -81,19 +82,21 @@ class ColourPaletteExtractorController(QRunnable):
         image_display.zoom_out()
 
 
-    def _zoom(self, zoom_direction):
-        tab = self._view.tabs.currentWidget()
-        image_display = tab.image_display
+    # def _zoom(self, zoom_direction):
+    #     tab = self._view.tabs.currentWidget()
+    #     image_display = tab.image_display
+    #
+    #     # if zoom_direction == "in":
+    #     #     zoom_amount = 100
+    #     # elif zoom_direction == "out":
+    #     #     zoom_amount = -100
+    #     # image_display.zoom_image(zoom_amount)
+    #
+    #     # TODO: throw exception, save zoom amount to the model
 
-        # if zoom_direction == "in":
-        #     zoom_amount = 100
-        # elif zoom_direction == "out":
-        #     zoom_amount = -100
-        # image_display.zoom_image(zoom_amount)
 
-        # TODO: throw exception, save zzom amout to the model
-
-
+    def _about_box(self):
+        otherviews.AboutBox()
 
 
 

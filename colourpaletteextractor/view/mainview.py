@@ -58,6 +58,7 @@ class MainView(QMainWindow):
             dark_stylesheet = qdarkstyle.load_stylesheet_pyside2()
             self.setStyleSheet(dark_stylesheet)
 
+
         # Setting paths to resources
         QDir.setCurrent(MainView.resources_path)
         if not QDir.setCurrent(MainView.resources_path):
@@ -174,12 +175,17 @@ class MainView(QMainWindow):
         # TODO: Add button for fit to view and reset?
         #  from: https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html
 
+        # About ColourPaletteExtractor
+        self.about_action = QAction("About ColourPaletteExtractor", self)
+
 
     def _create_menu(self):
         """Add menu bar to the main window."""
 
         # Main Menu
         self.menu = self.menuBar().addMenu("&File")
+        self.menu.addAction(self.about_action)
+        self.menu.addSeparator()
         self.menu.addAction(self.open_action)
         self.menu.addSeparator()
         self.menu.addAction(self.save_action)
