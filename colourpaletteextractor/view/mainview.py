@@ -235,8 +235,6 @@ class MainView(QMainWindow):
         zoom_out_button.setDefaultAction(self.zoom_out_action)
         tools.addWidget(zoom_out_button)
 
-
-
         # Adding spacer
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
@@ -252,12 +250,11 @@ class MainView(QMainWindow):
         exit_button.setAutoRaise(True)
         tools.addWidget(exit_button)
 
-
     def _create_status_bar(self):
         """Add status bar to the main window."""
-        status = otherviews.StatusBar()
+        self.status = otherviews.StatusBar()
         # status.showMessage("I am the status bar")  # TODO: save the version number somewhere
-        self.setStatusBar(status)
+        self.setStatusBar(self.status)
 
     def show_file_dialog_box(self, supported_file_types):
         """Show dialog box for importing images."""
@@ -276,6 +273,7 @@ class MainView(QMainWindow):
 
     def tab_open_doubleclick(self, i):
         print("Double click")
+        # Not in use!
 
     def close_current_tab(self, tab_index):
         self.tabs.removeTab(tab_index)

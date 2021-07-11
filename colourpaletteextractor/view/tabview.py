@@ -34,6 +34,31 @@ class NewTab(QScrollArea):
         # Setting properties to allow scrolling of image
         self.setWidgetResizable(False)
 
+        self._status_bar_state = 0  # Initially no colour palette present
+        self._progress_bar_value = 0  # Initially zero % complete
+
+    @property
+    def progress_bar_value(self):
+        return self._progress_bar_value
+
+    @progress_bar_value.setter
+    def progress_bar_value(self, value):
+        self._progress_bar_value = value
+
+    @property
+    def status_bar_state(self):
+        return self._status_bar_state
+
+    @status_bar_state.setter
+    def status_bar_state(self, value):
+
+        if isinstance(value, int) and 0 <= value <= 2:
+            self._status_bar_state = value
+        else:
+            # TODO: throw exception if invalid status
+            pass
+
+
     @property
     def zoom_level(self):
         return self._zoom_level
@@ -236,23 +261,10 @@ class ColourPaletteDock(QDockWidget):
         if update_palette:  # Updating GUI representation of colour palette
 
             # Clear old palette
-            # from: https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt
-            for i in reversed(range(self._colour_palette_layout.count())):
-                self._colour_palette_layout.itemAt(i).widget().setParent(None)
+            self.remove_colour_palette()
 
-            # Colour Palette Panel
-            # colour_palette_panel = QWidget()
-            # # colour_palette_layout = flowlayout.FlowLayout()
-            # self._colour_palette_layout.setContentsMargins(15, 15, 15, 15)
-            # colour_palette_panel.setLayout(self._colour_palette_layout)
 
-            # Scroll Area (encompasses colour palette panel)
-            # scroll_area = QScrollArea()
-            # scroll_area.setWidgetResizable(True)
-            # scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-            # scroll_area.setContentsMargins(50, 50, 50, 50)
 
-            # self._scroll_area.setWidget(self._colour_palette_panel)
             self.setWidget(self._scroll_area)
 
 
@@ -275,6 +287,10 @@ class ColourPaletteDock(QDockWidget):
 
                 # self.resize(175, 175)
 
+    def remove_colour_palette(self):
+        # from: https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt
+        for i in reversed(range(self._colour_palette_layout.count())):
+            self._colour_palette_layout.itemAt(i).widget().setParent(None)
 
     def _check_given_image_id_matches_with_current_tab(self, image_id):
 

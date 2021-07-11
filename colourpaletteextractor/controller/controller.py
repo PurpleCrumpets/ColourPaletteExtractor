@@ -47,8 +47,6 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.toggle_recoloured_image_action.triggered.connect(self._toggle_recoloured_image)
 
         # Zooming in and out of image
-        # self._view.zoom_in_action.triggered.connect(partial(self._zoom, "in"))
-        # self._view.zoom_out_action.triggered.connect(partial(self._zoom, "out"))
         self._view.zoom_in_action.triggered.connect(self._zoom_in)
         self._view.zoom_out_action.triggered.connect(self._zoom_out)
 
@@ -81,24 +79,8 @@ class ColourPaletteExtractorController(QRunnable):
         image_display = tab.image_display
         image_display.zoom_out()
 
-
-    # def _zoom(self, zoom_direction):
-    #     tab = self._view.tabs.currentWidget()
-    #     image_display = tab.image_display
-    #
-    #     # if zoom_direction == "in":
-    #     #     zoom_amount = 100
-    #     # elif zoom_direction == "out":
-    #     #     zoom_amount = -100
-    #     # image_display.zoom_image(zoom_amount)
-    #
-    #     # TODO: throw exception, save zoom amount to the model
-
-
     def _about_box(self):
         otherviews.AboutBox()
-
-
 
     def _close_app(self):
         # TODO: add "do you wish to quit" dialog box here
@@ -155,25 +137,73 @@ class ColourPaletteExtractorController(QRunnable):
         else:
             worker = Worker(self._generate_colour_palette, tab=tab)  # Execute main function
 
-        # worker.signals.result.connect(self.print_output)  # Uses the result of the main function
+        # worker.signals.result.connect(self._update_tab)  # Uses the result of the main function
         worker.signals.finished.connect(self._update_colour_palette_of_gui)  # Function called at the very end
-        # worker.signals.progress.connect(self.progress_fn)  # Intermediate Progress
+        worker.signals.progress.connect(self._update_progress_bar)  # Intermediate Progress
         self._thread_pool.start(worker)
 
         # TODO: lock button to generate palette until after it has finished
         # TODO: add cancel button?
 
-    def _generate_colour_palette(self, tab, progress_callback=None):
+    def _update_progress_bar(self, tab, percent, reset_tab=False):
+        # Update progress status value
+        tab.progress_bar_value = percent
+
+        # Update progress bar on GUI
+        if tab == self._view.tabs.currentWidget():
+            self._view.status.update_progress_bar(percent)
+
+            if percent == 100:
+                self._view.status.set_status_bar(2)
+
+        # Update tab GUI features
+        if reset_tab:
+            self._reset_tab(tab)
+
+    def _reset_tab(self, tab):
+        print("Resetting tab status")
+
+        # Update status bar to intermediate text
+        if tab == self._view.tabs.currentWidget():
+            self._view.status.set_status_bar(1)
+
+        # Reset tab components
+        image_id = tab.image_id
+        image_data = self._model.get_image_data(image_id)
+
+        # Reset back to original image
+
+        # Grey out toggle button
+        # Remove colour palette
+        # self._view.colour_palette_dock.remove_colour_palette()
+        # The above is not right - need to remove it from the image data class
+
+
+        pass
+
+
+
+    def _generate_colour_palette(self, tab, progress_callback):
         """Generate colour palette for current open image."""
 
         if tab is None:
             # Get image data for the current tab
             tab = self._view.tabs.currentWidget()
 
-        image_id = tab.image_id
+        # Reset state of tab
+        progress_callback.emit(tab, 0, True)
+
+        # Set image_data status bar state to generating colour palette
+        tab.status_bar_state = 1
 
         # Generate colour palette
-        self._model.generate_palette(image_id)
+        image_id = tab.image_id
+        self._model.generate_palette(image_id, tab, progress_callback)
+
+        # Set image_data status bar state to colour palette generated
+        tab.status_bar_state = 2
+
+        # TODO: add try block for status bar updates in case of failure
 
         # Enable toggle button for showing recoloured image for the tab
         tab.enable_toggle_recoloured_image()
@@ -185,6 +215,8 @@ class ColourPaletteExtractorController(QRunnable):
         return colour_palette, image_id
 
         # TODO: prevent instructions page from showing the colour palette
+
+
 
     def _update_colour_palette_of_gui(self, colour_palette, image_id):
         self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id)
@@ -224,7 +256,6 @@ class ColourPaletteExtractorController(QRunnable):
 
         return image_data.colour_palette
 
-
     def current_tab_changed(self, i):
         """Update current tab index."""
         print("Tab changed to:", i)
@@ -250,6 +281,16 @@ class ColourPaletteExtractorController(QRunnable):
         # Reload colour palette
         colour_palette = self._get_colour_palette(tab)
         self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id)
+
+        # Update status bar
+        status_bar_state = tab.status_bar_state
+        self._view.status.set_status_bar(status_bar_state)
+        percent = tab.progress_bar_value
+        self._view.status.update_progress_bar(percent)
+
+
+
+
 
         # TODO: more things may need to change (ie highlight show map to show that it is on for that image)
 

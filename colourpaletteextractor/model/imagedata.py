@@ -39,6 +39,21 @@ class ImageData:
         self._colour_palette = []
         self._show_original_image = True
 
+    #     self._status_bar_state = 0  # No colour palette present
+    #
+    # @property
+    # def status_bar_state(self):
+    #     return self._status_bar_state
+    #
+    # @status_bar_state.setter
+    # def status_bar_state(self, value):
+    #
+    #     if isinstance(value, int) and 0 <= value <= 2:
+    #         self._status_bar_state = value
+    #     else:
+    #         # TODO: throw exception if invalid status
+    #         pass
+
     @property
     def show_original_image(self):
         return self._show_original_image

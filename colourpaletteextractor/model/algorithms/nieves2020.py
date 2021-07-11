@@ -44,6 +44,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
     def generate_colour_palette(self, image):
         print("Generating colour palette...")
 
+        self._set_progress(0)  # Initial progress = 0%
+
         # print(image.shape)
 
         # TODO: Add checks to make sure image is originally in the sRGB colour space
@@ -52,22 +54,24 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         lab = self._convert_rgb_2_lab(image)
         c_stars = self._get_c_stars(lab)
         pixel_count = lab.size / Nieves2020.COLOUR_CHANNELS
+
+        self._set_progress(5)  # Progress = 5%
         # print(pixel_count)
 
         # Step 2: Divide CIELAB colour space into cubes
-        cubes, cube_assignments = self._divide_cielab_space(lab)
+        cubes, cube_assignments = self._divide_cielab_space(lab, 10)  # Progress = 10%
 
         # Steps 3-12: Determine if cube colour is relevant
-        self._assign_pixels_to_cube(lab, cubes, cube_assignments, c_stars)
-        self._set_cubes_relevance_status(cubes, pixel_count, c_stars)
+        self._assign_pixels_to_cube(lab, cubes, cube_assignments, c_stars, 25)  # Progress = 20%
+        self._set_cubes_relevance_status(cubes, pixel_count, c_stars, 40)  # Progress = 30%
 
         # Step 13: Obtain relevant colours
-        relevant_cubes = self._get_relevant_cubes(cubes)
+        relevant_cubes = self._get_relevant_cubes(cubes, 50)
         print("Number of relevant colours:", len(relevant_cubes))
 
         # Step 14-19: Segmenting image in terms of relevant colours
         # old_lab = lab.copy()
-        self._update_pixel_colours(lab, cubes, cube_assignments, relevant_cubes)
+        self._update_pixel_colours(lab, cubes, cube_assignments, relevant_cubes, 90)
 
         # if np.array_equal(old_lab, lab):
         #     print("Nothing has changed")
@@ -76,6 +80,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
         # Convert image back into rgb
         recoloured_image = self._convert_lab_2_rgb(lab)
+        self._set_progress(95)  # Progress = 95%
 
         # Get colour palette as a list of rgb colours
         colour_palette = []
@@ -85,6 +90,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
             colour = self._convert_lab_2_rgb(cube.mean_colour)  # Scale to 8-bit
             colour_palette.append(colour)
             print(colour)
+
+        self._set_progress(100)  # Progress = 100%
 
         return recoloured_image, colour_palette
 
@@ -115,7 +122,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
         # TODO: mention the limit of L can be greater than 100 - Linhares
 
-    def _divide_cielab_space(self, lab):
+    def _divide_cielab_space(self, lab, final_percent):
         """Generate the required CIELAB cubes for the given image
         and return the coordinates of the cube that each pixel is to be assigned to."""
 
@@ -123,7 +130,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         cube_assignments = (np.floor_divide(lab, self._cube_size)).astype(int)  # Cube coordinates for each pixel
 
         l_star_max = cube_assignments[:, :, 0].max()
-        l_star_min = cube_assignments[:, :, 0].min()
+        # l_star_min = cube_assignments[:, :, 0].min()
+        l_star_min = 0  # l_star_min is always 0
         a_star_max = cube_assignments[:, :, 1].max()
         a_star_min = cube_assignments[:, :, 1].min()
         b_star_max = cube_assignments[:, :, 2].max()
@@ -134,7 +142,6 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         # print("b* range: " + str(b_star_min) + "," + str(b_star_max))
 
         # Maxing sure ranges are valid and always include 0 in the range
-        l_star_min = 0
         if a_star_min > 0:
             a_star_min = 0
         if b_star_min > 0:
@@ -149,6 +156,10 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         a_star_range = a_star_max - a_star_min + 1
         b_star_range = b_star_max - b_star_min + 1
 
+        # Getting progress bar increments
+        increment_percent = self._get_increment_percent(final_percent, l_star_range)
+        update_progress = 0
+
         # Generating required cubes and adding them to the 3D array of cubes
         cubes = np.empty([l_star_range, a_star_range, b_star_range], dtype=cielabcube.CielabCube)
         for l_star in range(l_star_min, l_star_max + 1):
@@ -161,10 +172,21 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                     # TODO: Optimisation section - talk about how storing cubes in a np.array is faster to find
                     #   them again, rather than in a list that must be iterated through each time
 
+            # Update progress bar (every other loop to reduce GUI thread burden)
+            if update_progress:
+                self._increment_progress(increment_percent)
+                update_progress = False
+            else:
+                update_progress = True
+
+        # Set progress bar (prevent rounding issues)
+        self._set_progress(final_percent)
+
+
         print(cubes.size, "CIELAB cubes generated...")
         return cubes, cube_assignments
 
-    def _assign_pixels_to_cube(self, lab, cubes, cube_assignments, c_stars):
+    def _assign_pixels_to_cube(self, lab, cubes, cube_assignments, c_stars, final_percent):
         """Add each pixel to their assigned CIELAB cube."""
 
         # Using Cython
@@ -178,6 +200,10 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         rows = lab.shape[0]
         cols = lab.shape[1]
 
+        # Getting progress bar increments
+        increment_percent = self._get_increment_percent(final_percent, rows)
+        update_progress = 0
+
         print("Assigning each pixel to the appropriate CIELAB cube...")
         for i in range(rows):  # For each row of image
             for j in range(cols):  # For each column of image
@@ -187,12 +213,22 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                 cube = cubes[pixel_coordinates[0], pixel_coordinates[1], pixel_coordinates[2]]
                 cube.add_pixel_to_cube(pixel, c_star)
 
+            # Update progress bar (every fourth loop to reduce GUI thread burden)
+            if update_progress == 3:
+                self._increment_progress(increment_percent)
+                update_progress = 0
+            else:
+                update_progress += 1
+
+        # Set progress bar (prevent rounding issues)
+        self._set_progress(final_percent)
+
         print("--- %s seconds for Python cube assignment loop ---" % (time.time() - start_time))
 
         # print(len(cubes[0, 0, 0].pixels))
         # print(cubes[0, 0, 0].get_cube_coordinates())
 
-    def _set_cubes_relevance_status(self, cubes, pixel_count, c_stars):
+    def _set_cubes_relevance_status(self, cubes, pixel_count, c_stars, final_percent):
         """Determine which CIELAB cubes are deemed to be relevant, and change their
         status to reflect this."""
 
@@ -213,6 +249,10 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         # print(l_star_dim, a_star_dim, b_star_dim)
 
         tot_pixels = 0
+
+        # Getting progress bar increments
+        increment_percent = self._get_increment_percent(final_percent, l_star_dim)
+        update_progress = 0
 
         for i in range(l_star_dim):
             for j in range(a_star_dim):
@@ -269,17 +309,31 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                         #         (threshold_pixel_count / 8) <= pixel_count < threshold_pixel_count):
                         #     cube.relevant = True
 
+            # Update progress bar (every fourth loop to reduce GUI thread burden)
+            if update_progress == 3:
+                self._increment_progress(increment_percent)
+                update_progress = 0
+            else:
+                update_progress += 1
+
+        # Set progress bar (prevent rounding issues)
+        self._set_progress(final_percent)
+
         if tot_pixels != pixel_count:
             print("Dimensions don't match")
             # TODO: throw exception here
 
-    def _get_relevant_cubes(self, cubes):
+    def _get_relevant_cubes(self, cubes, final_percent):
         relevant_cubes = []
         num_relevant_cubes = 0
 
         l_star_dim = cubes.shape[0]
         a_star_dim = cubes.shape[1]
         b_star_dim = cubes.shape[2]
+
+        # Getting progress bar increments
+        increment_percent = self._get_increment_percent(final_percent, l_star_dim)
+        update_progress = True
 
         for i in range(l_star_dim):
             for j in range(a_star_dim):
@@ -290,12 +344,22 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                         relevant_cubes.append(cube)
                         num_relevant_cubes += 1
 
+            # Update progress bar (every fourth loop to reduce GUI thread burden)
+            if update_progress == 3:
+                self._increment_progress(increment_percent)
+                update_progress = 0
+            else:
+                update_progress += 1
+
+        # Set progress bar (prevent rounding issues)
+        self._set_progress(final_percent)
+
         if num_relevant_cubes != 0:
             return relevant_cubes
         else:
             return np.array([])
 
-    def _update_pixel_colours(self, lab, cubes, cube_assignments, relevant_cubes):
+    def _update_pixel_colours(self, lab, cubes, cube_assignments, relevant_cubes, final_percent):
 
         # Get array of relevant_cube mean colours
         relevant_cubes_mean_colours = []
@@ -323,6 +387,10 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
         start_time = time.time()
         rows = lab.shape[0]
         cols = lab.shape[1]
+
+        # Getting progress bar increments
+        increment_percent = self._get_increment_percent(final_percent, rows)
+        update_progress = 0
 
         print("Updating pixel colours...")
         for i in range(rows):  # For each row of image
@@ -407,6 +475,16 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                 # Is the cube a relevant colour - replace!
                 # If not, find the nearest relevant colour and use that
                 # TODO: this technically might not be the nearest colour...
+
+            # Update progress bar (every fourth loop to reduce GUI thread burden)
+            if update_progress == 3:
+                self._increment_progress(increment_percent)
+                update_progress = 0
+            else:
+                update_progress += 1
+
+        # Set progress bar (prevent rounding issues)
+        self._set_progress(final_percent)
 
         print("--- %s seconds for Python pixel colour update loop ---" % (time.time() - start_time))
 

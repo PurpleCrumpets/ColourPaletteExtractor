@@ -32,12 +32,16 @@ class Worker(QRunnable):
         # Add the callback to our kwargs
         self.kwargs['progress_callback'] = self.signals.progress
 
+
+
     @Slot()
     def run(self):
         """
         Initialise the runner function with passed args, kwargs.
         """
         # Retrieve args/kwargs here; and fire processing using them
+        colour_palette = None
+        image_id = None
         try:
             colour_palette, image_id = self.fn(*self.args, **self.kwargs)
         except:
@@ -70,4 +74,4 @@ class WorkerSignals(QObject):
     finished = Signal(object, str)
     error = Signal(tuple)
     result = Signal(object)
-    progress = Signal(int)
+    progress = Signal(object, int, bool)

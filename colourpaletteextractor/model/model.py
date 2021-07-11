@@ -11,14 +11,15 @@ class ColourPaletteExtractorModel:
     ERROR_MSG = "Error! :'("
     supported_image_types = {"png", "jpg"}
 
-    def __init__(self, algorithm=None):
+    def __init__(self, algorithm_name=None):
 
         self._image_data_id_counter = 0
         self._image_data_id_dictionary = {}
 
         # self._images = []
-        if algorithm is None:
-            self._algorithm = nieves2020.Nieves2020()  # Default algorithm
+        if algorithm_name is None:
+            # self._algorithm = nieves2020.Nieves2020()  # Default algorithm
+            self._algorithm = "nieves_2020"  # Default algorithm
         else:
             print("Algorithm not None")  # TODO: add new algorithm
 
@@ -35,16 +36,27 @@ class ColourPaletteExtractorModel:
 
         return result
 
-    def set_algorithm(self, algorithm_name):
-        """Set the algorithm use to extract the colour palette of an image."""
+    def _get_algorithm(self):
 
-        if algorithm_name == "nieves_2020":
+        if self._algorithm == "nieves_2020":
             print("Nieves")
-            self._algorithm = nieves2020.Nieves2020()
+            return nieves2020.Nieves2020()
 
         else:
             print("Not a valid algorithm")
             # TODO: Throw exception
+
+
+    # def set_algorithm(self, algorithm_name="nieves_2020"):
+    #     """Set the algorithm use to extract the colour palette of an image."""
+    #
+    #     if algorithm_name == "nieves_2020":
+    #         print("Nieves")
+    #         self._algorithm = nieves2020.Nieves2020()
+    #
+    #     else:
+    #         print("Not a valid algorithm")
+    #         # TODO: Throw exception
 
     def add_image(self, file_name_and_path):
         """From the path to an image, create a new image_data object and add it to the
@@ -82,11 +94,15 @@ class ColourPaletteExtractorModel:
     def image_data_id_dictionary(self):
         return self._image_data_id_dictionary
 
-    def generate_palette(self, image_data_id):
+    def generate_palette(self, image_data_id, tab, progress_callback):
         print("Generating colour palette for image:", image_data_id)
 
-        image = self._get_image_copy(image_data_id)
-        recoloured_image, colour_palette = self._algorithm.generate_colour_palette(image)
+        image_data = self._get_image_copy(image_data_id)
+
+        # Get algorithm and process image with it
+        algorithm = self._get_algorithm()
+        algorithm.set_progress_callback(progress_callback, tab)
+        recoloured_image, colour_palette = algorithm.generate_colour_palette(image_data)
 
         self._image_data_id_dictionary[image_data_id].recoloured_image = recoloured_image
         self._image_data_id_dictionary[image_data_id].colour_palette = colour_palette
