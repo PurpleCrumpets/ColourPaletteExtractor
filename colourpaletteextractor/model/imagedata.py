@@ -12,6 +12,9 @@ class ImageData:
     def __init__(self, file_name_and_path=None):
         """Constructor."""
 
+        self._recoloured_image = None
+        self._colour_palette = []
+
         # TODO: Need to check that the image has been saved using three colour channels (assuming RGB)
         # TODO: Check colour space and adapt to that
         # Otherwise - remove alpha channel in the case of PNG images
@@ -32,21 +35,6 @@ class ImageData:
             while "." in self._name:
                 self._name = os.path.splitext(self._name)[0]
             # TODO: what happens if the file has no extension?
-
-        self._recoloured_image = None
-        self._colour_palette = []
-        self._show_original_image = True
-
-    @property
-    def show_original_image(self):
-        return self._show_original_image
-
-    @show_original_image.setter
-    def show_original_image(self, value):
-        self._show_original_image = value
-
-    def toggle_show_original_image(self):
-        self._show_original_image = not self._show_original_image
 
     @property
     def image(self):

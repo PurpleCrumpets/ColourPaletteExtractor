@@ -24,17 +24,25 @@ class NewTab(QScrollArea):
         # self._create_palette_display()  # Display colour palette
 
         self.image_display = ImageDisplay(image_data, self)
-        # self._generalLayout.addWidget(self.image_display)
         self.setWidget(self.image_display)
 
-        self._toggle_recoloured_image = False  # Initially no recoloured image associated with tab
-        self._toggle_recoloured_image_pressed = False
+        self._toggle_recoloured_image_available = False  # Initially no recoloured image associated with tab
+        self._toggle_recoloured_image_pressed = False  # Initially button is not pressed
+        self._generate_palette_available = True
 
         # Setting properties to allow scrolling of image
         self.setWidgetResizable(False)
 
         self._status_bar_state = 0  # Initially no colour palette present
         self._progress_bar_value = 0  # Initially zero % complete
+
+    @property
+    def generate_palette_available(self) -> bool:
+        return self._generate_palette_available
+
+    @generate_palette_available.setter
+    def generate_palette_available(self, value: bool) -> None:
+        self._generate_palette_available = value
 
     @property
     def progress_bar_value(self):
@@ -76,30 +84,22 @@ class NewTab(QScrollArea):
         # Add display to the general layout
         self._generalLayout.addWidget(self.image_display)
 
-    # def _create_palette_display(self):
-    #     """Create and add the widget for displaying an image's colour palette."""
-    #     # TODO: currently a placeholder
-    #     self.display = QLineEdit()
-    #
-    #     # Set display properties
-    #     self.display.setFixedHeight(35)
-    #     self.display.setAlignment(Qt.AlignRight)
-    #     self.display.setReadOnly(True)
-    #
-    #     # Add display to the general layout
-    #     self._generalLayout.addWidget(self.display, alignment=Qt.AlignCenter)
-
     @property
-    def toggle_recoloured_image(self):
-        return self._toggle_recoloured_image
+    def toggle_recoloured_image_available(self):
+        return self._toggle_recoloured_image_available
 
-    @toggle_recoloured_image.setter
-    def toggle_recoloured_image(self, value):
-        self._toggle_recoloured_image = value
+    @toggle_recoloured_image_available.setter
+    def toggle_recoloured_image_available(self, value):
+        # TODO: make sure value is a boolean
+        self._toggle_recoloured_image_available = value
 
     @property
     def toggle_recoloured_image_pressed(self):
         return self._toggle_recoloured_image_pressed
+
+    @toggle_recoloured_image_pressed.setter
+    def toggle_recoloured_image_pressed(self, value):
+        self._toggle_recoloured_image_pressed = value
 
     def change_toggle_recoloured_image_pressed(self):
         self._toggle_recoloured_image_pressed = not self._toggle_recoloured_image_pressed
@@ -229,15 +229,9 @@ class ColourPaletteDock(QDockWidget):
         super(ColourPaletteDock, self).__init__(parent)
 
         self._parent = parent
-
         self._colour_palette = []
 
         self._set_colour_palette_dock_properties()
-
-        # Initial Colour Palette Display
-        self._help_label = QLabel()
-        self._help_label.setText("The colours")
-        self.setWidget(self._help_label)
 
         # Colour Palette Panel and Layout for adding the colours in the palette to
         self._set_colour_palette_panel()

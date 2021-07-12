@@ -43,7 +43,8 @@ class Worker(QRunnable):
         colour_palette = None
         image_id = None
         try:
-            colour_palette, image_id = self.fn(*self.args, **self.kwargs)
+            # colour_palette, image_id = self.fn(*self.args, **self.kwargs)
+            self.fn(*self.args, **self.kwargs)
         except:
             traceback.print_exc()
             exc_type, value = sys.exc_info()[:2]
@@ -51,7 +52,8 @@ class Worker(QRunnable):
         else:
             self.signals.result.emit(None)  # Return the result of the processing
         finally:
-            self.signals.finished.emit(colour_palette, image_id)  # Done
+            # self.signals.finished.emit(colour_palette, image_id)  # Done
+            self.signals.finished.emit(-2)  # Done
 
 
 class WorkerSignals(QObject):
@@ -71,7 +73,8 @@ class WorkerSignals(QObject):
 
     """
     # Data types for each signal
-    finished = Signal(object, str)
+    # finished = Signal(object, str)
+    finished = Signal(int)
     error = Signal(tuple)
     result = Signal(object)
-    progress = Signal(object, int, bool)
+    progress = Signal(object, int)

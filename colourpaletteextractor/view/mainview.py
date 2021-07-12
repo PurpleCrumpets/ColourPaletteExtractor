@@ -121,6 +121,7 @@ class MainView(QMainWindow):
     def _create_actions(self):
         """Define actions and keyboard shortcuts."""
 
+        # Select operating system-specific modifier button
         if sys.platform == "darwin":
             meta_key = "Meta"
         else:
@@ -217,7 +218,6 @@ class MainView(QMainWindow):
         self.menu.addAction(self.toggle_recoloured_image_action)
         self.menu.addAction(self.show_palette_dock_action)
         self.menu.addSeparator()
-
 
     def _create_toolbar(self):
         """Add toolbar to the main window."""
