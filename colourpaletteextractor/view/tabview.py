@@ -3,7 +3,6 @@ from PySide2.QtCore import QEvent, Qt, QPointF
 from PySide2.QtGui import QPixmap, QColor, QColorConstants, QPainter, QWheelEvent
 from PySide2.QtWidgets import QScrollArea, QLabel, QWidget, QDockWidget, QApplication
 
-__version__ = "0.1"
 __author__ = "Tim Churchfield"
 
 

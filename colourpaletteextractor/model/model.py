@@ -7,6 +7,9 @@ from colourpaletteextractor.model import imagedata
 from colourpaletteextractor.model.algorithms import nieves2020
 
 
+
+
+
 class ColourPaletteExtractorModel:
     ERROR_MSG = "Error! :'("
     supported_image_types = {"png", "jpg"}
@@ -45,7 +48,6 @@ class ColourPaletteExtractorModel:
         else:
             print("Not a valid algorithm")
             # TODO: Throw exception
-
 
     # def set_algorithm(self, algorithm_name="nieves_2020"):
     #     """Set the algorithm use to extract the colour palette of an image."""
@@ -112,8 +114,6 @@ class ColourPaletteExtractorModel:
 
 if __name__ == "__main__":
 
-
-
     # data_dir = "data"
     # print(__file__)
     # os.getcwd() - where script executed from!
@@ -139,12 +139,6 @@ if __name__ == "__main__":
     # Get colour palette of the image (image 0 in list)
     # print(len(model._images))
     model.generate_palette("Tab_0")
-
-
-
-
-
-
 
     # print(os.path.isfile(file_name))
 

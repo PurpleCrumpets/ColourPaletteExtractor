@@ -1,3 +1,4 @@
+import os
 import sys
 
 from PySide2.QtCore import QEvent
@@ -5,10 +6,9 @@ from PySide2.QtGui import QIcon, QPixmap
 from PySide2.QtWidgets import QWidget, QProgressBar, \
     QStatusBar, QMessageBox, QLabel
 
-__version__ = "0.1"
 __author__ = "Tim Churchfield"
 
-from colourpaletteextractor.view.mainview import MainView
+import _version
 
 
 class AlgorithmDialogBox(QWidget):
@@ -53,7 +53,7 @@ class StatusBar(QStatusBar):
 
         # self.removeWidget(self._progress_bar)  # Temporarily removing the progress bar
 
-        self.addPermanentWidget(QLabel("v0.1"))
+        self.addPermanentWidget(QLabel("v" + _version.__version__))
         self.addPermanentWidget(self._spacer3)
 
     def set_status_bar(self, state):
@@ -127,7 +127,7 @@ class AboutBox(QMessageBox):
         # Set text
         self.setWindowTitle("About ColourPaletteExtractor")
         self.setText("ColourPaletteExtractor is a simple tool to generate the colour palette of an image.")
-        self.setInformativeText("Version 0.1")  # TODO: Get this from elsewhere
+        self.setInformativeText("Version " + _version.__version__)  # TODO: Get this from elsewhere
 
         # Show about box
         self.exec_()

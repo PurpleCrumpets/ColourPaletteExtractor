@@ -8,7 +8,6 @@ from PySide2.QtCore import Qt, QDir
 from PySide2.QtGui import QIcon, QKeySequence
 from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, QSizePolicy
 
-__version__ = "0.1"
 __author__ = "Tim Churchfield"
 
 from colourpaletteextractor.view import otherviews, tabview
@@ -186,6 +185,7 @@ class MainView(QMainWindow):
 
         # Show colour palette dock widget
         self.show_palette_dock_action = QAction("Show &Colour Palette Dock", self)
+        self.show_palette_dock_action.setShortcut("Ctrl+D")
 
 
 
