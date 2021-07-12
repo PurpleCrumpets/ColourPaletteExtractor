@@ -282,7 +282,7 @@ class MainView(QMainWindow):
             count += 1
         string = string + ")"
 
-        return QFileDialog.getOpenFileNames(self, "Open Image", "/", string)
+        return QFileDialog.getOpenFileNames(self, "Open Image", "", string)
 
     def tab_open_doubleclick(self, i):
         print("Double click")
