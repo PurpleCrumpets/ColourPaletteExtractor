@@ -103,7 +103,7 @@ class MainView(QMainWindow):
 
     def _set_main_window_properties(self):
         """Set the properties of the main window of the GUI."""
-        self.setWindowTitle("Colour Palette Extractor")
+        self.setWindowTitle("ColourPaletteExtractor")
 
     def _create_central_widget(self):
         """Create the central widget and add it to the main window."""
@@ -169,7 +169,7 @@ class MainView(QMainWindow):
         self.toggle_recoloured_image_action.setShortcut("Ctrl+T")
 
         # Exit GUI
-        self.exit_action = QAction(QIcon("icons:exit-outline.svg"), "Quit Colour Palette Extractor", self)
+        self.exit_action = QAction(QIcon("icons:exit-outline.svg"), "Quit ColourPaletteExtractor", self)
         # TODO: Add a a dialog - are you sure you want to quit?
 
         # Zoom in and out

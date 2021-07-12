@@ -131,7 +131,7 @@ class ColourPaletteExtractorController(QRunnable):
 
     def _generate_all_palettes(self):
 
-        # Temporarily disable generate all palettes action
+        # TODO: Temporarily disable generate all palettes action
 
 
         num_tabs = self._view.tabs.count()
@@ -139,8 +139,7 @@ class ColourPaletteExtractorController(QRunnable):
             tab = self._view.tabs.widget(i)
             self._generate_colour_palette_worker(tab)
 
-        # Re-enable generate all palettes action
-        print("This is a test")
+        # TODO: Re-enable generate all palettes action
 
     def _generate_colour_palette_worker(self, tab=None):
 

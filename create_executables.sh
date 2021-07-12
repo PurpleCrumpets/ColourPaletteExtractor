@@ -14,9 +14,8 @@ echo "Building $NAME app using __main__.py file..."
 
 cd ./colourpaletteextractor || exit
 
+# Name of expected PyInstaller SPEC file
 SPEC_FILE="$(pwd)/${NAME}.spec"
-
-#echo $SPEC_FILE
 
 if test -f "$SPEC_FILE"
 then
