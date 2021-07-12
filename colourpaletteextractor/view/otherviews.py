@@ -1,14 +1,12 @@
-import os
 import sys
 
-from PySide2.QtCore import QEvent
 from PySide2.QtGui import QIcon, QPixmap
 from PySide2.QtWidgets import QWidget, QProgressBar, \
     QStatusBar, QMessageBox, QLabel
 
 __author__ = "Tim Churchfield"
 
-import _version
+from colourpaletteextractor import _version
 
 
 class AlgorithmDialogBox(QWidget):
