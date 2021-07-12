@@ -183,6 +183,10 @@ class MainView(QMainWindow):
         # About ColourPaletteExtractor
         self.about_action = QAction("About ColourPaletteExtractor", self)
 
+        # Show colour palette dock widget
+        self.show_palette_dock_action = QAction("Show Colour Palette Dock", self)
+
+
 
     def _create_menu(self):
         """Add menu bar to the main window."""
@@ -212,6 +216,7 @@ class MainView(QMainWindow):
         self.menu.addSeparator()
         self.menu.addAction(self._view_map_action)
         self.menu.addAction(self.toggle_recoloured_image_action)
+        self.menu.addAction(self.show_palette_dock_action)
         self.menu.addSeparator()
 
 

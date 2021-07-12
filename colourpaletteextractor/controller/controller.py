@@ -46,10 +46,14 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.generate_all_action.triggered.connect(self._generate_all_palettes)
         self._view.toggle_recoloured_image_action.triggered.connect(self._toggle_recoloured_image)
 
+        # Reopen colour palette dock
+        self._view.show_palette_dock_action.triggered.connect(self._show_colour_palette_dock)
+
         # Zooming in and out of image
         self._view.zoom_in_action.triggered.connect(self._zoom_in)
         self._view.zoom_out_action.triggered.connect(self._zoom_out)
 
+        # Exit application
         self._view.exit_action.triggered.connect(self._close_app)
 
     def _create_default_tab(self):
@@ -68,6 +72,9 @@ class ColourPaletteExtractorController(QRunnable):
         if new_image_data is not None:
             self._create_new_tab(new_image_data_id, new_image_data)
             # TODO: This is effectively cheating...
+
+    def _show_colour_palette_dock(self):
+        self._view.colour_palette_dock.show()
 
     def _zoom_in(self):
         tab = self._view.tabs.currentWidget()
