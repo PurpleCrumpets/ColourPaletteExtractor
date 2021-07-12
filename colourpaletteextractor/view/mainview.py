@@ -4,7 +4,7 @@ import os
 import darkdetect
 import qdarkstyle
 
-from PySide2.QtCore import Qt, QDir, QEvent
+from PySide2.QtCore import Qt, QDir
 from PySide2.QtGui import QIcon, QKeySequence
 from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, QSizePolicy
 
@@ -130,7 +130,7 @@ class MainView(QMainWindow):
         # Open
         self.open_action = QAction(QIcon("icons:folder-open-outline.svg"), "&Open Image(s)...", self)
         self.open_action.setShortcut("Ctrl+O")
-        self.open_action.setStatusTip("Open new image") # TODO: currently doesn't do anything...
+        self.open_action.setStatusTip("Open new image(s)...")
 
         # Save
         self.save_action = QAction(QIcon("icons:save-outline.svg"), "&Save Results...", self)
@@ -150,6 +150,7 @@ class MainView(QMainWindow):
         # Generate Colour Palette
         self.generate_palette_action = QAction(QIcon("icons:color-palette-outline.svg"), "&Generate Colour Palette", self)
         self.generate_palette_action.setShortcut("Ctrl+G")
+        self.generate_palette_action.setStatusTip("Generate the colour palette...")
 
         # Generate All Colour Palettes
         self.generate_all_action = QAction("&Generate All Colour Palettes", self)
@@ -181,10 +182,10 @@ class MainView(QMainWindow):
         #  from: https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html
 
         # About ColourPaletteExtractor
-        self.about_action = QAction("About ColourPaletteExtractor", self)
+        self.about_action = QAction("&About ColourPaletteExtractor", self)
 
         # Show colour palette dock widget
-        self.show_palette_dock_action = QAction("Show Colour Palette Dock", self)
+        self.show_palette_dock_action = QAction("Show &Colour Palette Dock", self)
 
 
 
@@ -227,6 +228,8 @@ class MainView(QMainWindow):
 
         # Left-aligned actions
         self.addToolBar(tools)
+        tools.addAction(self.open_action)
+        tools.addSeparator()
         tools.addAction(self.generate_palette_action)
         tools.addSeparator()
 

@@ -1,13 +1,13 @@
+import darkdetect
 from PySide2.QtCore import QEvent, Qt, QPointF
-from PySide2.QtGui import QPixmap, QColor
+from PySide2.QtGui import QPixmap, QColor, QColorConstants, QPainter
 from PySide2.QtWidgets import QScrollArea, QLabel, QWidget, QDockWidget
 
 __version__ = "0.1"
 __author__ = "Tim Churchfield"
 
-# class NewTab(QWidget):
-from PySide2.examples.widgets.layouts import flowlayout
 
+from PySide2.examples.widgets.layouts import flowlayout
 from colourpaletteextractor.model.imagedata import ImageData
 
 
@@ -263,29 +263,56 @@ class ColourPaletteDock(QDockWidget):
             # Clear old palette
             self.remove_colour_palette()
 
-
-
             self.setWidget(self._scroll_area)
-
-
 
             # Adding colours to the colour palette panel
             for colour in colour_palette:
-                # print(colour)
-                red = colour[0]
-                green = colour[1]
-                blue = colour[2]
-                # TODO: Add checks to make sure that colours are valid, only three channels etc.
 
-                # print('add colours')
-                pixmap = QPixmap(80, 80)
-                pixmap.fill(QColor(red, green, blue))
+                base_pixmap = self._create_colour_pixmap(colour)
 
-                label = QLabel()
-                label.setPixmap(QPixmap(pixmap))
+                # label = QLabel()
+                label = ColourBox()
+                tool_tip = self._create_colour_tooltip(colour)
+                label.setToolTip(tool_tip)
+                label.setPixmap(QPixmap(base_pixmap))
                 self._colour_palette_layout.addWidget(label)
 
                 # self.resize(175, 175)
+
+    def _create_colour_pixmap(self, colour):
+        # print(colour)
+        red = colour[0]
+        green = colour[1]
+        blue = colour[2]
+        # TODO: Add checks to make sure that colours are valid, only three channels etc.
+
+        # Selecting background colour depending on dark/light mode is selected
+        base_pixmap = QPixmap(80, 80)
+        if darkdetect.isDark():
+            base_pixmap.fill(QColorConstants.White)
+        else:
+            base_pixmap.fill(QColorConstants.Black)
+
+        # Foreground colour
+        colour_pixmap = QPixmap(72, 72)
+        colour_pixmap.fill(QColor(red, green, blue))
+
+        # Combining background with foreground
+        painter = QPainter(base_pixmap)
+        painter.drawPixmap(4, 4, colour_pixmap)
+        painter.end()
+
+        return base_pixmap
+
+    def _create_colour_tooltip(self, colour):
+        red = colour[0]
+        green = colour[1]
+        blue = colour[2]
+        # TODO: Add checks to make sure that colours are valid, only three channels etc.
+
+        return "[" + str(red) + ", " + str(green) + ", " + str(blue) + "]"
+
+
 
     def remove_colour_palette(self):
         # from: https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt
@@ -302,3 +329,19 @@ class ColourPaletteDock(QDockWidget):
                 return True
 
         return False
+
+
+class ColourBox(QLabel):
+
+    def __init__(self, parent=None):
+        """Constructor."""
+
+        super(ColourBox, self).__init__(parent)
+
+    def enterEvent(self, event: QEvent):
+        pass
+        # print("entered!")
+
+    def leaveEvent(self, event: QEvent):
+        pass
+        # print("left!")

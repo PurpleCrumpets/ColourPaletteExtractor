@@ -1,5 +1,6 @@
 import sys
 
+from PySide2.QtCore import QEvent
 from PySide2.QtGui import QIcon, QPixmap
 from PySide2.QtWidgets import QWidget, QProgressBar, \
     QStatusBar, QMessageBox, QLabel
@@ -23,7 +24,7 @@ class AlgorithmDialogBox(QWidget):
 
 class StatusBar(QStatusBar):
 
-    def __init__(self,parent=None):
+    def __init__(self, parent=None):
         """Constructor."""
 
         super(StatusBar, self).__init__(parent)
@@ -54,7 +55,6 @@ class StatusBar(QStatusBar):
 
         self.addPermanentWidget(QLabel("v0.1"))
         self.addPermanentWidget(self._spacer3)
-
 
     def set_status_bar(self, state):
         # TODO: add checks for the value
@@ -100,6 +100,7 @@ class StatusBar(QStatusBar):
 
     def update_progress_bar(self, n):
         self._progress_bar.setValue(n)
+
 
 class ProgressBar(QProgressBar):
 
