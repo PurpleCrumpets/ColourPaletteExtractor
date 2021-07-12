@@ -187,8 +187,6 @@ class MainView(QMainWindow):
         self.show_palette_dock_action = QAction("Show &Colour Palette Dock", self)
         self.show_palette_dock_action.setShortcut("Ctrl+D")
 
-
-
     def _create_menu(self):
         """Add menu bar to the main window."""
 
@@ -294,12 +292,6 @@ class MainView(QMainWindow):
         return self.tabs.currentIndex()
 
     def create_new_tab(self, image_id, image_data):
-
-        # if image_data is None:
-        #     label = "How to Extract Colour Palette"
-        # else:
-        #     label = image_data.name
-
         label = image_data.name
 
         # Create and add new tab to GUI

@@ -57,7 +57,6 @@ class NewTab(QScrollArea):
             # TODO: throw exception if invalid status
             pass
 
-
     @property
     def zoom_level(self):
         return self._zoom_level
@@ -94,8 +93,9 @@ class NewTab(QScrollArea):
     def toggle_recoloured_image(self):
         return self._toggle_recoloured_image
 
-    def enable_toggle_recoloured_image(self):
-        self._toggle_recoloured_image = True
+    @toggle_recoloured_image.setter
+    def toggle_recoloured_image(self, value):
+        self._toggle_recoloured_image = value
 
     @property
     def toggle_recoloured_image_pressed(self):
@@ -265,8 +265,6 @@ class ColourPaletteDock(QDockWidget):
         # scroll_area.setContentsMargins(50, 50, 50, 50)
         self._scroll_area.setWidget(self._colour_palette_panel)
 
-
-
     def add_colour_palette(self, colour_palette, image_id):
         # self._colour_palette = colour_palette
 
@@ -326,8 +324,6 @@ class ColourPaletteDock(QDockWidget):
         # TODO: Add checks to make sure that colours are valid, only three channels etc.
 
         return "[" + str(red) + ", " + str(green) + ", " + str(blue) + "]"
-
-
 
     def remove_colour_palette(self):
         # from: https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt

@@ -169,27 +169,30 @@ class ColourPaletteExtractorController(QRunnable):
             self._reset_tab(tab)
 
     def _reset_tab(self, tab):
-        print("Resetting tab status")
+        print("Resetting tab information")
 
-        # Update status bar to intermediate text
-        if tab == self._view.tabs.currentWidget():
-            self._view.status.set_status_bar(1)
+        # Reset tab data
 
-        # Reset tab components
+        # TODO: merge components of tab and image data together as they are split over the two classes
+        # Could call tab changed method???
+        tab.toggle_recoloured_image = False
+
+        # Reset image data
         image_id = tab.image_id
         image_data = self._model.get_image_data(image_id)
+        image_data.colour_palette = []  # Remove colour palette
+
 
         # Reset back to original image
+        # image_data.toggle_show_original_image(True)
 
         # Grey out toggle button
-        # Remove colour palette
-        # self._view.colour_palette_dock.remove_colour_palette()
-        # The above is not right - need to remove it from the image data class
 
 
-        pass
-
-
+        # Updating current tab view
+        if tab == self._view.tabs.currentWidget():
+            self._view.status.set_status_bar(1)  # Update status bar to intermediate text
+            self._view.colour_palette_dock.remove_colour_palette()  # Reset colour palette dock
 
     def _generate_colour_palette(self, tab, progress_callback):
         """Generate colour palette for current open image."""
@@ -199,7 +202,10 @@ class ColourPaletteExtractorController(QRunnable):
             tab = self._view.tabs.currentWidget()
 
         # Reset state of tab
-        progress_callback.emit(tab, 0, True)
+        # progress_callback.emit(tab, 0, True)
+        self._reset_tab(tab)
+
+        progress_callback.emit(tab, 0, False)
 
         # Set image_data status bar state to generating colour palette
         tab.status_bar_state = 1
@@ -214,7 +220,7 @@ class ColourPaletteExtractorController(QRunnable):
         # TODO: add try block for status bar updates in case of failure
 
         # Enable toggle button for showing recoloured image for the tab
-        tab.enable_toggle_recoloured_image()
+        tab.toggle_recoloured_image = True
 
         # Add colour palette to the GUI representation of the colour palette
         image_data = self._model.get_image_data(image_id)
