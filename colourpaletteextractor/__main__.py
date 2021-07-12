@@ -5,7 +5,6 @@
 
 import sys
 
-import qdarkstyle
 from PySide2.QtWidgets import QApplication
 
 from view import mainview
@@ -22,12 +21,11 @@ def print_hi(name):
 if __name__ == '__main__':
     print_hi('PyCharm')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
 # Create model
 model = model.ColourPaletteExtractorModel()
 
-# Creating instance of QApplication
+# Create instance of QApplication
 app = QApplication(sys.argv)
 
 # Create view

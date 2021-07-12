@@ -1,7 +1,7 @@
 import darkdetect
 from PySide2.QtCore import QEvent, Qt, QPointF
-from PySide2.QtGui import QPixmap, QColor, QColorConstants, QPainter
-from PySide2.QtWidgets import QScrollArea, QLabel, QWidget, QDockWidget
+from PySide2.QtGui import QPixmap, QColor, QColorConstants, QPainter, QWheelEvent
+from PySide2.QtWidgets import QScrollArea, QLabel, QWidget, QDockWidget, QApplication
 
 __version__ = "0.1"
 __author__ = "Tim Churchfield"
@@ -112,6 +112,20 @@ class NewTab(QScrollArea):
         self.horizontalScrollBar().setValue(x_position)
         self.verticalScrollBar().setValue(y_position)
 
+    def wheelEvent(self, event: QWheelEvent):
+        modifiers = QApplication.keyboardModifiers()
+        if modifiers == Qt.ControlModifier:
+
+            # print(event.pos(), event.angleDelta().y())
+            if event.angleDelta().y() > 0:
+                value = 0.1
+            else:
+                value = -0.1
+
+            self.image_display.image_zoom(event.pos(), value)
+        else:
+            return super().wheelEvent(event)
+
 
 class ImageDisplay(QLabel):
 
@@ -143,29 +157,31 @@ class ImageDisplay(QLabel):
             # print(event.gestureType(), event.pos(), event.value())
 
             if event.gestureType() == Qt.NativeGestureType.ZoomNativeGesture:
-
-                mouse_pos = event.pos()  # Mouse position relative to QLabel
-                widget = self._parent
-
-                # Current scroll bar locations
-                old_scroll_bar_pos = widget.get_slider_positions()
-
-                # Mouse position relative to image
-                old_image_pos = old_scroll_bar_pos + mouse_pos
-                relative_image_pos_x = old_image_pos.x() / self.size().width()
-                relative_image_pos_y = old_image_pos.y() / self.size().height()
-
-                # Zooming Image
-                new_zoom_factor = 1 + event.value()
-                self.zoom_in(new_zoom_factor)
-
-                # Updating position of the scroll bar
-                new_x_scroll = (relative_image_pos_x * self.size().width()) - mouse_pos.x()
-                new_y_scroll = (relative_image_pos_y * self.size().height()) - mouse_pos.y()
-
-                widget.set_slider_positions(new_x_scroll, new_y_scroll)
+                self.image_zoom(event.pos(), event.value())
 
         return super().event(event)
+
+    def image_zoom(self, mouse_pos, value):
+        # Mouse position relative to QLabel
+        widget = self._parent
+
+        # Current scroll bar locations
+        old_scroll_bar_pos = widget.get_slider_positions()
+
+        # Mouse position relative to image
+        old_image_pos = old_scroll_bar_pos + mouse_pos
+        relative_image_pos_x = old_image_pos.x() / self.size().width()
+        relative_image_pos_y = old_image_pos.y() / self.size().height()
+
+        # Zooming Image
+        new_zoom_factor = 1 + value
+        self.zoom_in(new_zoom_factor)
+
+        # Updating position of the scroll bar
+        new_x_scroll = (relative_image_pos_x * self.size().width()) - mouse_pos.x()
+        new_y_scroll = (relative_image_pos_y * self.size().height()) - mouse_pos.y()
+
+        widget.set_slider_positions(new_x_scroll, new_y_scroll)
 
     # def mousePressEvent(self, event):
     #
