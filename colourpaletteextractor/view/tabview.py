@@ -1,3 +1,5 @@
+import sys
+
 import darkdetect
 from PySide2.QtCore import QEvent, Qt, QPointF
 from PySide2.QtGui import QPixmap, QColor, QColorConstants, QPainter, QWheelEvent
@@ -296,9 +298,11 @@ class ColourPaletteDock(QDockWidget):
         # Selecting background colour depending on dark/light mode is selected
         base_pixmap = QPixmap(80, 80)
         if darkdetect.isDark():
-            base_pixmap.fill(QColorConstants.White)
+            base_pixmap.fill(QColor(255, 255, 255))
+            # base_pixmap.fill(QColorConstants.White)
         else:
-            base_pixmap.fill(QColorConstants.Black)
+            # base_pixmap.fill(QColorConstants.Black)
+            base_pixmap.fill(QColor(0, 0, 0))
 
         # Foreground colour
         colour_pixmap = QPixmap(72, 72)
