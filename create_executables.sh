@@ -1,13 +1,19 @@
 #!/bin/bash
 
-# Name of the executable
-NAME="ColourPaletteExtractor"
+############################
+## User-defined variables ##
+############################
+# Connect to virtual Python environment (provide absolute path to the 'activate' file
+source /Users/tim/PythonVirtualEnvironments/ColourPaletteExtraction/bin/activate
 
 # PyInstaller output directory
 OUTPUT_DIR=/Users/tim/Documents/ColourPaletteExtractor-Executables
 
-# Connect to virtual Python environment
-source /Users/tim/PythonVirtualEnvironments/ColourPaletteExtraction/bin/activate
+############################
+############################
+
+# Name of the executable
+NAME="ColourPaletteExtractor"
 
 # Build application
 echo "Building $NAME app using __main__.py file..."
