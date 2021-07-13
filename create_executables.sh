@@ -3,7 +3,7 @@
 ############################
 ## User-defined variables ##
 ############################
-# Connect to virtual Python environment (provide absolute path to the 'activate' file
+# Connect to virtual Python environment (provide absolute path to the 'activate' file)
 source /Users/tim/PythonVirtualEnvironments/ColourPaletteExtraction/bin/activate
 
 # PyInstaller output directory
