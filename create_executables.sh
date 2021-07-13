@@ -1,5 +1,14 @@
 #!/bin/bash
 
+############################
+## User-defined variables ##
+############################
+# Path to Python virtual environment
+PYTHON_PATH=/Users/tim/PythonVirtualEnvironments/ColourPaletteExtraction/bin/activate
+
+############################
+############################
+
 # Name of the executable
 NAME="ColourPaletteExtractor"
 
@@ -7,7 +16,7 @@ NAME="ColourPaletteExtractor"
 OUTPUT_DIR=/Users/tim/Documents/ColourPaletteExtractor-Executables
 
 # Connect to virtual Python environment
-source /Users/tim/PythonVirtualEnvironments/ColourPaletteExtraction/bin/activate
+source $PYTHON_PATH
 
 # Build application
 echo "Building $NAME app using __main__.py file..."
