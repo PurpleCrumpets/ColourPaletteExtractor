@@ -60,7 +60,7 @@ class ColourPaletteExtractorModel:
     #         print("Not a valid algorithm")
     #         # TODO: Throw exception
 
-    def add_image(self, file_name_and_path):
+    def add_image(self, file_name_and_path: str):
         """From the path to an image, create a new image_data object and add it to the
          dictionary of image_data objects with a new ID number."""
 

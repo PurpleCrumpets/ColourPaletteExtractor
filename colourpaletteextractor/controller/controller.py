@@ -1,20 +1,20 @@
-# Import partial to connect signals with methods that need to take extra arguments
-from functools import partial
-import time
+from functools import partial # Import partial to connect signals with methods that need to take extra arguments
 
-from PySide2.QtCore import QDir, QFileInfo, QRunnable, Slot, QThreadPool, QThread
-# from PySide2.QtWidgets import QFileDialog
+from PySide2.QtCore import QFileInfo, QRunnable, QThreadPool
+
 from colourpaletteextractor.controller.worker import Worker
-from colourpaletteextractor.model import model as md
+from colourpaletteextractor.model.imagedata import ImageData
+from colourpaletteextractor.model.model import ColourPaletteExtractorModel
 from colourpaletteextractor.view import mainview as vw, otherviews
+from colourpaletteextractor.view.mainview import MainView
 from colourpaletteextractor.view.tabview import NewTab
 
 
 class ColourPaletteExtractorController(QRunnable):
     """Colour Palette Extractor Controller Class."""
 
-    def __init__(self, model, view):
-        """Initialise controller."""
+    def __init__(self, model: ColourPaletteExtractorModel, view: MainView):
+        """Constructor."""
         super().__init__()
 
         # Creating thread pool
@@ -31,8 +31,11 @@ class ColourPaletteExtractorController(QRunnable):
         # Signal creation of instructions tab
         self._create_default_tab()
 
-    def _connect_signals(self):
-        """Connect signals and slots."""
+    def _connect_signals(self) -> None:
+        """
+
+        :return:
+        """
 
         # Tabs
         self._view.tabs.tabBarDoubleClicked.connect(self._view.tab_open_doubleclick)
@@ -57,44 +60,48 @@ class ColourPaletteExtractorController(QRunnable):
         # Exit application
         self._view.exit_action.triggered.connect(self._close_app)
 
-    def _create_default_tab(self):
+    def _create_default_tab(self) -> None:
 
         # Get the default image
         default_file = vw.MainView.default_new_tab_image
         default_file = QFileInfo(default_file).absoluteFilePath()
 
         # Add image to the model
-        new_image_data_id, new_image_data = self._model.add_image(default_file)
+        new_image_data_id, new_image_data = self._model.add_image(file_name_and_path=default_file)
 
-        # Set name of default tab
-        new_image_data.name = "How to Extract Colour Palette"
+        # Set the name of the default tab
+        new_image_data.name = "How to Extract the Colour Palette"
 
         # Create new tab linked to the image
         if new_image_data is not None:
-            self._create_new_tab(new_image_data_id, new_image_data)
+            self._create_new_tab(image_data_id=new_image_data_id, new_image_data=new_image_data)
             # TODO: This is effectively cheating...
 
-    def _show_colour_palette_dock(self):
+    def _create_new_tab(self, image_data_id: str, new_image_data: ImageData) -> None:
+        self._view.create_new_tab(image_id=image_data_id, image_data=new_image_data)
+
+    def _show_colour_palette_dock(self) -> None:
         self._view.colour_palette_dock.show()
 
-    def _zoom_in(self):
+    def _zoom_in(self) -> None:
         tab = self._view.tabs.currentWidget()
         image_display = tab.image_display
         image_display.zoom_in()
 
-    def _zoom_out(self):
+    def _zoom_out(self) -> None:
         tab = self._view.tabs.currentWidget()
         image_display = tab.image_display
         image_display.zoom_out()
 
-    def _about_box(self):
+    def _about_box(self) -> None:
         otherviews.AboutBox()
 
-    def _close_app(self):
+    def _close_app(self) -> None:
         # TODO: add "do you wish to quit" dialog box here
+        # TODO: command q shows dialog box if possible
         self._view.close()
 
-    def _close_current_tab(self, tab_index):
+    def _close_current_tab(self, tab_index: int) -> None:
 
         # Remove image_data from dictionary in model
         image_data_id = self._view.tabs.currentWidget().image_id
@@ -103,10 +110,9 @@ class ColourPaletteExtractorController(QRunnable):
         # Close currently selected tab in GUI
         self._view.close_current_tab(tab_index)
 
-    def _create_new_tab(self, new_image_data_id, new_image_data):
-        self._view.create_new_tab(image_id=new_image_data_id, image_data=new_image_data)
 
-    def _open_file(self):
+
+    def _open_file(self) -> None:
         """Add new image."""
 
         supported_files = self._model.supported_image_types
@@ -126,11 +132,11 @@ class ColourPaletteExtractorController(QRunnable):
                 # Create new tab linked to the image
                 self._create_new_tab(new_image_data_id=new_image_data_id, new_image_data=new_image_data)
 
-    def _save_file(self):
+    def _save_file(self) -> None:
         """Save palette and image together."""
         print("Not implemented")
 
-    def _generate_all_palettes(self):
+    def _generate_all_palettes(self) -> None:
 
         # TODO: Temporarily disable generate all palettes action
 
@@ -142,7 +148,7 @@ class ColourPaletteExtractorController(QRunnable):
 
         # TODO: Re-enable generate all palettes action
 
-    def _generate_colour_palette_worker(self, tab: NewTab = None):
+    def _generate_colour_palette_worker(self, tab: NewTab = None) -> None:
 
         if tab is None:
             worker = Worker(self._generate_colour_palette, tab=None)  # Execute main function

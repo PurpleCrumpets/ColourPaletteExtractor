@@ -45,7 +45,7 @@ app = BUNDLE(coll,
              name='ColourPaletteExtractor.app',
              icon='app_icon.icns',
              bundle_identifier=None,
-             version='0.2',
+             version='0.2.1',
              info_plist={
                'NSPrincipalClass': 'NSApplication',
                'NSAppleScriptEnabled': False,
