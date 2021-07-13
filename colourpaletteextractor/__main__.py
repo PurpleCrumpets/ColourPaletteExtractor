@@ -4,7 +4,7 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import sys
 
-from PySide2.QtWidgets import QApplication
+from PySide2.QtWidgets import QApplication, QStyleFactory
 
 from view import mainview
 from controller import controller
@@ -26,6 +26,7 @@ model = model.ColourPaletteExtractorModel()
 
 # Create instance of QApplication
 app = QApplication(sys.argv)
+QApplication.setStyle('Macintosh')
 
 # Create view
 view = mainview.MainView()

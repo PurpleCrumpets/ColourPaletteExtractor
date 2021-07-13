@@ -3,10 +3,12 @@ import sys
 import os
 import darkdetect
 import qdarkstyle
+import platform
 
 from PySide2.QtCore import Qt, QDir
 from PySide2.QtGui import QIcon, QKeySequence
-from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, QSizePolicy
+from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, \
+    QSizePolicy, QStyleFactory
 
 __author__ = "Tim Churchfield"
 
@@ -57,6 +59,18 @@ class MainView(QMainWindow):
             dark_stylesheet = qdarkstyle.load_stylesheet_pyside2()
             self.setStyleSheet(dark_stylesheet)
 
+        # Set older macOS version (anything before Big Sur) settings
+        if sys.platform == "darwin":
+            mac_os_version, _, _ = platform.mac_ver()
+            mac_os_version = mac_os_version.split(".")
+
+            if int(mac_os_version[0]) < 11:
+                # Set application theme
+                pass
+
+                # if darkdetect.isDark():
+                #     dark_stylesheet = qdarkstyle.load_stylesheet_pyside2()
+                #     self.setStyleSheet(dark_stylesheet)
 
         # Setting paths to resources
         QDir.setCurrent(MainView.resources_path)

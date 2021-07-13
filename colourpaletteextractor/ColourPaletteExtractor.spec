@@ -5,11 +5,12 @@ block_cipher = None
 
 
 a = Analysis(['__main__.py'],
-             pathex=['/Users/tim/OneDrive - University of St Andrews/University/MScProject/ColourPaletteExtractor/colourpaletteextractor'],
+             pathex=['/Users/tim/PycharmProjects/MSc-CS-Project---ColourPaletteExtractor/colourpaletteextractor'],
              binaries=[],
              datas=[('./view/resources', 'resources')],
              hiddenimports=[],
              hookspath=[],
+             hooksconfig={},
              runtime_hooks=[],
              excludes=[],
              win_no_prefer_redirects=False,
@@ -18,8 +19,9 @@ a = Analysis(['__main__.py'],
              noarchive=False)
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
+
 exe = EXE(pyz,
-          a.scripts,
+          a.scripts, 
           [],
           exclude_binaries=True,
           name='ColourPaletteExtractor',
@@ -27,11 +29,15 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=False , icon='app_icon.icns')
+          console=False,
+          disable_windowed_traceback=False,
+          target_arch=None,
+          codesign_identity=None,
+          entitlements_file=None , icon='app_icon.icns')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
-               a.datas,
+               a.datas, 
                strip=False,
                upx=True,
                upx_exclude=[],
@@ -40,4 +46,10 @@ app = BUNDLE(coll,
              name='ColourPaletteExtractor.app',
              icon='app_icon.icns',
              bundle_identifier=None,
-             version='0.2')
+             version='0.2',
+             info_plist={
+               'NSPrincipalClass': 'NSApplication',
+               'NSAppleScriptEnabled': False,
+               'NSRequiresAquaSystemAppearance': False
+                },
+             )
