@@ -7,6 +7,7 @@ from PySide2.QtCore import QDir, QFileInfo, QRunnable, Slot, QThreadPool, QThrea
 from colourpaletteextractor.controller.worker import Worker
 from colourpaletteextractor.model import model as md
 from colourpaletteextractor.view import mainview as vw, otherviews
+from colourpaletteextractor.view.tabview import NewTab
 
 
 class ColourPaletteExtractorController(QRunnable):
@@ -141,7 +142,7 @@ class ColourPaletteExtractorController(QRunnable):
 
         # TODO: Re-enable generate all palettes action
 
-    def _generate_colour_palette_worker(self, tab=None):
+    def _generate_colour_palette_worker(self, tab: NewTab = None):
 
         if tab is None:
             worker = Worker(self._generate_colour_palette, tab=None)  # Execute main function
@@ -157,7 +158,7 @@ class ColourPaletteExtractorController(QRunnable):
         # TODO: lock button to generate palette until after it has finished
         # TODO: add cancel button?
 
-    def _update_progress_bar(self, tab, percent):
+    def _update_progress_bar(self, tab: NewTab, percent: int):
         # Update progress status value
         tab.progress_bar_value = percent
 
