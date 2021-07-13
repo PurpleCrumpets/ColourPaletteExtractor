@@ -21,20 +21,28 @@ if test -f "$SPEC_FILE"
 then
   echo "Spec file found! Using this to build the application!"
 
-# Update version number in spec file
-OUTPUT=$(python ./_version.py)
-sed -i "" -e "s/version='\(.*\)'/version='$OUTPUT'/g" "$SPEC_FILE"
-wait
+  # Update pathex in spec file
+  CURRENT_DIR=$(pwd)
+  PATTERN="pathex=\['\(.*\)'\]"
+  REPLACEMENT="pathex=\['$CURRENT_DIR'\]"
+  sed -i "" -e 's,'"$PATTERN"','"$REPLACEMENT"',g' "$SPEC_FILE"
+  wait
 
-# Build application
+  # Update version number in spec file
+  OUTPUT=$(python ./_version.py)
+  sed -i "" -e "s/version='\(.*\)'/version='$OUTPUT'/g" "$SPEC_FILE"
+  wait
+
+  # Build application
   pyinstaller --clean \
-  --workpath $OUTPUT_DIR/build \
-  --distpath $OUTPUT_DIR/dist \
-  --noconfirm \
-  "${NAME}.spec"
+    --workpath $OUTPUT_DIR/build \
+    --distpath $OUTPUT_DIR/dist \
+    --noconfirm \
+    "${NAME}.spec"
 
 else
   echo "Spec file not found! Building application from scratch!"
+  echo "Once built, please run this file again to add in version information..."
 
   pyinstaller __main__.py \
   --clean \
