@@ -4,11 +4,17 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import sys
 
+import darkdetect
 from PySide2.QtWidgets import QApplication, QStyleFactory
+
+import qtmodern.styles
+import qtmodern.windows
 
 from view import mainview
 from controller import controller
 from model import model
+
+
 
 
 def print_hi(name):
@@ -35,7 +41,17 @@ view = mainview.MainView()
 controller = controller.ColourPaletteExtractorController(model=model, view=view)
 
 # Show application's GUI
-view.show()
+if sys.platform == "win32":
+    # Setting light mode/dark mode specifically for Windows
+    if darkdetect.isDark():
+        qtmodern.styles.dark(app)
+    else:
+        qtmodern.styles.light(app)
+
+    mw = qtmodern.windows.ModernWindow(view)
+    mw.show()
+else:
+    view.show()
 
 # Run application's event loop (or main loop)
 sys.exit(app.exec_())

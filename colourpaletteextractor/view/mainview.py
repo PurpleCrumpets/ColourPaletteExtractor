@@ -57,7 +57,7 @@ class MainView(QMainWindow):
 
             # Set application theme
             dark_stylesheet = qdarkstyle.load_stylesheet_pyside2()
-            self.setStyleSheet(dark_stylesheet)
+            # self.setStyleSheet(dark_stylesheet)
 
         # Set older macOS version (anything before Big Sur) settings
         if sys.platform == "darwin":
@@ -67,10 +67,6 @@ class MainView(QMainWindow):
             if int(mac_os_version[0]) < 11:
                 # Set application theme
                 pass
-
-                # if darkdetect.isDark():
-                #     dark_stylesheet = qdarkstyle.load_stylesheet_pyside2()
-                #     self.setStyleSheet(dark_stylesheet)
 
         # Setting paths to resources
         QDir.setCurrent(MainView.resources_path)
@@ -144,7 +140,7 @@ class MainView(QMainWindow):
         # Open
         self.open_action = QAction(QIcon("icons:folder-open-outline.svg"), "&Open Image(s)...", self)
         self.open_action.setShortcut("Ctrl+O")
-        self.open_action.setStatusTip("Open new image(s)...")
+        # self.open_action.setStatusTip("Open new image(s)...")
 
         # Save
         self.save_action = QAction(QIcon("icons:save-outline.svg"), "&Save Results...", self)
@@ -164,7 +160,7 @@ class MainView(QMainWindow):
         # Generate Colour Palette
         self.generate_palette_action = QAction(QIcon("icons:color-palette-outline.svg"), "&Generate Colour Palette", self)
         self.generate_palette_action.setShortcut("Ctrl+G")
-        self.generate_palette_action.setStatusTip("Generate the colour palette...")
+        # self.generate_palette_action.setStatusTip("Generate the colour palette...")
 
         # Generate All Colour Palettes
         self.generate_all_action = QAction("&Generate All Colour Palettes", self)
