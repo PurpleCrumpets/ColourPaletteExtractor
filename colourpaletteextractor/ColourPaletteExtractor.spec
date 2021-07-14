@@ -1,14 +1,21 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import sys
 from pathlib import Path
 import importlib
 
 block_cipher = None
 
 # Adding necessary resource files
-added_files = [('view\\resources', 'resources'), ('app_icon.ico', '.')]
+if sys.platform == "win32":
+    added_files = [('view\\resources', 'resources'), ('app_icon.ico', '.')]
+else:
+    added_files = [('view/resources', 'resources'), ('app_icon.ico', '.')]
+
 
 # qtmodern package resources
+# Adapted from: https://github.com/gmarull/qtmodern/issues/34 (Jerkin, 10/12/2019)
+# Accessed: 14/07/21
 package_imports = [['qtmodern', ['resources/frameless.qss', 'resources/style.qss']]]
 for package, files in package_imports:
     proot = Path(importlib.import_module(package).__file__).parent
