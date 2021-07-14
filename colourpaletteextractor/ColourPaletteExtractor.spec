@@ -1,15 +1,27 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from pathlib import Path
+import importlib
 
 block_cipher = None
 
+# Adding necessary resource files
+added_files = [('view\\resources', 'resources'), ('app_icon.ico', '.')]
+
+# qtmodern package resources
+package_imports = [['qtmodern', ['resources/frameless.qss', 'resources/style.qss']]]
+for package, files in package_imports:
+    proot = Path(importlib.import_module(package).__file__).parent
+    added_files.extend((proot / f, package) for f in files)
+
 
 a = Analysis(['__main__.py'],
-             pathex=['/Users/tim/OneDrive - University of St Andrews/University/MScProject/ColourPaletteExtractor/colourpaletteextractor'],
+             pathex=['C:\\Users\\timch\\PycharmProjects\\MSc-CS-Project---ColourPaletteExtractor\\colourpaletteextractor'],
              binaries=[],
-             datas=[('./view/resources', 'resources')],
+             datas=added_files,
              hiddenimports=[],
              hookspath=[],
+             hooksconfig={},
              runtime_hooks=[],
              excludes=[],
              win_no_prefer_redirects=False,
@@ -32,7 +44,7 @@ exe = EXE(pyz,
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,
-          entitlements_file=None , icon='app_icon.icns')
+          entitlements_file=None , icon='app_icon.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
@@ -41,14 +53,3 @@ coll = COLLECT(exe,
                upx=True,
                upx_exclude=[],
                name='ColourPaletteExtractor')
-app = BUNDLE(coll,
-             name='ColourPaletteExtractor.app',
-             icon='app_icon.icns',
-             bundle_identifier=None,
-             version='0.2.1',
-             info_plist={
-               'NSPrincipalClass': 'NSApplication',
-               'NSAppleScriptEnabled': False,
-               'NSRequiresAquaSystemAppearance': False
-                },
-             )
