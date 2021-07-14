@@ -130,7 +130,7 @@ class ColourPaletteExtractorController(QRunnable):
 
             if new_image_data is not None:
                 # Create new tab linked to the image
-                self._create_new_tab(new_image_data_id=new_image_data_id, new_image_data=new_image_data)
+                self._create_new_tab(new_image_data_id, new_image_data)
 
     def _save_file(self) -> None:
         """Save palette and image together."""
