@@ -19,8 +19,8 @@ REM ############################
 REM Name of the executable
 set NAME=ColourPaletteExtractor
 
-REM Name of expected PyInstaller SPEC file
-set SPEC_FILE=%MAIN_DIR%\%NAME%.spec
+REM Name and path of expected PyInstaller SPEC file
+set SPEC_FILE_PATH=%MAIN_DIR%\colourpaletteextractor\%NAME%.spec
 
 REM Spec file find and replace details
 set FILE_NAME="%NAME%.spec"
@@ -30,7 +30,7 @@ set REPLACEMENT="pathex=['%MAIN_DIR%\colourpaletteextractor']"
 REM Build application
 echo Building %NAME% app %OUTPUT_DIR%...
 
-IF EXIST %SPEC_FILE% (
+IF EXIST %SPEC_FILE_PATH% (
 echo Spec file found! Using this to build the application!
 
 REM Spec file find and replace pathex for Windows
