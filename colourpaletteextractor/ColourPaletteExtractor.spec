@@ -60,3 +60,17 @@ coll = COLLECT(exe,
                upx=True,
                upx_exclude=[],
                name='ColourPaletteExtractor')
+
+if sys.platform == "darwin":
+    app = BUNDLE(coll,
+             name='ColourPaletteExtractor.app',
+             icon='app_icon.icns',
+             bundle_identifier=None,
+             version='0.2',
+             info_plist={
+               'NSPrincipalClass': 'NSApplication',
+               'NSAppleScriptEnabled': False,
+               'NSRequiresAquaSystemAppearance': False
+                },
+             )
+
