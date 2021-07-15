@@ -7,7 +7,30 @@ from colourpaletteextractor.model import imagedata
 from colourpaletteextractor.model.algorithms import nieves2020
 
 
+def generate_colour_palette_from_image(path_to_file: str) -> list:
 
+    model = ColourPaletteExtractorModel()
+
+    if os.path.isfile(path_to_file) is False:
+        raise FileNotFoundError(
+            errno.ENOENT, os.strerror(errno.ENOENT), path_to_file)
+        # TODO: explain why the file is invalid (ie make sure that there are no spaces in the names of folders etc)
+        # Put it in quotes
+    else:
+        image_data_id, image_data = model.add_image(path_to_file)
+
+    print("Added image!")
+
+    # Get colour palette of the image (image 0 in list)
+    model.generate_palette(image_data_id, "Tab_0", None)
+
+    print("\n---------------")
+    print("Colour Palette:")
+    for colour in image_data.colour_palette:
+        print(colour)
+    print("---------------")
+
+    return image_data.colour_palette
 
 
 class ColourPaletteExtractorModel:
@@ -96,14 +119,15 @@ class ColourPaletteExtractorModel:
     def image_data_id_dictionary(self):
         return self._image_data_id_dictionary
 
-    def generate_palette(self, image_data_id, tab, progress_callback):
+    def generate_palette(self, image_data_id, tab, progress_callback=None):
         print("Generating colour palette for image:", image_data_id)
 
         image_data = self._get_image_copy(image_data_id)
 
         # Get algorithm and process image with it
         algorithm = self._get_algorithm()
-        algorithm.set_progress_callback(progress_callback, tab)
+        if progress_callback is not None:
+            algorithm.set_progress_callback(progress_callback, tab)
         recoloured_image, colour_palette = algorithm.generate_colour_palette(image_data)
 
         self._image_data_id_dictionary[image_data_id].recoloured_image = recoloured_image
@@ -124,21 +148,7 @@ if __name__ == "__main__":
     if len(argv) == 3:
         model_type = argv[2]
 
-    model = ColourPaletteExtractorModel()
-
-    if os.path.isfile(file_name) is False:
-        raise FileNotFoundError(
-            errno.ENOENT, os.strerror(errno.ENOENT), file_name)
-        # TODO: explain why the file is invalid (ie make sure that there are no spaces in the names of folders etc)
-        # Put it in quotes
-    else:
-        model.add_image(file_name)
-
-    print("Added image!")
-
-    # Get colour palette of the image (image 0 in list)
-    # print(len(model._images))
-    model.generate_palette("Tab_0")
+    colour_palette = generate_colour_palette_from_image(file_name)
 
     # print(os.path.isfile(file_name))
 

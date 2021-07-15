@@ -32,7 +32,8 @@ class PaletteAlgorithm(ABC):
     def _increment_progress(self, increment):
         self._percent += increment
         # TODO: throw exception if larger than 100%
-        self._progress_callback.emit(self._tab, self._percent)
+        if self._progress_callback is not None:
+            self._progress_callback.emit(self._tab, self._percent)
 
     def _get_increment_percent(self, final_percent, denominator):
         current_percent = self._percent
@@ -40,4 +41,5 @@ class PaletteAlgorithm(ABC):
 
     def _set_progress(self, new_progress):
         self._percent = new_progress
-        self._progress_callback.emit(self._tab, self._percent)
+        if self._progress_callback is not None:
+            self._progress_callback.emit(self._tab, self._percent)
