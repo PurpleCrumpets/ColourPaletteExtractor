@@ -72,20 +72,18 @@ README="$(pwd)/../README.md"
 if test -f "$README"
 then
   echo "README.md found and added to the chosen distribution directory..."
-
   cp "$README" $OUTPUT_DIR/dist
 
 else
   echo "README.md not found..."
 fi
 
-# Add a copy of the LICENCE.md file to the distribution folder
+# Add a copy of the LICENCE.md to the distribution folder
 LICENCE="$(pwd)/../LICENCE.md"
 
 if test -f "$LICENCE"
 then
   echo "LICENCE.md found and added to the chosen distribution directory..."
-
   cp "$LICENCE" $OUTPUT_DIR/dist
 
 else

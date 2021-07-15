@@ -155,6 +155,7 @@ class PreferencesWidget(QDialog):
     def _set_properties(self):
 
         self.setWindowTitle("Preferences")
+        self.setWindowIcon(QIcon("icons:about-medium.png"))
 
         layout = QVBoxLayout()  # Top-level layout
         self.setLayout(layout)

@@ -83,4 +83,26 @@ echo oLink.Save >> CreateShortcut.vbs
 call cscript CreateShortcut.vbs
 del CreateShortcut.vbs
 
+
+REM Add a copy of the README.md to the distribution folder
+set README=%MAIN_DIR%\README.md
+
+IF EXIST %README% (
+    echo "README.md found and added to the chosen distribution directory..."
+    copy %README% %OUTPUT_DIR%\dist
+) ELSE (
+    echo "README.md not found..."
+)
+
+
+REM Add a copy of the LICENCE.md to the distribution folder
+set LICENCE=%MAIN_DIR%\LICENCE.md
+
+IF EXIST %LICENCE% (
+    echo "LICENCE.md found and added to the chosen distribution directory..."
+    copy %LICENCE% %OUTPUT_DIR%\dist
+) ELSE (
+    echo "LICENCE.md not found..."
+)
+
 echo Finished!
