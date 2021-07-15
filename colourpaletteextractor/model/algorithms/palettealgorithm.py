@@ -1,10 +1,47 @@
 from abc import ABC, abstractmethod
 
 
+
+def get_implemented_algorithms():
+    """
+        Recursively finds all subclasses of the current class.
+        Like Python's __class__.__subclasses__(), but recursive.
+        Returns a list containing all subclasses.
+
+        Adapted from: https://www.programcreek.com/python/?CodeExample=get+subclasses
+        Accessed: 15/07/2020
+
+
+        @type cls: object
+        @param cls: A Python class.
+        @rtype: list(object)
+        @return: A list containing all subclasses.
+    """
+    # TODO: modify above text
+    cls = PaletteAlgorithm
+    result = set()
+    path = [cls]
+    while path:
+        parent = path.pop()
+        for child in parent.__subclasses__():
+            if not '.' in str(child):
+                # In a multi inheritance scenario, __subclasses__()
+                # also returns interim-classes that don't have all the
+                # methods. With this hack, we skip them.
+                continue
+            if child not in result:
+                result.add(child)
+                path.append(child)
+    return result
+
+
 class PaletteAlgorithm(ABC):
 
-    def __init__(self):
+    def __init__(self, name, url):
         """Constructor."""
+
+        self._name = name
+        self._url = url
 
         # Parameters used for progress callback
         self._tab = None
@@ -19,6 +56,14 @@ class PaletteAlgorithm(ABC):
     # def percent(self, increment):
     #     self._percent += increment
     #     # TODO: add checks for value
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def url(self):
+        return self._url
 
     @abstractmethod
     def generate_colour_palette(self, image):

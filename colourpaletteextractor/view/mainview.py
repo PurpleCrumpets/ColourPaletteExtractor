@@ -100,6 +100,9 @@ class MainView(QMainWindow):
         self._create_status_bar()
         self._create_colour_palette_dock()
 
+        # Create preferences panel
+        self._create_preferences_dialog_box()
+
     def set_display_text(self, text):
         """Set display's text."""
         self.display.setText(text)
@@ -168,6 +171,10 @@ class MainView(QMainWindow):
         self.generate_all_action = QAction("&Generate All Colour Palettes", self)
         self.generate_all_action.setShortcut("Ctrl+" + meta_key + "+G")
 
+        # Preferences
+        self.preferences_action = QAction("&Preferences", self)
+        self.preferences_action.setShortcut(meta_key + "+,")
+
         # View Saliency Map
         self._view_map_action = QAction(QIcon("icons:layers-outline.svg"), "&Saliency Map...", self, checkable=True)
         self._view_map_action.setChecked(False)
@@ -207,6 +214,8 @@ class MainView(QMainWindow):
         self.menu = self.menuBar().addMenu("&File")
         self.menu.addAction(self.about_action)
         self.menu.addSeparator()
+        self.menu.addAction(self.preferences_action)
+        self.menu.addSeparator()
         self.menu.addAction(self.open_action)
         self.menu.addSeparator()
         self.menu.addAction(self.save_action)
@@ -215,8 +224,8 @@ class MainView(QMainWindow):
 
         # Edit Menu
         self.menu = self.menuBar().addMenu("&Edit")
-        self.menu.addAction(self._select_algorithm_action)
-        self.menu.addSeparator()
+        # self.menu.addAction(self._select_algorithm_action)
+        # self.menu.addSeparator()
         self.menu.addAction(self.generate_palette_action)
         self.menu.addAction(self.generate_all_action)
         self.menu.addSeparator()
@@ -278,6 +287,9 @@ class MainView(QMainWindow):
         self.status = otherviews.StatusBar()
         # status.showMessage("I am the status bar")  # TODO: save the version number somewhere
         self.setStatusBar(self.status)
+
+    def _create_preferences_dialog_box(self):
+        self.preferences = otherviews.PreferencesWidget()
 
     def show_file_dialog_box(self, supported_file_types):
         """Show dialog box for importing images."""

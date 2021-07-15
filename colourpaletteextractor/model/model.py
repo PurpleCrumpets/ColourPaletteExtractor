@@ -5,6 +5,9 @@ from sys import argv
 
 from colourpaletteextractor.model import imagedata
 from colourpaletteextractor.model.algorithms import nieves2020
+from colourpaletteextractor.model.algorithms import grogan2018
+from colourpaletteextractor.model.algorithms import dummyalgorithm
+from colourpaletteextractor.model.algorithms.palettealgorithm import PaletteAlgorithm
 
 
 def generate_colour_palette_from_image(path_to_file: str) -> list:
@@ -34,8 +37,10 @@ def generate_colour_palette_from_image(path_to_file: str) -> list:
 
 
 class ColourPaletteExtractorModel:
+    DEFAULT_ALGORITHM = nieves2020.Nieves2020
     ERROR_MSG = "Error! :'("
     supported_image_types = {"png", "jpg", "jpeg"}
+
 
     def __init__(self, algorithm_name=None):
 
@@ -45,7 +50,8 @@ class ColourPaletteExtractorModel:
         # self._images = []
         if algorithm_name is None:
             # self._algorithm = nieves2020.Nieves2020()  # Default algorithm
-            self._algorithm = "nieves_2020"  # Default algorithm
+            self._algorithm = ColourPaletteExtractorModel.DEFAULT_ALGORITHM
+            # self._algorithm = "nieves_2020"  # Default algorithm
         else:
             print("Algorithm not None")  # TODO: add new algorithm
 
@@ -64,13 +70,26 @@ class ColourPaletteExtractorModel:
 
     def _get_algorithm(self):
 
-        if self._algorithm == "nieves_2020":
-            print("Nieves")
-            return nieves2020.Nieves2020()
+        return self._algorithm()  # Creating a new instance of the algorithm
 
+        # if self._algorithm == "nieves_2020":
+        #     print("Nieves")
+        #     return nieves2020.Nieves2020()
+        #
+        # else:
+        #     print("Not a valid algorithm")
+        #     # TODO: Throw exception
+
+    def set_algorithm(self, algorithm_class_name=DEFAULT_ALGORITHM):
+        """Set the algorithm use to extract the colour palette of an image."""
+
+        # Check if provided class name is a sub-class of PaletteAlgorithm
+        if issubclass(algorithm_class_name, PaletteAlgorithm):
+            self._algorithm=algorithm_class_name
         else:
-            print("Not a valid algorithm")
-            # TODO: Throw exception
+            pass
+            # TODO: throw error here
+
 
     # def set_algorithm(self, algorithm_name="nieves_2020"):
     #     """Set the algorithm use to extract the colour palette of an image."""

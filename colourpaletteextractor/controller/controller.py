@@ -3,6 +3,7 @@ from functools import partial # Import partial to connect signals with methods t
 from PySide2.QtCore import QFileInfo, QRunnable, QThreadPool
 
 from colourpaletteextractor.controller.worker import Worker
+from colourpaletteextractor.model.algorithms.nieves2020 import Nieves2020
 from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.model.model import ColourPaletteExtractorModel
 from colourpaletteextractor.view import mainview as vw, otherviews
@@ -27,9 +28,21 @@ class ColourPaletteExtractorController(QRunnable):
 
         # Connect signals and slots
         self._connect_signals()
+        self._connect_algorithm_selector_signals()
 
         # Signal creation of instructions tab
         self._create_default_tab()
+
+    def _connect_algorithm_selector_signals(self) -> None:
+        algorithms, algorithm_buttons = self._view.preferences.get_algorithms_and_buttons()
+
+        # Connecting each radio button to the correct command
+        for algorithm, algorithm_button in zip(algorithms, algorithm_buttons):
+            algorithm_button.toggled.connect(partial(self._set_algorithm, algorithm))
+
+
+    def _set_algorithm(self, algorithm, pressed_status=None) -> None:
+        self._model.set_algorithm(algorithm)
 
     def _connect_signals(self) -> None:
         """
@@ -57,8 +70,17 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.zoom_in_action.triggered.connect(self._zoom_in)
         self._view.zoom_out_action.triggered.connect(self._zoom_out)
 
+        # Preferences
+        self._view.preferences_action.triggered.connect(self._preferences)
+
         # Exit application
         self._view.exit_action.triggered.connect(self._close_app)
+
+    def _preferences(self):
+        self._view.preferences.show_preferences()
+
+
+
 
     def _create_default_tab(self) -> None:
 

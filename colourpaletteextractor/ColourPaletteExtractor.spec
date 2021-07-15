@@ -23,7 +23,7 @@ for package, files in package_imports:
 
 
 a = Analysis(['__main__.py'],
-             pathex=['C:\\Users\\timch\\PycharmProjects\\MSc-CS-Project---ColourPaletteExtractor\\colourpaletteextractor'],
+             pathex=['/Users/tim/OneDrive - University of St Andrews/University/MScProject/ColourPaletteExtractor/colourpaletteextractor'],
              binaries=[],
              datas=added_files,
              hiddenimports=[],
@@ -66,7 +66,7 @@ if sys.platform == "darwin":
              name='ColourPaletteExtractor.app',
              icon='app_icon.icns',
              bundle_identifier=None,
-             version='0.2',
+             version='0.2.3',
              info_plist={
                'NSPrincipalClass': 'NSApplication',
                'NSAppleScriptEnabled': False,
