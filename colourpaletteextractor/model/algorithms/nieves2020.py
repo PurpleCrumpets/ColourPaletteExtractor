@@ -9,6 +9,10 @@ from colourpaletteextractor.model.algorithms import cielabcube, palettealgorithm
 
 
 class Nieves2020(palettealgorithm.PaletteAlgorithm):
+
+    name = "Nieves, Gomez-Robledo, Chen and Romero (2020)"
+    url = "https://doi.org/10.1364/AO.378659"
+
     COLOUR_CHANNELS = 3  # (R, G, B)
 
     # Default algorithm primary constants
@@ -26,7 +30,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
     def __init__(self):
         """Constructor."""
-        super().__init__()
+        super().__init__(Nieves2020.name, Nieves2020.url)
 
         # Setting the primary parameters for the algorithm to the default values
         self._cube_size = Nieves2020.CUBE_SIZE
@@ -40,6 +44,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
 
         # 3-D array to be populated with CIELAB cubes
         # self._cubes = np.empty([0, 0, 0], dtype=cielabcube.CielabCube)
+
 
     def generate_colour_palette(self, image):
         print("Generating colour palette...")
