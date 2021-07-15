@@ -77,6 +77,8 @@ class MainView(QMainWindow):
         QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons", icon_dir))
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
 
+
+
         self._create_gui()  # Generate GUI components
 
 
@@ -308,6 +310,3 @@ class MainView(QMainWindow):
         new_tab = tabview.NewTab(image_id=image_id, image_data=image_data)
         new_tab_index = self.tabs.addTab(new_tab, label)
         self.tabs.setCurrentIndex(new_tab_index)
-
-
-

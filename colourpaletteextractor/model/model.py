@@ -12,7 +12,7 @@ from colourpaletteextractor.model.algorithms import nieves2020
 
 class ColourPaletteExtractorModel:
     ERROR_MSG = "Error! :'("
-    supported_image_types = {"png", "jpg"}
+    supported_image_types = {"png", "jpg", "jpeg"}
 
     def __init__(self, algorithm_name=None):
 

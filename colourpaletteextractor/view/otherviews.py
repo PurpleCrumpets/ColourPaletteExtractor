@@ -77,10 +77,10 @@ class StatusBar(QStatusBar):
             # TODO: throw exception
             command = ""
 
-        self._status_label.setText("Generate the colour palette using " + command + "...")
+        self._status_label.setText("Generate the colour palette using " + command)
 
     def set_intra_palette_message(self):
-        self._status_label.setText("Generating colour palette...")  # TODO: This will change with the progress bar
+        self._status_label.setText("Generating colour palette")  # TODO: This will change with the progress bar
         # self.addWidget(self._progress_bar)
 
     def set_post_palette_message(self):
@@ -94,7 +94,7 @@ class StatusBar(QStatusBar):
             command = ""
 
         # self.removeWidget(self._progress_bar)
-        self._status_label.setText("Toggle between the original and recoloured image using " + command + "...")
+        self._status_label.setText("Toggle between the original and recoloured image using " + command)
 
     def update_progress_bar(self, n):
         self._progress_bar.setValue(n)

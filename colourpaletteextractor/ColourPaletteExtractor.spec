@@ -10,7 +10,7 @@ block_cipher = None
 if sys.platform == "win32":
     added_files = [('view\\resources', 'resources'), ('app_icon.ico', '.')]
 else:
-    added_files = [('view/resources', 'resources'), ('app_icon.ico', '.')]
+    added_files = [('view/resources', 'resources'), ('app_icon.icns', '.')]
 
 
 # qtmodern package resources

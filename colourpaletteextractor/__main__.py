@@ -6,11 +6,13 @@ import sys
 from pathlib import Path
 
 import darkdetect
+from PySide2.QtGui import QIcon
 from PySide2.QtWidgets import QApplication, QStyleFactory
 
 import qtmodern.styles
 import qtmodern.windows
 
+from colourpaletteextractor.view.mainview import MainView
 from view import mainview
 from controller import controller
 from model import model
@@ -32,6 +34,17 @@ if __name__ == '__main__':
     print_hi('PyCharm')
 
 
+# class ModifiedModernWindow(qtmodern.windows.ModernWindow):
+#
+#     def __init__(self, w):
+#
+#         super(ModifiedModernWindow, self).__init__(w)
+#
+#         icon_name = MainView.app_icon + ".ico"
+#         self.setWindowIcon(QIcon(icon_name))
+
+
+
 # Create model
 model = model.ColourPaletteExtractorModel()
 
@@ -47,16 +60,14 @@ controller = controller.ColourPaletteExtractorController(model=model, view=view)
 
 # Show application's GUI
 if sys.platform == "win32":
+    pass
     # Setting light mode/dark mode specifically for Windows
     if darkdetect.isDark():
         qtmodern.styles.dark(app)
     else:
         qtmodern.styles.light(app)
 
-    mw = qtmodern.windows.ModernWindow(view)
-    mw.show()
-else:
-    view.show()
+view.show()
 
 # Run application's event loop (or main loop)
 sys.exit(app.exec_())
