@@ -26,24 +26,29 @@ REM Spec file find and replace details
 set FILE_NAME="%NAME%.spec"
 set PATTERN="pathex=\['(.*)'\]"
 set REPLACEMENT="pathex=['%MAIN_DIR%\colourpaletteextractor']"
+set REPLACEMENT=%REPLACEMENT:\=\\%
+set FIND_AND_REPLACE="%MAIN_DIR%\find_and_replace.ps1"
 
 REM Build application
 echo Building %NAME% app %OUTPUT_DIR%...
+cd /d .\colourpaletteextractor
+
 
 IF EXIST %SPEC_FILE_PATH% (
 echo Spec file found! Using this to build the application!
 
 REM Spec file find and replace pathex for Windows
-PowerShell.exe -ExecutionPolicy Bypass -File find_and_replace.ps1 %FILE_NAME% %PATTERN% %REPLACEMENT%
+PowerShell.exe -ExecutionPolicy Bypass -File %FIND_AND_REPLACE% %FILE_NAME% %PATTERN% %REPLACEMENT%
 
 REM Connect to virtual Python environment, run pyinstaller command
-call %VENV_DIR%\Scripts\activate.bat & ^
-cd /d %MAIN_DIR%\colourpaletteextractor && ^
-pyinstaller %NAME%.spec ^
+call %VENV_DIR%\Scripts\activate.bat && ^
+pyinstaller %SPEC_FILE_PATH% ^
 --clean ^
 --workpath %OUTPUT_DIR%\build ^
 --distpath %OUTPUT_DIR%\dist ^
 --noconfirm
+
+rem cd /d %MAIN_DIR%\colourpaletteextractor
 
 ) ELSE (
 

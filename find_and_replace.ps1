@@ -10,4 +10,4 @@ write-host $pattern
 write-host $replacement
 
 # Find and replace
-(Get-Content $file) -replace $pattern, $REPLACEMENT | Out-File $file
+(Get-Content $file) -replace $pattern, $REPLACEMENT | Out-File $file -Encoding utf8

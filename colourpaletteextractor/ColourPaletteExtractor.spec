@@ -1,12 +1,11 @@
-# -*- mode: python ; coding: utf-8 -*-
+﻿# -*- mode: python ; coding: utf-8 -*-
 
 import sys
 from pathlib import Path
 import importlib
 
-block_cipher = None
-
 # Adding necessary resource files
+added_files = []
 if sys.platform == "win32":
     added_files = [('view\\resources', 'resources'), ('app_icon.ico', '.')]
 else:
@@ -21,9 +20,11 @@ for package, files in package_imports:
     proot = Path(importlib.import_module(package).__file__).parent
     added_files.extend((proot / f, package) for f in files)
 
+block_cipher = None
+
 
 a = Analysis(['__main__.py'],
-             pathex=['/Users/tim/OneDrive - University of St Andrews/University/MScProject/ColourPaletteExtractor/colourpaletteextractor'],
+             pathex=['C:\\Users\\timch\\PycharmProjects\\MSc-CS-Project---ColourPaletteExtractor\\colourpaletteextractor'],
              binaries=[],
              datas=added_files,
              hiddenimports=[],
@@ -39,7 +40,7 @@ pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 
 exe = EXE(pyz,
-          a.scripts,
+          a.scripts, 
           [],
           exclude_binaries=True,
           name='ColourPaletteExtractor',
@@ -55,7 +56,7 @@ exe = EXE(pyz,
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
-               a.datas,
+               a.datas, 
                strip=False,
                upx=True,
                upx_exclude=[],
@@ -73,4 +74,3 @@ if sys.platform == "darwin":
                'NSRequiresAquaSystemAppearance': False
                 },
              )
-
