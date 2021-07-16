@@ -1,8 +1,7 @@
-import sys
-
 import darkdetect
+from PySide2 import QtGui
 from PySide2.QtCore import QEvent, Qt, QPointF
-from PySide2.QtGui import QPixmap, QColor, QColorConstants, QPainter, QWheelEvent
+from PySide2.QtGui import QPixmap, QColor, QPainter, QWheelEvent
 from PySide2.QtWidgets import QScrollArea, QLabel, QWidget, QDockWidget, QApplication
 
 __author__ = "Tim Churchfield"
@@ -132,6 +131,7 @@ class ImageDisplay(QLabel):
 
     zoom_factor = 1.25
     zoom_out_factor = 0.8  # TODO: Not in use, see: https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html
+    _MINIMUM_SIZE = 300
 
     def __init__(self, image_data, parent=None):
         """Constructor."""
@@ -139,19 +139,63 @@ class ImageDisplay(QLabel):
 
         self._parent = parent
 
-        # Set QLabel properties
-        self.setAlignment(Qt.AlignCenter)
-        self.setMinimumSize(300, 300)  # TODO: This breaks images that are zoomed out too far
+        # self.image_height = self.height()
 
-        self.image_height = self.height()
+        # TODO: keep these properties for a per image basis - try on Windows as well with a different image
+
+        self._pixmap_width = 0
+        self._pixmap_height = 0
 
         self.pixmap = image_data.get_image_as_q_image(image_data.image)
-        self.image = QPixmap(self.pixmap)
-        self.setPixmap(QPixmap(self.pixmap))
-        self.setScaledContents(True)
+        self.pixmap = QPixmap(self.pixmap)
+        self._set_pixmap(self.pixmap)
 
-        # Set image properties
-        # self._set_image_properties()
+        # Set QLabel properties
+        self._set_label_properties()
+
+    def _set_label_properties(self) -> None:
+        self.setScaledContents(True)
+        self.setAlignment(Qt.AlignCenter)
+        self.setMinimumSize(ImageDisplay._MINIMUM_SIZE, ImageDisplay._MINIMUM_SIZE)
+
+    def update_image(self, image):
+
+        self.pixmap = ImageData.get_image_as_q_image(image)
+        self._set_pixmap(QPixmap(self.pixmap))
+
+    def _set_pixmap(self, pixmap: QPixmap) -> None:
+        self._pixmap_height = pixmap.height()
+        self._pixmap_width = pixmap.width()
+
+        self._update_margins()
+        return super().setPixmap(self.pixmap)
+
+    def resizeEvent(self, event: QtGui.QResizeEvent) -> None:
+        self._update_margins()
+        super().resizeEvent(event)
+
+
+    def _update_margins(self) -> None:
+
+        if self._pixmap_width <= 0 or self._pixmap_height <= 0:
+            return
+
+        width = self.width()
+        height = self.height()
+
+        if width <= 0 or height <= 0:
+            return
+
+        if width * self._pixmap_height > height * self._pixmap_width:
+            pass
+            margin = int((width - (self._pixmap_width * height / self._pixmap_height)) / 2)
+            self.setContentsMargins(margin, 0, margin, 0)
+        else:
+            margin = int((height - (self._pixmap_height * width / self._pixmap_width)) / 2)
+            self.setContentsMargins(margin, 0, margin, 0)
+
+        print(margin)
+
 
     def event(self, event):
         if event.type() == QEvent.NativeGesture:
@@ -184,18 +228,13 @@ class ImageDisplay(QLabel):
 
         widget.set_slider_positions(new_x_scroll, new_y_scroll)
 
-    # def mousePressEvent(self, event):
-    #
-    #     if event.buttons() == Qt.LeftButton:
-    #         print(event.pos())
-    #
-    #     return super().event(event)
 
-    def _set_image_properties(self):
-        """Set the properties of the displayed image."""
-        # self.pixmap.scaled(self.width(), self.height(), Qt.KeepAspectRatio)  # Aspect ration not maintained
-        # self.setScaledContents(True)
-        pass
+
+
+
+
+
+
 
     def zoom_in(self, zoom_factor=zoom_factor):
         # Adapted from: https://stackoverflow.com/questions/53193010/how-to-resize-a-qlabel-with-pixmap-inside-a-qscrollarea
@@ -218,9 +257,12 @@ class ImageDisplay(QLabel):
         if old_size != new_size:
             self._parent.zoom_level = self._parent.zoom_level * zoom_factor
 
-    def update_image(self, image):
-        self.pixmap = ImageData.get_image_as_q_image(image)
-        self.setPixmap(QPixmap(self.pixmap))
+    # def mousePressEvent(self, event):
+    #
+    #     if event.buttons() == Qt.LeftButton:
+    #         print(event.pos())
+    #
+    #     return super().event(event)
 
 
 class ColourPaletteDock(QDockWidget):

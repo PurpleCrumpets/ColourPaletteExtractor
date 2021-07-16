@@ -1,9 +1,7 @@
-from functools import partial # Import partial to connect signals with methods that need to take extra arguments
-
+from functools import partial  # Import partial to connect signals with methods that need to take extra arguments
 from PySide2.QtCore import QFileInfo, QRunnable, QThreadPool
 
 from colourpaletteextractor.controller.worker import Worker
-from colourpaletteextractor.model.algorithms.nieves2020 import Nieves2020
 from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.model.model import ColourPaletteExtractorModel
 from colourpaletteextractor.view import mainview as vw, otherviews

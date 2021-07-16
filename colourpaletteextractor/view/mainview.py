@@ -327,7 +327,6 @@ class MainView(QMainWindow):
     def _create_status_bar(self):
         """Add status bar to the main window."""
         self.status = otherviews.StatusBar()
-        # status.showMessage("I am the status bar")  # TODO: save the version number somewhere
         self.setStatusBar(self.status)
 
     def _create_preferences_dialog_box(self):
