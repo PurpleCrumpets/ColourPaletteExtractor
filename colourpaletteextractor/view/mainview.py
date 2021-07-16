@@ -163,7 +163,7 @@ class MainView(QMainWindow):
         # self.generate_palette_action.setStatusTip("Generate the colour palette...")
 
         # Generate All Colour Palettes
-        self.generate_all_action = QAction("&Generate All Colour Palettes", self)
+        self.generate_all_action = QAction("Generate &All Colour Palettes", self)
         self.generate_all_action.setShortcut("Ctrl+" + meta_key + "+G")
 
         # Preferences
@@ -171,15 +171,13 @@ class MainView(QMainWindow):
             self.preferences_menu_action = QAction("&Preferences", self)
             self.preferences_menu_action.setShortcut("Ctrl+,")
         else:
-            self.preferences_menu_action = QAction(QIcon("icons:settings-outline.svg"), "&Settings", self)
+            self.preferences_menu_action = QAction(QIcon("icons:settings-outline.svg"), "Se&ttings", self)
             self.preferences_menu_action.setShortcut("Ctrl+" + meta_key + "+S")
-        self.preferences_action = QAction(QIcon("icons:settings-outline.svg"), "&Settings", self)
-
-
+        self.preferences_action = QAction(QIcon("icons:settings-outline.svg"), "Se&ttings", self)
 
         # Help
         self.show_help_action = QAction(QIcon("icons:help-circle-outline.svg"), "&Help", self)
-        self.show_help_menu_action = QAction("&Help", self)
+        self.show_help_menu_action = QAction(QIcon("icons:help.svg"), "&Help", self)
 
 
         # # View Saliency Map
@@ -189,7 +187,8 @@ class MainView(QMainWindow):
         # self._view_map_action.setShortcut("Ctrl+" + meta_key + "+M")
 
         # Toggle original-recoloured image
-        self.toggle_recoloured_image_action = QAction(QIcon("icons:eye-outline.svg"), "&Show Recoloured Image", self, checkable=True)
+        self.toggle_recoloured_image_action = QAction(QIcon("icons:eye-outline.svg"),
+                                                      "Show &Recoloured Image", self, checkable=True)
         self.toggle_recoloured_image_action.setChecked(False)
         self.toggle_recoloured_image_action.setDisabled(True)  # Initially disabled by default
         self.toggle_recoloured_image_action.setShortcut("Ctrl+T")
@@ -199,18 +198,22 @@ class MainView(QMainWindow):
         # TODO: Add a a dialog - are you sure you want to quit?
 
         # Zoom in and out
-        self.zoom_in_action = QAction(QIcon("icons:add-circle-outline.svg"), "Zoom In", self)
+        self.zoom_in_action = QAction(QIcon("icons:add-circle-outline.svg"), "Zoom &In", self)
         self.zoom_in_action.setShortcut(QKeySequence.ZoomIn)
-        self.zoom_out_action = QAction(QIcon("icons:remove-circle-outline.svg"), "Zoom Out", self)
+        self.zoom_out_action = QAction(QIcon("icons:remove-circle-outline.svg"), "Zoom &Out", self)
         self.zoom_out_action.setShortcut(QKeySequence.ZoomOut)
 
         # TODO: Add button for fit to view and reset?
         #  from: https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html
 
         # About ColourPaletteExtractor
-        self.about_menu_action = QAction("&About ColourPaletteExtractor", self)
+        if sys.platform == "darwin":
+            self.about_menu_action = QAction("&About ColourPaletteExtractor", self)
+        else:
+            self.about_menu_action = QAction("&About", self)
+
         self.about_action = QAction(QIcon("icons:information-circle-outline.svg"),
-                                    "&About ColourPaletteExtractor", self)
+                                    "&About", self)
 
         # Show colour palette dock widget
         self.show_palette_dock_action = QAction("Show &Colour Palette Dock", self)
@@ -223,8 +226,9 @@ class MainView(QMainWindow):
 
         # Main Menu
         self.menu = self.menuBar().addMenu("&File")
-        self.menu.addAction(self.about_menu_action)
-        self.menu.addSeparator()
+        if sys.platform == "darwin":
+            self.menu.addAction(self.about_menu_action)
+            self.menu.addSeparator()
         self.menu.addAction(self.preferences_menu_action)
         self.menu.addSeparator()
         self.menu.addAction(self.open_action)
@@ -251,9 +255,13 @@ class MainView(QMainWindow):
         self.menu.addSeparator()
 
         # Help Menu
-        if sys.platform == "darwin":
-            self.menu = self.menuBar().addMenu("&Help")
-            self.menu.addAction(self.show_help_menu_action)
+        self.menu = self.menuBar().addMenu("&Help")
+        self.menu.addAction(self.show_help_menu_action)
+
+        if sys.platform != "darwin":
+            self.menu.addSeparator()
+            self.menu.addAction(self.about_menu_action)
+
 
     def _create_toolbar(self):
         """Add toolbar to the main window."""

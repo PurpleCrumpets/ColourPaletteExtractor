@@ -63,7 +63,7 @@ view = mainview.MainView()
 # Create controller
 controller = controller.ColourPaletteExtractorController(model=model, view=view)
 
-# Show application's GUI
+# Setting up dark mode for Windows applications
 if sys.platform == "win32":
     pass
     # Setting light mode/dark mode specifically for Windows
@@ -72,6 +72,7 @@ if sys.platform == "win32":
     else:
         qtmodern.styles.light(app)
 
+# Show application's GUI
 view.show()
 
 # Run application's event loop (or main loop)
