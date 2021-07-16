@@ -24,7 +24,7 @@ block_cipher = None
 
 
 a = Analysis(['__main__.py'],
-             pathex=['C:\\Users\\timch\\PycharmProjects\\MSc-CS-Project---ColourPaletteExtractor\\colourpaletteextractor'],
+             pathex=['/Users/tim/OneDrive - University of St Andrews/University/MScProject/ColourPaletteExtractor/colourpaletteextractor'],
              binaries=[],
              datas=added_files,
              hiddenimports=[],
