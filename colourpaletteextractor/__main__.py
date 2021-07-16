@@ -2,11 +2,12 @@
 
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+import os
 import sys
 from pathlib import Path
 
 import darkdetect
-from PySide2.QtGui import QIcon
+from PySide2.QtGui import QIcon, QPalette, QColor
 from PySide2.QtWidgets import QApplication, QStyleFactory
 
 import qtmodern.styles
@@ -16,6 +17,7 @@ from colourpaletteextractor.view.mainview import MainView
 from view import mainview
 from controller import controller
 from model import model
+
 
 root = Path()
 if getattr(sys, 'frozen', False):
@@ -50,7 +52,8 @@ model = model.ColourPaletteExtractorModel()
 
 # Create instance of QApplication
 app = QApplication(sys.argv)
-QApplication.setStyle('Macintosh')
+app.setStyle('Macintosh')
+# app.setStyle('Fusion')
 
 # Create view
 view = mainview.MainView()

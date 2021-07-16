@@ -157,11 +157,6 @@ class MainView(QMainWindow):
         self._print_action.setShortcut(QKeySequence.Print)
         self._print_action.setDisabled(True)  # TODO: Needs to be implemented
 
-        # Select Algorithm
-        self._select_algorithm_action = QAction(QIcon("icons:settings-outline.svg"), "&Select Algorithm...", self)
-        self._select_algorithm_action.setShortcut("Ctrl+A")
-        self._select_algorithm_action.setDisabled(True)  # TODO: Needs to be implemented
-
         # Generate Colour Palette
         self.generate_palette_action = QAction(QIcon("icons:color-palette-outline.svg"), "&Generate Colour Palette", self)
         self.generate_palette_action.setShortcut("Ctrl+G")
@@ -172,14 +167,26 @@ class MainView(QMainWindow):
         self.generate_all_action.setShortcut("Ctrl+" + meta_key + "+G")
 
         # Preferences
-        self.preferences_action = QAction("&Preferences", self)
-        self.preferences_action.setShortcut(meta_key + "+,")
+        if sys.platform == "darwin":
+            self.preferences_menu_action = QAction("&Preferences", self)
+            self.preferences_menu_action.setShortcut("Ctrl+,")
+        else:
+            self.preferences_menu_action = QAction("&Settings", self)
+            self.preferences_menu_action.setShortcut("Ctrl+" + meta_key + "S")
+        self.preferences_action = QAction(QIcon("icons:settings-outline.svg"), "&Settings", self)
 
-        # View Saliency Map
-        self._view_map_action = QAction(QIcon("icons:layers-outline.svg"), "&Saliency Map...", self, checkable=True)
-        self._view_map_action.setChecked(False)
-        self._view_map_action.setDisabled(True)
-        self._view_map_action.setShortcut("Ctrl+" + meta_key + "+M")
+
+
+        # Help
+        self.show_help_action = QAction(QIcon("icons:help-circle-outline.svg"), "&Help", self)
+        self.show_help_menu_action = QAction("&Help", self)
+
+
+        # # View Saliency Map
+        # self._view_map_action = QAction(QIcon("icons:layers-outline.svg"), "&Saliency Map...", self, checkable=True)
+        # self._view_map_action.setChecked(False)
+        # self._view_map_action.setDisabled(True)
+        # self._view_map_action.setShortcut("Ctrl+" + meta_key + "+M")
 
         # Toggle original-recoloured image
         self.toggle_recoloured_image_action = QAction(QIcon("icons:eye-outline.svg"), "&Show Recoloured Image", self, checkable=True)
@@ -201,20 +208,24 @@ class MainView(QMainWindow):
         #  from: https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html
 
         # About ColourPaletteExtractor
-        self.about_action = QAction("&About ColourPaletteExtractor", self)
+        self.about_menu_action = QAction("&About ColourPaletteExtractor", self)
+        self.about_action = QAction(QIcon("icons:information-circle-outline.svg"),
+                                    "&About ColourPaletteExtractor", self)
 
         # Show colour palette dock widget
         self.show_palette_dock_action = QAction("Show &Colour Palette Dock", self)
-        self.show_palette_dock_action.setShortcut("Ctrl+D")
+
+        # Show tool bar widget
+        self.show_toolbar_action = QAction("Show &Toolbar", self)
 
     def _create_menu(self):
         """Add menu bar to the main window."""
 
         # Main Menu
         self.menu = self.menuBar().addMenu("&File")
-        self.menu.addAction(self.about_action)
+        self.menu.addAction(self.about_menu_action)
         self.menu.addSeparator()
-        self.menu.addAction(self.preferences_action)
+        self.menu.addAction(self.preferences_menu_action)
         self.menu.addSeparator()
         self.menu.addAction(self.open_action)
         self.menu.addSeparator()
@@ -224,8 +235,6 @@ class MainView(QMainWindow):
 
         # Edit Menu
         self.menu = self.menuBar().addMenu("&Edit")
-        # self.menu.addAction(self._select_algorithm_action)
-        # self.menu.addSeparator()
         self.menu.addAction(self.generate_palette_action)
         self.menu.addAction(self.generate_all_action)
         self.menu.addSeparator()
@@ -235,52 +244,85 @@ class MainView(QMainWindow):
         self.menu.addAction(self.zoom_in_action)
         self.menu.addAction(self.zoom_out_action)
         self.menu.addSeparator()
-        self.menu.addAction(self._view_map_action)
         self.menu.addAction(self.toggle_recoloured_image_action)
+        self.menu.addSeparator()
+        self.menu.addAction(self.show_toolbar_action)
         self.menu.addAction(self.show_palette_dock_action)
         self.menu.addSeparator()
 
+        # Help Menu
+        if sys.platform == "darwin":
+            self.menu = self.menuBar().addMenu("&Help")
+            self.menu.addAction(self.show_help_menu_action)
+
     def _create_toolbar(self):
         """Add toolbar to the main window."""
-        tools = QToolBar()
-        tools.setToolButtonStyle(Qt.ToolButtonIconOnly)
+        self.tools = QToolBar("Toolbar")
+        self.tools.setToolButtonStyle(Qt.ToolButtonIconOnly)
+        self.tools.setMovable(False)
 
         # Left-aligned actions
-        self.addToolBar(tools)
-        tools.addAction(self.open_action)
-        tools.addSeparator()
-        tools.addAction(self.generate_palette_action)
-        tools.addSeparator()
+        self.addToolBar(self.tools)
+        self.tools.addSeparator()
 
+        # Open Button
+        open_button = QToolButton(self)
+        open_button.setDefaultAction(self.open_action)
+        self.tools.addWidget(open_button)
+        self.tools.addSeparator()
+
+        # Generate Colour Palette Button
+        generate_palette_button = QToolButton(self)
+        generate_palette_button.setDefaultAction(self.generate_palette_action)
+        self.tools.addWidget(generate_palette_button)
+        self.tools.addSeparator()
+
+        # Toggle recoloured image button
         toggle_recoloured_image_button = QToolButton(self)
         toggle_recoloured_image_button.setIcon(QIcon("icons:eye-outline.svg"))
         toggle_recoloured_image_button.setDefaultAction(self.toggle_recoloured_image_action)
         toggle_recoloured_image_button.setAutoRaise(True)
-        tools.addWidget(toggle_recoloured_image_button)
-        tools.addSeparator()
+        self.tools.addWidget(toggle_recoloured_image_button)
+        self.tools.addSeparator()
 
+        # Zoom-in button
         zoom_in_button = QToolButton(self)
         zoom_in_button.setDefaultAction(self.zoom_in_action)
-        tools.addWidget(zoom_in_button)
+        self.tools.addWidget(zoom_in_button)
+        self.tools.addSeparator()
 
+        # Zoom-out button
         zoom_out_button = QToolButton(self)
         zoom_out_button.setDefaultAction(self.zoom_out_action)
-        tools.addWidget(zoom_out_button)
+        self.tools.addWidget(zoom_out_button)
 
         # Adding spacer
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-        tools.addWidget(spacer)
+        self.tools.addWidget(spacer)
 
         # Right-aligned actions
-        tools.addAction(self._select_algorithm_action)
-        tools.addSeparator()
 
-        exit_button = QToolButton(self)
-        exit_button.setIcon(QIcon("icons:exit-outline.svg"))
-        exit_button.setDefaultAction(self.exit_action)
-        exit_button.setAutoRaise(True)
-        tools.addWidget(exit_button)
+        # Preferences button
+        preferences_button = QToolButton(self)
+        preferences_button.setDefaultAction(self.preferences_action)
+        self.tools.addWidget(preferences_button)
+        self.tools.addSeparator()
+
+        # Help button
+        help_button = QToolButton(self)
+        help_button.setDefaultAction(self.show_help_action)
+        self.tools.addWidget(help_button)
+        self.tools.addSeparator()
+
+        # About button
+        about_button = QToolButton(self)
+        about_button.setIcon(QIcon("icons:information-circle-outline.svg"))
+        about_button.setDefaultAction(self.about_action)
+        about_button.setAutoRaise(True)
+        # about_button.setToolButtonStyle(Qt.ToolButtonIconOnly)
+        self.tools.addWidget(about_button)
+        self.tools.addSeparator()
 
     def _create_status_bar(self):
         """Add status bar to the main window."""

@@ -56,14 +56,20 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.tabs.tabCloseRequested.connect(self._close_current_tab)
 
         # Menu items
+
+        # About action
+        self._view.about_menu_action.triggered.connect(self._about_box)
         self._view.about_action.triggered.connect(self._about_box)
+
+
         self._view.open_action.triggered.connect(self._open_file)
         self._view.save_action.triggered.connect(self._save_file)
         self._view.generate_palette_action.triggered.connect(partial(self._generate_colour_palette_worker, None))
         self._view.generate_all_action.triggered.connect(self._generate_all_palettes)
         self._view.toggle_recoloured_image_action.triggered.connect(self._toggle_recoloured_image)
 
-        # Reopen colour palette dock
+        # Reopen toolbar and colour palette dock
+        self._view.show_toolbar_action.triggered.connect(self._show_toolbar)
         self._view.show_palette_dock_action.triggered.connect(self._show_colour_palette_dock)
 
         # Zooming in and out of image
@@ -71,7 +77,12 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.zoom_out_action.triggered.connect(self._zoom_out)
 
         # Preferences
+        self._view.preferences_menu_action.triggered.connect(self._preferences)
         self._view.preferences_action.triggered.connect(self._preferences)
+
+        # Help
+        self._view.show_help_menu_action.triggered.connect(self._create_default_tab)
+        self._view.show_help_action.triggered.connect(self._create_default_tab)
 
         # Exit application
         self._view.exit_action.triggered.connect(self._close_app)
@@ -101,6 +112,9 @@ class ColourPaletteExtractorController(QRunnable):
 
     def _create_new_tab(self, image_data_id: str, new_image_data: ImageData) -> None:
         self._view.create_new_tab(image_id=image_data_id, image_data=new_image_data)
+
+    def _show_toolbar(self) -> None:
+        self._view.tools.show()
 
     def _show_colour_palette_dock(self) -> None:
         self._view.colour_palette_dock.show()
