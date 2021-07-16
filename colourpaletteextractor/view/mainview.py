@@ -171,8 +171,8 @@ class MainView(QMainWindow):
             self.preferences_menu_action = QAction("&Preferences", self)
             self.preferences_menu_action.setShortcut("Ctrl+,")
         else:
-            self.preferences_menu_action = QAction("&Settings", self)
-            self.preferences_menu_action.setShortcut("Ctrl+" + meta_key + "S")
+            self.preferences_menu_action = QAction(QIcon("icons:settings-outline.svg"), "&Settings", self)
+            self.preferences_menu_action.setShortcut("Ctrl+" + meta_key + "+S")
         self.preferences_action = QAction(QIcon("icons:settings-outline.svg"), "&Settings", self)
 
 

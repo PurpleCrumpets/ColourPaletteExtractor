@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import darkdetect
+from PySide2.QtCore import Qt
 from PySide2.QtGui import QIcon, QPalette, QColor
 from PySide2.QtWidgets import QApplication, QStyleFactory
 
@@ -52,7 +53,8 @@ model = model.ColourPaletteExtractorModel()
 
 # Create instance of QApplication
 app = QApplication(sys.argv)
-app.setStyle('Macintosh')
+app.setAttribute(Qt.AA_DisableWindowContextHelpButton)  # Disable QDialog's question mark button
+# app.setStyle('Macintosh')
 # app.setStyle('Fusion')
 
 # Create view

@@ -161,13 +161,15 @@ class ImageDisplay(QLabel):
     def update_image(self, image):
 
         self.pixmap = ImageData.get_image_as_q_image(image)
-        self._set_pixmap(QPixmap(self.pixmap))
+        self.pixmap = QPixmap(self.pixmap)
+        self._set_pixmap(self.pixmap)
 
     def _set_pixmap(self, pixmap: QPixmap) -> None:
         self._pixmap_height = pixmap.height()
         self._pixmap_width = pixmap.width()
 
         self._update_margins()
+
         return super().setPixmap(self.pixmap)
 
     def resizeEvent(self, event: QtGui.QResizeEvent) -> None:
