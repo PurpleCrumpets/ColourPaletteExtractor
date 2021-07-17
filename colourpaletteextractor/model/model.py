@@ -1,23 +1,21 @@
 # TODO: add ability to run the model by itself, without the GUI using __main__
 import errno
 import os
-import subprocess
 import tempfile
+
 from sys import argv
 
-import qpageview
-from fpdf import FPDF
+import numpy as np
 
-from colourpaletteextractor.model import imagedata
+from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.model.algorithms import nieves2020
 from colourpaletteextractor.model.algorithms import grogan2018
 from colourpaletteextractor.model.algorithms import dummyalgorithm
 from colourpaletteextractor.model.algorithms.palettealgorithm import PaletteAlgorithm
-from colourpaletteextractor.model.imagedata import ImageData
 
 
-def generate_colour_palette_from_image(path_to_file: str) -> list:
-
+def generate_colour_palette_from_image(path_to_file: str) -> tuple[np.ndarray, list[np.ndarray], list[float]]:
+    # TODO: check output types
     model = ColourPaletteExtractorModel()
 
     if os.path.isfile(path_to_file) is False:
@@ -39,7 +37,11 @@ def generate_colour_palette_from_image(path_to_file: str) -> list:
         print(colour)
     print("---------------")
 
-    return image_data.colour_palette
+    new_recoloured_image = image_data.recoloured_image
+    image_colour_palette = image_data.colour_palette
+    relative_frequency = image_data.colour_palette_relative_frequency
+
+    return new_recoloured_image, image_colour_palette, relative_frequency
 
 
 class ColourPaletteExtractorModel:
@@ -83,16 +85,7 @@ class ColourPaletteExtractorModel:
         self._temp_dir.cleanup()  # Removing temporary directory
 
     def _get_algorithm(self):
-
         return self._algorithm()  # Creating a new instance of the algorithm
-
-        # if self._algorithm == "nieves_2020":
-        #     print("Nieves")
-        #     return nieves2020.Nieves2020()
-        #
-        # else:
-        #     print("Not a valid algorithm")
-        #     # TODO: Throw exception
 
     def set_algorithm(self, algorithm_class_name=DEFAULT_ALGORITHM):
         """Set the algorithm use to extract the colour palette of an image."""
@@ -104,24 +97,12 @@ class ColourPaletteExtractorModel:
             pass
             # TODO: throw error here
 
-
-    # def set_algorithm(self, algorithm_name="nieves_2020"):
-    #     """Set the algorithm use to extract the colour palette of an image."""
-    #
-    #     if algorithm_name == "nieves_2020":
-    #         print("Nieves")
-    #         self._algorithm = nieves2020.Nieves2020()
-    #
-    #     else:
-    #         print("Not a valid algorithm")
-    #         # TODO: Throw exception
-
     def add_image(self, file_name_and_path: str):
         """From the path to an image, create a new image_data object and add it to the
          dictionary of image_data objects with a new ID number."""
 
         # Create new ImageData object to hold image (and later the colour palette)
-        new_image_data = imagedata.ImageData(file_name_and_path)
+        new_image_data = ImageData(file_name_and_path)
 
         # Add to image dictionary
         new_image_data_id = ("Tab_" + str(self._image_data_id_counter))
@@ -161,12 +142,20 @@ class ColourPaletteExtractorModel:
         algorithm = self._get_algorithm()
         if progress_callback is not None:
             algorithm.set_progress_callback(progress_callback, tab)
-        recoloured_image, colour_palette = algorithm.generate_colour_palette(image_data)
 
-        self._image_data_id_dictionary[image_data_id].recoloured_image = recoloured_image
-        self._image_data_id_dictionary[image_data_id].colour_palette = colour_palette
+        new_recoloured_image, image_colour_palette, new_relative_frequencies = \
+            algorithm.generate_colour_palette(image_data)
 
-        print(recoloured_image.shape, len(colour_palette))
+        # Assigning properties to image_data
+        self._image_data_id_dictionary[image_data_id].recoloured_image = new_recoloured_image
+        self._image_data_id_dictionary[image_data_id].colour_palette = image_colour_palette
+        self._image_data_id_dictionary[image_data_id].colour_palette_relative_frequency = new_relative_frequencies
+
+        # Sorting colour palette by relative frequency
+        self._image_data_id_dictionary[image_data_id].sort_colour_palette(reverse=True)
+
+        print(new_recoloured_image.shape, len(image_colour_palette))
+
 
 if __name__ == "__main__":
 
@@ -180,7 +169,7 @@ if __name__ == "__main__":
     if len(argv) == 3:
         model_type = argv[2]
 
-    colour_palette = generate_colour_palette_from_image(file_name)
+    recoloured_image, colour_palette, relative_frequencies = generate_colour_palette_from_image(file_name)
 
     # print(os.path.isfile(file_name))
 

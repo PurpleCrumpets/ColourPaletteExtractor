@@ -184,7 +184,7 @@ class MainView(QMainWindow):
 
         # Generate report
         self.generate_report_action = QAction("Generate Report...", self)
-        self._print_action.setShortcut("Ctrl+R")
+        self.generate_report_action.setShortcut("Ctrl+R")
 
         # Generate Colour Palette
         self.generate_palette_action = QAction(QIcon("icons:color-palette-outline.svg"), "&Generate Colour Palette", self)

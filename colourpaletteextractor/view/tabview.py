@@ -130,7 +130,7 @@ class ImageDisplay(QLabel):
     zoom_factor = 1.25
     zoom_out_factor = 0.8
     _MINIMUM_SIZE = 100
-    # _MAXIMUM_SIZE = 400  # TODO: Might be necessary
+    # _MAXIMUM_SIZE = 400  # TODO: Might be necessary - max out zoom factor for image?
 
     def __init__(self, image_data, parent=None):
         """Constructor."""
@@ -273,26 +273,29 @@ class ColourPaletteDock(QDockWidget):
         # scroll_area.setContentsMargins(50, 50, 50, 50)
         self._scroll_area.setWidget(self._colour_palette_panel)
 
-    def add_colour_palette(self, colour_palette, image_id):
+    def add_colour_palette(self, colour_palette, image_id, relative_frequencies=None):
         # self._colour_palette = colour_palette
 
         update_palette = self._check_given_image_id_matches_with_current_tab(image_id)
-        print("Update colour palette for given tab:", update_palette)
+
 
         if update_palette:  # Updating GUI representation of colour palette
+            print("Update colour palette for given tab")
 
             # Clear old palette
             self.remove_colour_palette()
 
             self.setWidget(self._scroll_area)
 
+            # colour_palette_frequency =
+
             # Adding colours to the colour palette panel
-            for colour in colour_palette:
+            for colour, relative_frequency in zip(colour_palette, relative_frequencies):
                 base_pixmap = self._create_colour_pixmap(colour)
 
                 # label = QLabel()
                 label = ColourBox()
-                tool_tip = self._create_colour_tooltip(colour)
+                tool_tip = self._create_colour_tooltip(colour, relative_frequency)
                 label.setToolTip(tool_tip)
                 label.setPixmap(QPixmap(base_pixmap))
                 self._colour_palette_layout.addWidget(label)
@@ -326,13 +329,20 @@ class ColourPaletteDock(QDockWidget):
 
         return base_pixmap
 
-    def _create_colour_tooltip(self, colour):
+    def _create_colour_tooltip(self, colour, relative_frequency=None):
         red = colour[0]
         green = colour[1]
         blue = colour[2]
         # TODO: Add checks to make sure that colours are valid, only three channels etc.
 
-        return "[" + str(red) + ", " + str(green) + ", " + str(blue) + "]"
+        output = "[" + str(red) + ", " + str(green) + ", " + str(blue) + "]"
+
+        if relative_frequency is not None:
+            rounded_frequency = round((relative_frequency * 100), 2)
+            output = output + " (" + str(rounded_frequency) + "%)"
+
+
+        return output
 
     def remove_colour_palette(self):
         # from: https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt

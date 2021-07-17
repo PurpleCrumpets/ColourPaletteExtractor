@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from colourpaletteextractor.model.algorithms.cielabcube import CielabCube
 
 
 def get_implemented_algorithms():
@@ -88,3 +89,13 @@ class PaletteAlgorithm(ABC):
         self._percent = new_progress
         if self._progress_callback is not None:
             self._progress_callback.emit(self._tab, self._percent)
+
+    @staticmethod
+    def _get_relative_frequencies(relevant_cubes: list[CielabCube], total_pixels: int) -> list[float]:
+
+        frequencies = []
+        for cube in relevant_cubes:
+            frequency = cube.pixel_count_after_reassignment / total_pixels
+            frequencies.append(frequency)
+
+        return frequencies

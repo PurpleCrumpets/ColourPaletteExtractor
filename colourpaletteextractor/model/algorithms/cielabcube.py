@@ -28,10 +28,20 @@ class CielabCube:
         self._coordinates = np.array([self._l_star_coord, self._a_star_coord, self._b_star_coord])
 
         self._pixels = []
+
+        self._pixel_count_after_reassignment = 0
+
         self._mean_colour = np.empty([3])
         self._c_stars = []
 
         self._relevant = False
+
+    @property
+    def pixel_count_after_reassignment(self):
+        return self._pixel_count_after_reassignment
+
+    def increment_pixel_count_after_reassignment(self):
+        self._pixel_count_after_reassignment += 1
 
     @property
     def pixels(self):

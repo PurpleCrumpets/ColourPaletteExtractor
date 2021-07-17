@@ -95,10 +95,15 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
             colour = self._convert_lab_2_rgb(cube.mean_colour)  # Scale to 8-bit
             colour_palette.append(colour)
             print(colour)
+        self._set_progress(97)  # Progress = 97%
+
+        # Get relative frequency of each colour
+        relative_frequencies = self._get_relative_frequencies(relevant_cubes=relevant_cubes,
+                                                              total_pixels=int(pixel_count))
 
         self._set_progress(100)  # Progress = 100%
 
-        return recoloured_image, colour_palette
+        return recoloured_image, colour_palette, relative_frequencies
 
     @staticmethod
     def _convert_rgb_2_lab(image):
@@ -408,7 +413,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                 cube = cubes[pixel_coordinates[0], pixel_coordinates[1], pixel_coordinates[2]]
 
                 if cube.relevant:
-                    lab[i, j] = cube.mean_colour
+                    lab[i, j] = cube.mean_colour  # Assign cube's mean colour
+                    cube.increment_pixel_count_after_reassignment()  # Increase count of pixels with this colour by one
                     # pixel_relevant = True
                 else:
                     # Calculate closest relevant cube and use the mean colour for the pixel
@@ -445,6 +451,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                     # new_pixel_colour = relevant_cubes[min_distance_index].mean_colour
                     new_pixel_colour = relevant_cubes_mean_colours[min_distance_index]
                     lab[i, j] = new_pixel_colour
+                    relevant_cubes[min_distance_index]\
+                        .increment_pixel_count_after_reassignment()  # Increase count of pixels with this colour by one
 
 
 

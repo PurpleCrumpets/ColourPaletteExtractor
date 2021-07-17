@@ -14,6 +14,7 @@ class ImageData:
 
         self._recoloured_image = None
         self._colour_palette = []
+        self._colour_palette_relative_frequency = []
 
         # TODO: Need to check that the image has been saved using three colour channels (assuming RGB)
         # TODO: Check colour space and adapt to that
@@ -26,6 +27,7 @@ class ImageData:
             # self._image =
             print("None")
         else:
+            self._file_name_and_path = file_name_and_path
             self._image = io.imread(file_name_and_path)
 
             if self._image.shape == 4:
@@ -36,6 +38,26 @@ class ImageData:
             while "." in self._name:
                 self._name = os.path.splitext(self._name)[0]
             # TODO: what happens if the file has no extension?
+
+    def sort_colour_palette(self, reverse=True):
+        self._colour_palette = [colour for _, colour in sorted(zip(self._colour_palette_relative_frequency,
+                                                                   self._colour_palette),
+                                                               key=lambda pair: pair[0],
+                                                               reverse=reverse)]
+
+        self._colour_palette_relative_frequency.sort(reverse=reverse)
+
+    @property
+    def colour_palette_relative_frequency(self):
+        return self._colour_palette_relative_frequency
+
+    @colour_palette_relative_frequency.setter
+    def colour_palette_relative_frequency(self, value):
+        self._colour_palette_relative_frequency = value
+
+    @property
+    def file_name_and_path(self):
+        return self._file_name_and_path
 
     @property
     def extension(self):

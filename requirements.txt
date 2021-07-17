@@ -1,4 +1,4 @@
-setuptools~=57.0.0
+setuptools~=57.2.0
 Cython~=0.29.23
 PySide2~=5.15.2
 numpy~=1.21.0
@@ -6,5 +6,5 @@ scikit-image~=0.18.2
 darkdetect~=0.3.1
 QDarkStyle~=3.0.2
 qtmodern~=0.2.0
-overrides~=6.1.0
-pyinstaller~=4.4
+fpdf~=1.7.2
+matplotlib~=3.4.2

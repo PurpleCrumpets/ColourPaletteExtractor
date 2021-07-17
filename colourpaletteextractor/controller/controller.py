@@ -13,7 +13,7 @@ from colourpaletteextractor.view.tabview import NewTab
 class ColourPaletteExtractorController(QRunnable):
     """Colour Palette Extractor Controller Class."""
 
-    def __init__(self, model: ColourPaletteExtractorModel, view: MainView):
+    def __init__(self, model: ColourPaletteExtractorModel, view: MainView) -> None:
         """Constructor."""
         super().__init__()
 
@@ -219,7 +219,7 @@ class ColourPaletteExtractorController(QRunnable):
         # TODO: lock button to generate palette until after it has finished
         # TODO: add cancel button?
 
-    def _update_progress_bar(self, tab: NewTab, percent: int):
+    def _update_progress_bar(self, tab: NewTab, percent: int) -> None:
         # Update progress status value
         tab.progress_bar_value = percent
 
@@ -312,6 +312,13 @@ class ColourPaletteExtractorController(QRunnable):
 
         return image_data.colour_palette
 
+    def _get_relative_frequencies(self, tab):
+
+        image_data_id = tab.image_id
+        image_data = self._model.get_image_data(image_data_id)
+
+        return image_data.colour_palette_relative_frequency
+
     def current_tab_changed(self, i):
         """Update current tab index."""
         print("Tab changed to:", i)
@@ -342,11 +349,12 @@ class ColourPaletteExtractorController(QRunnable):
 
         # Reload colour palette
         colour_palette = self._get_colour_palette(tab)
+        relative_frequencies = self._get_relative_frequencies(tab)
 
         if len(colour_palette) == 0:
             self._view.colour_palette_dock.remove_colour_palette()  # Reset colour palette dock
         else:
-            self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id)
+            self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id, relative_frequencies)
 
         # Update status bar
         status_bar_state = tab.status_bar_state
