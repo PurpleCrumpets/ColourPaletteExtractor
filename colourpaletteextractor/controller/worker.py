@@ -4,7 +4,7 @@ import traceback
 from PySide2.QtCore import QRunnable, Slot, QObject, Signal
 
 
-class Worker(QRunnable):
+class ColourPaletteWorker(QRunnable):
     """
     Worker thread
     Adapted from: https://www.mfitzp.com/tutorials/multithreading-pyqt-applications-qthreadpool/
@@ -21,13 +21,13 @@ class Worker(QRunnable):
     """
 
     def __init__(self, fn, *args, **kwargs):
-        super(Worker, self).__init__()
+        super(ColourPaletteWorker, self).__init__()
 
         # Store constructor arguments (re-used for processing)
         self.fn = fn
         self.args = args
         self.kwargs = kwargs
-        self.signals = WorkerSignals()
+        self.signals = ColourPaletteWorkerSignals()
 
         # Add the callback to our kwargs
         self.kwargs['progress_callback'] = self.signals.progress
@@ -56,7 +56,7 @@ class Worker(QRunnable):
             self.signals.finished.emit(-2)  # Done
 
 
-class WorkerSignals(QObject):
+class ColourPaletteWorkerSignals(QObject):
     """
     Defines the signals available from a running worker thread.
 
@@ -72,6 +72,51 @@ class WorkerSignals(QObject):
         object data returned from processing, anything
 
     """
+    # Data types for each signal
+    # finished = Signal(object, str)
+    finished = Signal(int)
+    error = Signal(tuple)
+    result = Signal(object)
+    progress = Signal(object, int)
+
+
+class ReportGeneratorWorker(QRunnable):
+
+    def __init__(self, fn, *args, **kwargs):
+        super(ReportGeneratorWorker, self).__init__()
+
+        # Store constructor arguments (re-used for processing)
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+        self.signals = ReportGeneratorWorkerSignals()
+
+        # Add the callback to our kwargs
+        self.kwargs['progress_callback'] = self.signals.progress
+
+    @Slot()
+    def run(self):
+        """
+        Initialise the runner function with passed args, kwargs.
+        """
+        # Retrieve args/kwargs here; and fire processing using them
+        colour_palette = None
+        image_id = None
+        try:
+            self.fn(*self.args, **self.kwargs)
+        except:
+            traceback.print_exc()
+            exc_type, value = sys.exc_info()[:2]
+            self.signals.error.emit((exc_type, value, traceback.format_exc()))
+        else:
+            self.signals.result.emit(None)  # Return the result of the processing
+        finally:
+            # self.signals.finished.emit(colour_palette, image_id)  # Done
+            self.signals.finished.emit(-2)  # Done
+
+
+class ReportGeneratorWorkerSignals(QObject):
+
     # Data types for each signal
     # finished = Signal(object, str)
     finished = Signal(int)

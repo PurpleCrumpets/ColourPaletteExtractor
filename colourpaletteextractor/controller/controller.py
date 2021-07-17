@@ -1,7 +1,7 @@
 from functools import partial  # Import partial to connect signals with methods that need to take extra arguments
 from PySide2.QtCore import QFileInfo, QRunnable, QThreadPool
 
-from colourpaletteextractor.controller.worker import Worker
+from colourpaletteextractor.controller.worker import ColourPaletteWorker, ReportGeneratorWorker
 from colourpaletteextractor.model import generatereport
 from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.model.model import ColourPaletteExtractorModel
@@ -65,7 +65,7 @@ class ColourPaletteExtractorController(QRunnable):
 
 
         self._view.open_action.triggered.connect(self._open_file)
-        self._view.generate_report_action.triggered.connect(self._generate_report)
+        self._view.generate_report_action.triggered.connect(partial(self._generate_report_worker, None))
 
         self._view.save_action.triggered.connect(self._save_file)
         self._view.generate_palette_action.triggered.connect(partial(self._generate_colour_palette_worker, None))
@@ -98,11 +98,14 @@ class ColourPaletteExtractorController(QRunnable):
         print("Removing temporary directory and its contents...")
         self._model.close_temporary_directory()
 
-    def _generate_report(self):
-        print("Generating report for current tab...")
+    def _generate_report(self, tab, progress_callback):
+        print("Generating report...")
+
+        if tab is None:
+            tab = self._view.tabs.currentWidget()
+
 
         # Get image data
-        tab = self._view.tabs.currentWidget()
         image_id = tab.image_id
         image_data = self._model.get_image_data(image_id)
 
@@ -110,6 +113,17 @@ class ColourPaletteExtractorController(QRunnable):
         temp_dir = self._model.get_temp_dir_path()
 
         generatereport.generate_report(directory=temp_dir, image_data=image_data)
+
+    def _generate_report_worker(self, tab: NewTab = None) -> None:
+
+
+        worker = ReportGeneratorWorker(self._generate_report, tab=tab)  # Execute main function
+
+        self._thread_pool.start(worker)
+        print("Started worker to generate report...")
+
+
+
 
 
     def _create_default_tab(self) -> None:
@@ -206,15 +220,15 @@ class ColourPaletteExtractorController(QRunnable):
     def _generate_colour_palette_worker(self, tab: NewTab = None) -> None:
 
         if tab is None:
-            worker = Worker(self._generate_colour_palette, tab=None)  # Execute main function
+            worker = ColourPaletteWorker(self._generate_colour_palette, tab=None)  # Execute main function
         else:
-            worker = Worker(self._generate_colour_palette, tab=tab)  # Execute main function
+            worker = ColourPaletteWorker(self._generate_colour_palette, tab=tab)  # Execute main function
 
         # worker.signals.result.connect(self._update_tab)  # Uses the result of the main function
         worker.signals.finished.connect(self.current_tab_changed)  # Function called at the very end
         worker.signals.progress.connect(self._update_progress_bar)  # Intermediate Progress
         self._thread_pool.start(worker)
-        print("Started worker")
+        print("Started worker to generate colour palette...")
 
         # TODO: lock button to generate palette until after it has finished
         # TODO: add cancel button?
