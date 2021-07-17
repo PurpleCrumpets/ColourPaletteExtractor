@@ -31,7 +31,9 @@ class MainView(QMainWindow):
     else:
         resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
 
-    default_new_tab_image = "images:800px-University_of_St_Andrews_arms.jpg"
+    # default_new_tab_image = "images:800px-University_of_St_Andrews_arms.jpg"
+    default_new_tab_image = "images:jon_schueler_to_what_end_does_this_achieve_1987.jpg"
+
     app_icon = "app_icon"
 
     def __init__(self, parent=None):

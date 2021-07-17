@@ -6,7 +6,6 @@ from PySide2.QtWidgets import QScrollArea, QLabel, QWidget, QDockWidget, QApplic
 
 __author__ = "Tim Churchfield"
 
-
 from PySide2.examples.widgets.layouts import flowlayout
 from colourpaletteextractor.model.imagedata import ImageData
 
@@ -128,10 +127,9 @@ class NewTab(QScrollArea):
 
 
 class ImageDisplay(QLabel):
-
     zoom_factor = 1.25
     zoom_out_factor = 0.8  # TODO: Not in use, see: https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html
-    _MINIMUM_SIZE = 300
+    _MINIMUM_SIZE = 200
 
     def __init__(self, image_data, parent=None):
         """Constructor."""
@@ -168,36 +166,7 @@ class ImageDisplay(QLabel):
         self._pixmap_height = pixmap.height()
         self._pixmap_width = pixmap.width()
 
-        self._update_margins()
-
         return super().setPixmap(self.pixmap)
-
-    def resizeEvent(self, event: QtGui.QResizeEvent) -> None:
-        self._update_margins()
-        super().resizeEvent(event)
-
-
-    def _update_margins(self) -> None:
-
-        if self._pixmap_width <= 0 or self._pixmap_height <= 0:
-            return
-
-        width = self.width()
-        height = self.height()
-
-        if width <= 0 or height <= 0:
-            return
-
-        if width * self._pixmap_height > height * self._pixmap_width:
-            pass
-            margin = int((width - (self._pixmap_width * height / self._pixmap_height)) / 2)
-            self.setContentsMargins(margin, 0, margin, 0)
-        else:
-            margin = int((height - (self._pixmap_height * width / self._pixmap_width)) / 2)
-            self.setContentsMargins(margin, 0, margin, 0)
-
-        print(margin)
-
 
     def event(self, event):
         if event.type() == QEvent.NativeGesture:
@@ -222,7 +191,7 @@ class ImageDisplay(QLabel):
 
         # Zooming Image
         new_zoom_factor = 1 + value
-        self.zoom_in(new_zoom_factor)
+        self.zoom_in(zoom_factor=new_zoom_factor)
 
         # Updating position of the scroll bar
         new_x_scroll = (relative_image_pos_x * self.size().width()) - mouse_pos.x()
@@ -230,26 +199,21 @@ class ImageDisplay(QLabel):
 
         widget.set_slider_positions(new_x_scroll, new_y_scroll)
 
+    def zoom_in(self, zoom_factor: float = zoom_factor) -> None:
+        self._zoom(zoom_factor=zoom_factor)
 
+    def zoom_out(self, zoom_factor: float = zoom_out_factor) -> None:
+        self._zoom(zoom_factor=zoom_factor)
 
-
-
-
-
-
-
-    def zoom_in(self, zoom_factor=zoom_factor):
-        # Adapted from: https://stackoverflow.com/questions/53193010/how-to-resize-a-qlabel-with-pixmap-inside-a-qscrollarea
-
-        old_size = self.size()
-        self.resize(zoom_factor * self.size())
-        self._update_zoom_level(zoom_factor, old_size)
-
-    def zoom_out(self, zoom_factor=zoom_out_factor):
+    def _zoom(self, zoom_factor: float) -> None:
         # Adapted from: https://stackoverflow.com/questions/53193010/how-to-resize-a-qlabel-with-pixmap-inside-a-qscrollarea
         old_size = self.size()
-        self.resize(zoom_factor * self.size())
-        self._update_zoom_level(zoom_factor, old_size)
+
+        # Checking new size doesn't break the size limits
+        new_size = zoom_factor * self.size()
+        if new_size.width() >= ImageDisplay._MINIMUM_SIZE and new_size.height() >= ImageDisplay._MINIMUM_SIZE:
+            self.resize(new_size)
+            self._update_zoom_level(zoom_factor, old_size)
 
     def _update_zoom_level(self, zoom_factor, old_size):
 
@@ -287,8 +251,8 @@ class ColourPaletteDock(QDockWidget):
 
     def _set_colour_palette_dock_properties(self):
         self.setWindowTitle("Colour Palette")
-        self.setMinimumWidth(85)
-        self.setMinimumHeight(85)
+        self.setMinimumWidth(90)
+        self.setMinimumHeight(90)
         # self.resize(175, 175)
 
     def _set_colour_palette_panel(self):
@@ -320,7 +284,6 @@ class ColourPaletteDock(QDockWidget):
 
             # Adding colours to the colour palette panel
             for colour in colour_palette:
-
                 base_pixmap = self._create_colour_pixmap(colour)
 
                 # label = QLabel()
