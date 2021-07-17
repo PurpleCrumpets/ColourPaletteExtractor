@@ -31,10 +31,15 @@ class ImageData:
             if self._image.shape == 4:
                 self._remove_alpha_channel()
 
+            _, self._extension = os.path.splitext(file_name_and_path)
             self._name = os.path.basename(file_name_and_path)
             while "." in self._name:
                 self._name = os.path.splitext(self._name)[0]
             # TODO: what happens if the file has no extension?
+
+    @property
+    def extension(self):
+        return self._extension
 
     @property
     def image(self):

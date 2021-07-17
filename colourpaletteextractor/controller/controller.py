@@ -2,6 +2,7 @@ from functools import partial  # Import partial to connect signals with methods 
 from PySide2.QtCore import QFileInfo, QRunnable, QThreadPool
 
 from colourpaletteextractor.controller.worker import Worker
+from colourpaletteextractor.model import generatereport
 from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.model.model import ColourPaletteExtractorModel
 from colourpaletteextractor.view import mainview as vw, otherviews
@@ -48,6 +49,9 @@ class ColourPaletteExtractorController(QRunnable):
         :return:
         """
 
+        # Close Event
+        self._view.close_action.triggered.connect(self._close_application)
+
         # Tabs
         self._view.tabs.tabBarDoubleClicked.connect(self._view.tab_open_doubleclick)
         self._view.tabs.currentChanged.connect(self.current_tab_changed)
@@ -61,6 +65,8 @@ class ColourPaletteExtractorController(QRunnable):
 
 
         self._view.open_action.triggered.connect(self._open_file)
+        self._view.generate_report_action.triggered.connect(self._generate_report)
+
         self._view.save_action.triggered.connect(self._save_file)
         self._view.generate_palette_action.triggered.connect(partial(self._generate_colour_palette_worker, None))
         self._view.generate_all_action.triggered.connect(self._generate_all_palettes)
@@ -88,7 +94,22 @@ class ColourPaletteExtractorController(QRunnable):
     def _preferences(self):
         self._view.preferences.show_preferences()
 
+    def _close_application(self):
+        print("Removing temporary directory and its contents...")
+        self._model.close_temporary_directory()
 
+    def _generate_report(self):
+        print("Generating report for current tab...")
+
+        # Get image data
+        tab = self._view.tabs.currentWidget()
+        image_id = tab.image_id
+        image_data = self._model.get_image_data(image_id)
+
+        # Get temporary directory to store results
+        temp_dir = self._model.get_temp_dir_path()
+
+        generatereport.generate_report(directory=temp_dir, image_data=image_data)
 
 
     def _create_default_tab(self) -> None:

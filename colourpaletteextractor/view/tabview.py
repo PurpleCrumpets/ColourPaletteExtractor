@@ -128,21 +128,23 @@ class NewTab(QScrollArea):
 
 class ImageDisplay(QLabel):
     zoom_factor = 1.25
-    zoom_out_factor = 0.8  # TODO: Not in use, see: https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html
-    _MINIMUM_SIZE = 200
+    zoom_out_factor = 0.8
+    _MINIMUM_SIZE = 100
+    # _MAXIMUM_SIZE = 400  # TODO: Might be necessary
 
     def __init__(self, image_data, parent=None):
         """Constructor."""
         super(ImageDisplay, self).__init__(parent)
 
         self._parent = parent
+        self._pixmap_width = 0
+        self._pixmap_height = 0
 
         # self.image_height = self.height()
 
         # TODO: keep these properties for a per image basis - try on Windows as well with a different image
 
-        self._pixmap_width = 0
-        self._pixmap_height = 0
+
 
         self.pixmap = image_data.get_image_as_q_image(image_data.image)
         self.pixmap = QPixmap(self.pixmap)
@@ -233,6 +235,8 @@ class ImageDisplay(QLabel):
 
 class ColourPaletteDock(QDockWidget):
 
+    _MINIMUM_SIZE = 100
+
     def __init__(self, parent=None):
         """Constructor."""
 
@@ -251,8 +255,8 @@ class ColourPaletteDock(QDockWidget):
 
     def _set_colour_palette_dock_properties(self):
         self.setWindowTitle("Colour Palette")
-        self.setMinimumWidth(90)
-        self.setMinimumHeight(90)
+        self.setMinimumWidth(ColourPaletteDock._MINIMUM_SIZE)
+        self.setMinimumHeight(ColourPaletteDock._MINIMUM_SIZE)
         # self.resize(175, 175)
 
     def _set_colour_palette_panel(self):

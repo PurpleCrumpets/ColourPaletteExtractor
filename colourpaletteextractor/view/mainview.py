@@ -1,14 +1,16 @@
 import errno
 import sys
 import os
+
 import darkdetect
 import qdarkstyle
 import platform
 
+from PySide2 import QtGui
 from PySide2.QtCore import Qt, QDir
-from PySide2.QtGui import QIcon, QKeySequence
+from PySide2.QtGui import QIcon, QKeySequence, QPixmap
 from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, \
-    QSizePolicy, QStyleFactory
+    QSizePolicy, QStyleFactory, QMessageBox
 
 __author__ = "Tim Churchfield"
 
@@ -30,6 +32,8 @@ class MainView(QMainWindow):
 
     else:
         resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
+
+
 
     # default_new_tab_image = "images:800px-University_of_St_Andrews_arms.jpg"
     default_new_tab_image = "images:jon_schueler_to_what_end_does_this_achieve_1987.jpg"
@@ -79,11 +83,27 @@ class MainView(QMainWindow):
         QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons", icon_dir))
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
 
-
-
         self._create_gui()  # Generate GUI components
 
+    def closeEvent(self, event: QtGui.QCloseEvent) -> None:
 
+        # Message box to ask for permission to close from the user
+        close_box = QMessageBox()
+        close_box.setIconPixmap(QPixmap("icons:about-small.png"))
+        close_box.setWindowIcon(QIcon("icons:about-small.png"))
+        close_box.setText("Are you sure you want to quit?")
+        close_box.setInformativeText("Any unsaved progress will be lost.")
+        close_box.setStandardButtons(QMessageBox.Close | QMessageBox.Cancel)
+        close_box.setDefaultButton(QMessageBox.Cancel)
+
+        reply = close_box.exec_()
+
+        # Analysing user's response
+        if reply == QMessageBox.Close:
+            self.close_action.trigger()
+            event.accept()
+        else:
+            event.ignore()
 
     def _create_gui(self):
         """Assemble the GUI components."""
@@ -144,6 +164,9 @@ class MainView(QMainWindow):
         else:
             meta_key = "Alt"
 
+        # Close application
+        self.close_action = QAction("Close Application", self)
+
         # Open
         self.open_action = QAction(QIcon("icons:folder-open-outline.svg"), "&Open Image(s)...", self)
         self.open_action.setShortcut("Ctrl+O")
@@ -158,6 +181,10 @@ class MainView(QMainWindow):
         self._print_action = QAction(QIcon("icons:print-outline.svg"), "&Print...", self)
         self._print_action.setShortcut(QKeySequence.Print)
         self._print_action.setDisabled(True)  # TODO: Needs to be implemented
+
+        # Generate report
+        self.generate_report_action = QAction("Generate Report...", self)
+        self._print_action.setShortcut("Ctrl+R")
 
         # Generate Colour Palette
         self.generate_palette_action = QAction(QIcon("icons:color-palette-outline.svg"), "&Generate Colour Palette", self)
@@ -234,6 +261,8 @@ class MainView(QMainWindow):
         self.menu.addAction(self.preferences_menu_action)
         self.menu.addSeparator()
         self.menu.addAction(self.open_action)
+        self.menu.addSeparator()
+        self.menu.addAction(self.generate_report_action)
         self.menu.addSeparator()
         self.menu.addAction(self.save_action)
         self.menu.addSeparator()

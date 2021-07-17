@@ -1,13 +1,19 @@
 # TODO: add ability to run the model by itself, without the GUI using __main__
 import errno
 import os
+import subprocess
+import tempfile
 from sys import argv
+
+import qpageview
+from fpdf import FPDF
 
 from colourpaletteextractor.model import imagedata
 from colourpaletteextractor.model.algorithms import nieves2020
 from colourpaletteextractor.model.algorithms import grogan2018
 from colourpaletteextractor.model.algorithms import dummyalgorithm
 from colourpaletteextractor.model.algorithms.palettealgorithm import PaletteAlgorithm
+from colourpaletteextractor.model.imagedata import ImageData
 
 
 def generate_colour_palette_from_image(path_to_file: str) -> list:
@@ -41,7 +47,6 @@ class ColourPaletteExtractorModel:
     ERROR_MSG = "Error! :'("
     supported_image_types = {"png", "jpg", "jpeg"}
 
-
     def __init__(self, algorithm_name=None):
 
         self._image_data_id_counter = 0
@@ -55,6 +60,9 @@ class ColourPaletteExtractorModel:
         else:
             print("Algorithm not None")  # TODO: add new algorithm
 
+        # Create temporary directory for storing generated reports
+        self._temp_dir = tempfile.TemporaryDirectory()
+
     def evaluate_expression(self, expression):
         """slot function.
         :param expression:
@@ -67,6 +75,12 @@ class ColourPaletteExtractorModel:
             result = ColourPaletteExtractorModel.ERROR_MSG
 
         return result
+
+    def get_temp_dir_path(self):
+        return self._temp_dir.name
+
+    def close_temporary_directory(self) -> None:
+        self._temp_dir.cleanup()  # Removing temporary directory
 
     def _get_algorithm(self):
 
@@ -153,7 +167,6 @@ class ColourPaletteExtractorModel:
         self._image_data_id_dictionary[image_data_id].colour_palette = colour_palette
 
         print(recoloured_image.shape, len(colour_palette))
-
 
 if __name__ == "__main__":
 
