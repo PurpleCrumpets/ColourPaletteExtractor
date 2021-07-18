@@ -63,7 +63,6 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.about_menu_action.triggered.connect(self._about_box)
         self._view.about_action.triggered.connect(self._about_box)
 
-
         self._view.open_action.triggered.connect(self._open_file)
         self._view.generate_report_action.triggered.connect(partial(self._generate_report_worker, None))
 
@@ -88,14 +87,12 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.show_help_menu_action.triggered.connect(self._create_default_tab)
         self._view.show_help_action.triggered.connect(self._create_default_tab)
 
-        # Exit application
-        self._view.exit_action.triggered.connect(self._close_app)
 
     def _preferences(self):
         self._view.preferences.show_preferences()
 
     def _close_application(self):
-        print("Removing temporary directory and its contents...")
+        print("Removing temporary directory and its contents before closing application...")
         self._model.close_temporary_directory()
 
     def _generate_report(self, tab, progress_callback):
@@ -164,11 +161,6 @@ class ColourPaletteExtractorController(QRunnable):
 
     def _about_box(self) -> None:
         otherviews.AboutBox()
-
-    def _close_app(self) -> None:
-        # TODO: add "do you wish to quit" dialog box here
-        # TODO: command q shows dialog box if possible
-        self._view.close()
 
     def _close_current_tab(self, tab_index: int) -> None:
 

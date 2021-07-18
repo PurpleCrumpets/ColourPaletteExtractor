@@ -1,4 +1,5 @@
 import os
+import stat
 import subprocess
 import sys
 import tempfile
@@ -14,7 +15,11 @@ from colourpaletteextractor.model.imagedata import ImageData
 
 
 def generate_report(directory: str, image_data: ImageData):
-    print("Generating pdf report for image")
+
+    # old_dir = directory
+    # print(old_dir)
+    # directory = "C:\\Users\\timch\\OneDrive - University of St Andrews\\University\\MScProject\\Test Dir"
+    print(directory)
 
     # Checking if image_data is suitable
 
@@ -23,6 +28,7 @@ def generate_report(directory: str, image_data: ImageData):
         print("Throw exception here")
         return
 
+    print("Generating PDF report for image...")
     generator = ReportGenerator(directory=directory, image_data=image_data)
 
     # Create report
@@ -50,31 +56,36 @@ class ReportGenerator:
         # Check if PDF already exists and iterating its name if so
         count = 1
         while os.path.isfile(pdf_path):
-            print(file_name + " already exists, creating new ")
-            file_name = name + extension + "(" + str(count) + ")" + ".pdf"
+            print(file_name + " already exists, trying to find a valid name...")
+            file_name = name + extension + '(' + str(count) + ')' + '.pdf'
             pdf_path = os.path.join(self._directory, file_name)
             count += 1
 
         # Writing PDF to directory
         pdf.output(pdf_path)  # This will overwrite any existing pdf with this name
 
-        # Opening PDF by calling the system
-        # new_path = r"this is my path"
-        # new_path = '"pdf_path"'
-        # print(new_path)
+        # Escaping special characters for system call
+        if sys.platform == "darwin" or sys.platform == "linux":
+            pdf_path = pdf_path.replace(" ", "\ ")
+            pdf_path = pdf_path.replace("(", "\(")
+            pdf_path = pdf_path.replace(")", "\)")
 
-        # Escaping special characters
-        if sys.platform == "darwin" or "linux":
-            pdf_path = pdf_path.replace(" ", "\ ")  # TODO, does this work on Windows??
         else:
-            pass
 
-        pdf_path = pdf_path.replace("(", "\(")
-        pdf_path = pdf_path.replace(")", "\)")
+            # This is weirdly only necessary if the path has no spaces
+            if " " not in pdf_path:
+                pdf_path = pdf_path.replace("(", "^(")
+                pdf_path = pdf_path.replace(")", "^)")
 
         # Opening file in default PDF viewer for system
-        subprocess.Popen(["open " + pdf_path], shell=True)
+        print(pdf_path)
 
+        # Opening PDF by calling the system
+        print("Opening PDF report...")
+        if sys.platform == "win32":
+            subprocess.Popen(pdf_path, shell=True)
+        else:
+            subprocess.Popen(["open " + pdf_path], shell=True)
 
         # return True  # TODO: possibly return true if all works well?
 
@@ -85,16 +96,14 @@ class ReportGenerator:
         pdf.cell(40, 10, 'Hello World!')
 
         # Temporarily saving original and recoloured image
+        print("Adding original image to report...")
         self._add_image(pdf=pdf, image=self._image_data.image)  # Add original image
+        print("Adding recoloured image to report...")
         self._add_image(pdf=pdf, image=self._image_data.recoloured_image)  # Add recoloured image
 
         # Create colour frequency chart
+        print("Creating and adding colour frequency chart to report...")
         self._add_chart(pdf=pdf)
-
-
-
-
-
 
         return pdf
 
@@ -103,13 +112,23 @@ class ReportGenerator:
         # TODO: could alternatively find the original file - but it may have moved since then!
 
         # Create temporary file to hold the image in
-        with tempfile.NamedTemporaryFile(dir=self._directory, suffix=self._image_file_type) as temp_image:
+        temp_image = tempfile.NamedTemporaryFile(dir=self._directory,
+                                                 suffix=self._image_file_type,
+                                                 mode='w',
+                                                 delete=False)
 
-            # Save temporary image
-            imsave(temp_image.name, image)
+        # Change file permissions
+        # os.chmod(temp_image.name, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
-            # Add temporary image to the pdf
-            pdf.image(name=temp_image.name, w=100)
+        # Save temporary image and close file
+        imsave(temp_image.name, image)
+        temp_image.close()
+
+        # Add temporary image to the pdf
+        pdf.image(name=temp_image.name, w=100)
+
+        # Removing temporary image file
+        os.remove(temp_image.name)
 
     def _add_chart(self, pdf: FPDF):
         title = "Relative Frequency of Colours in Recoloured Image"
@@ -118,26 +137,30 @@ class ReportGenerator:
         sizes = self._image_data.colour_palette_relative_frequency
 
         fig, ax = plt.subplots()
-        ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+        ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, normalize=True)
 
         ax.axis('equal')
         plt.tight_layout()
-        plt.show()  # TODO: remove when no longer needed
+        # plt.show()  # TODO: remove when no longer needed as does not work on Windows as outside main thread
 
         # Create temporary file to hold the image of the graph in
-        with tempfile.NamedTemporaryFile(dir=self._directory, suffix=self._image_file_type) as temp_image:
-            # Save temporary image
+        temp_image = tempfile.NamedTemporaryFile(dir=self._directory,
+                                                 suffix=self._image_file_type,
+                                                 mode='w',
+                                                 delete=False)
 
-            fig.savefig(temp_image.name)
+        # Change file permissions
+        # os.chmod(temp_image.name, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
-            # Add temporary image to the pdf
-            pdf.image(name=temp_image.name, w=100)
+        # Save temporary image and close file
+        fig.savefig(temp_image.name)
+        temp_image.close()
+
+        # Add temporary image to the pdf
+        pdf.image(name=temp_image.name, w=100)
+
+        # Removing temporary image file
+        os.remove(temp_image.name)
 
         plt.close(fig)  # May not be necessary
-
-
-
-
-
-
 

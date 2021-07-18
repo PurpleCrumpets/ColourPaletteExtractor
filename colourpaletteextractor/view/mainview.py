@@ -2,6 +2,7 @@ import errno
 import sys
 import os
 
+
 import darkdetect
 import qdarkstyle
 import platform
@@ -10,7 +11,7 @@ from PySide2 import QtGui
 from PySide2.QtCore import Qt, QDir
 from PySide2.QtGui import QIcon, QKeySequence, QPixmap
 from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, \
-    QSizePolicy, QStyleFactory, QMessageBox
+    QSizePolicy, QMessageBox
 
 __author__ = "Tim Churchfield"
 
@@ -165,7 +166,14 @@ class MainView(QMainWindow):
             meta_key = "Alt"
 
         # Close application
-        self.close_action = QAction("Close Application", self)
+        # if sys.platform == "darwin":
+        #     self.close_action = QAction("Close Application", self)
+        # else:
+        self._close_request_action = QAction("E&xit", self)
+        self._close_request_action.triggered.connect(self.close)
+        self.close_action = QAction(self)
+        # self.exit_action = QAction(QIcon("icons:exit-outline.svg"), "Quit ColourPaletteExtractor", self)
+
 
         # Open
         self.open_action = QAction(QIcon("icons:folder-open-outline.svg"), "&Open Image(s)...", self)
@@ -183,7 +191,7 @@ class MainView(QMainWindow):
         self._print_action.setDisabled(True)  # TODO: Needs to be implemented
 
         # Generate report
-        self.generate_report_action = QAction("Generate Report...", self)
+        self.generate_report_action = QAction(QIcon("icons:document-text-outline.svg"), "Generate &Report...", self)
         self.generate_report_action.setShortcut("Ctrl+R")
 
         # Generate Colour Palette
@@ -222,10 +230,6 @@ class MainView(QMainWindow):
         self.toggle_recoloured_image_action.setDisabled(True)  # Initially disabled by default
         self.toggle_recoloured_image_action.setShortcut("Ctrl+T")
 
-        # Exit GUI
-        self.exit_action = QAction(QIcon("icons:exit-outline.svg"), "Quit ColourPaletteExtractor", self)
-        # TODO: Add a a dialog - are you sure you want to quit?
-
         # Zoom in and out
         self.zoom_in_action = QAction(QIcon("icons:add-circle-outline.svg"), "Zoom &In", self)
         self.zoom_in_action.setShortcut(QKeySequence.ZoomIn)
@@ -262,17 +266,20 @@ class MainView(QMainWindow):
         self.menu.addSeparator()
         self.menu.addAction(self.open_action)
         self.menu.addSeparator()
-        self.menu.addAction(self.generate_report_action)
-        self.menu.addSeparator()
         self.menu.addAction(self.save_action)
         self.menu.addSeparator()
         self.menu.addAction(self._print_action)
+
+        if sys.platform != "darwin":
+            self.menu.addSeparator()
+            self.menu.addAction(self._close_request_action)
 
         # Edit Menu
         self.menu = self.menuBar().addMenu("&Edit")
         self.menu.addAction(self.generate_palette_action)
         self.menu.addAction(self.generate_all_action)
         self.menu.addSeparator()
+        self.menu.addAction(self.generate_report_action)
 
         # View Menu
         self.menu = self.menuBar().addMenu("&View")
@@ -304,16 +311,22 @@ class MainView(QMainWindow):
         self.addToolBar(self.tools)
         self.tools.addSeparator()
 
-        # Open Button
+        # Open button
         open_button = QToolButton(self)
         open_button.setDefaultAction(self.open_action)
         self.tools.addWidget(open_button)
         self.tools.addSeparator()
 
-        # Generate Colour Palette Button
+        # Generate colour palette button
         generate_palette_button = QToolButton(self)
         generate_palette_button.setDefaultAction(self.generate_palette_action)
         self.tools.addWidget(generate_palette_button)
+        self.tools.addSeparator()
+
+        # Generate report button
+        generate_report_button = QToolButton()
+        generate_report_button.setDefaultAction(self.generate_report_action)
+        self.tools.addWidget(generate_report_button)
         self.tools.addSeparator()
 
         # Toggle recoloured image button

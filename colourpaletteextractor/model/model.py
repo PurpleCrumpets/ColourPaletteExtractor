@@ -63,7 +63,7 @@ class ColourPaletteExtractorModel:
             print("Algorithm not None")  # TODO: add new algorithm
 
         # Create temporary directory for storing generated reports
-        self._temp_dir = tempfile.TemporaryDirectory()
+        self._temp_dir = tempfile.TemporaryDirectory(prefix="ColourPaletteExtractor")
 
     def evaluate_expression(self, expression):
         """slot function.
