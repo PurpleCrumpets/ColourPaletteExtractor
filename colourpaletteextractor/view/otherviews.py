@@ -227,7 +227,7 @@ class PreferencesWidget(QDialog):
         layout = QGridLayout()
 
         # Path requirements explanation
-        layout.addWidget(QLabel("Select the output folder for colour palette reports:"), 0, 0, 1, 2)
+        layout.addWidget(QLabel("Select the output folder for the colour palette reports:"), 0, 0, 1, 2)
 
         line = self._create_horizontal_line()
         layout.addWidget(line, 1, 0, 1, 3)  # Horizontal line spacer
@@ -237,14 +237,16 @@ class PreferencesWidget(QDialog):
         default_path_button.setChecked(True)
         layout.addWidget(default_path_button, 2, 0)
         # default_path_label = QLabel("[DEFAULT] " + self._temp_path)
-        default_path_label = QLabel("Temporary Folder (all unsaved reports will be lost on closing the application).")
+
+        default_path_label = QLabel("Temporary Output Folder "
+                                    + "(all unsaved reports will be lost on closing the application).")
 
         layout.addWidget(default_path_label, 2, 1)
 
         # User-selected path
         user_path_button = QRadioButton()
         layout.addWidget(user_path_button, 3, 0)
-        layout.addWidget(QLabel("Alternative Folder:"), 3, 1)
+        layout.addWidget(QLabel("Alternative Ouput Folder:"), 3, 1)
 
         documents_directory = self._get_default_documents_directory()
         print(documents_directory)
