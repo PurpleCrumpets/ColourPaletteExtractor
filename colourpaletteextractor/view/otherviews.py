@@ -1,10 +1,12 @@
 import sys
+import ctypes.wintypes
 
+from PySide2 import QtCore
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QIcon, QPixmap, QPainter
 from PySide2.QtWidgets import QWidget, QProgressBar, \
     QStatusBar, QMessageBox, QLabel, QTabWidget, QDialog, QVBoxLayout, QCheckBox, QRadioButton, QGridLayout, \
-    QStyleOption
+    QStyleOption, QPushButton, QLineEdit, QFrame, QSizePolicy
 
 __author__ = "Tim Churchfield"
 
@@ -184,9 +186,11 @@ class AboutBox(QMessageBox):
 
 class PreferencesWidget(QDialog):
 
-    def __init__(self, parent=None):
+    def __init__(self, temp_path: str, parent=None):
 
         super(PreferencesWidget, self).__init__(parent)
+
+        self._temp_path = temp_path
 
         self._set_properties()
 
@@ -211,6 +215,75 @@ class PreferencesWidget(QDialog):
         self._algorithm_properties_tab()
         tabs.addTab(self.algorithm_tab, "Algorithm")
 
+        self._output_properties_tab()
+        tabs.addTab(self.output_tab, "Output Directory")
+
+    def _output_properties_tab(self):
+        self.output_tab = QWidget()
+
+        # Get default path (from model)
+
+        # Create and populate layout of algorithm options
+        layout = QGridLayout()
+
+        # Path requirements explanation
+        layout.addWidget(QLabel("Select the output folder for colour palette reports:"), 0, 0, 1, 2)
+
+        line = self._create_horizontal_line()
+        layout.addWidget(line, 1, 0, 1, 3)  # Horizontal line spacer
+
+        # Default path
+        default_path_button = QRadioButton()  # TODO: get the current temp path by triggering the button?
+        default_path_button.setChecked(True)
+        layout.addWidget(default_path_button, 2, 0)
+        # default_path_label = QLabel("[DEFAULT] " + self._temp_path)
+        default_path_label = QLabel("Temporary Folder (all unsaved reports will be lost on closing the application).")
+
+        layout.addWidget(default_path_label, 2, 1)
+
+        # User-selected path
+        user_path_button = QRadioButton()
+        layout.addWidget(user_path_button, 3, 0)
+        layout.addWidget(QLabel("Alternative Folder:"), 3, 1)
+
+        documents_directory = self._get_default_documents_directory()
+        print(documents_directory)
+        user_path_selector = QLineEdit(documents_directory)  # TODO: Default to user's documents folder (ColourPaletteExtractor) - if it doesn't exist, it will be created
+        user_path_selector.setReadOnly(True)
+        user_path_selector.setDisabled(True)
+        layout.addWidget(user_path_selector, 4, 1)
+
+
+
+        browse_button = QPushButton("...")
+        layout.addWidget(browse_button, 4, 2)
+
+
+
+        # Setting layout of buttons
+        self.output_tab.setLayout(layout)
+
+    def _get_default_documents_directory(self) -> str:
+
+        if sys.platform == "win32":
+
+            CSIDL_PERSONAL = 5  # My Documents
+            SHGFP_TYPE_CURRENT = 0  # Get current, not default value
+
+            buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+            ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
+
+            print(buf.value)
+            documents_path = buf.value + "\\ColourPaletteExtractor"
+            return documents_path
+
+        elif sys.platform == "darwin":
+            return "~/Documents/ColourPaletteExtractor"
+
+        else:  # Linux
+            return "~/Desktop/ColourPaletteExtractor"
+
+
 
     def _algorithm_properties_tab(self):
         self.algorithm_tab = QWidget()
@@ -220,16 +293,17 @@ class PreferencesWidget(QDialog):
 
         # Create and populate layout of algorithm options
         layout = QGridLayout()
-        layout.addWidget(QLabel("Select a colour palette algorithm:"), 0, 0)
+        layout.addWidget(QLabel("Select a colour palette algorithm:"), 0, 0, 1, 2)
+
+        line = self._create_horizontal_line()
+        layout.addWidget(line, 1, 0, 1, 3)  # Horizontal line spacer
 
         # Dynamically add algorithm options
         self._algorithms = list(palettealgorithm.get_implemented_algorithms())
         self._algorithm_buttons = []
         algorithm_labels = []
 
-
         # Create radio button and hyperlink for each algorithm
-        count = 1
         default_algorithm_found = False
         for algorithm_class in self._algorithms:
 
@@ -255,17 +329,14 @@ class PreferencesWidget(QDialog):
             new_label = self._create_algorithm_link_label(url)
             algorithm_labels.append(new_label)
 
-            # Increasing layout count
-            count += 1
-
         # Reordering list of buttons and labels alphabetically by the algorithm name
-        self._algorithms, self._algorithm_buttons, algorithm_labels =\
+        self._algorithms, self._algorithm_buttons, algorithm_labels = \
             self._reorder_algorithms(algorithms=self._algorithms,
                                      algorithm_buttons=self._algorithm_buttons,
                                      algorithm_labels=algorithm_labels)
 
         # Adding radio buttons and labels to the GUI
-        count = 1
+        count = 2
         for button, label in zip(self._algorithm_buttons, algorithm_labels):
             layout.addWidget(button, count, 0)
             layout.addWidget(label, count, 1)
@@ -305,7 +376,9 @@ class PreferencesWidget(QDialog):
 
     def _reorder_algorithms(self, algorithms: list[object],
                             algorithm_buttons: list[QRadioButton],
-                            algorithm_labels: list[QLabel]) -> tuple[list[object], list[QRadioButton], list[QLabel]]:
+                            algorithm_labels: list[QLabel]) -> tuple[list[object],
+                                                                     list[QRadioButton],
+                                                                     list[QLabel]]:
 
         # Reordering list of labels alphabetically by the algorithm name
         algorithm_labels = [x for _, x in sorted(zip(algorithm_buttons, algorithm_labels),
@@ -321,3 +394,36 @@ class PreferencesWidget(QDialog):
         algorithm_buttons.sort(key=lambda x: x.text(), reverse=True)
 
         return algorithms, algorithm_buttons, algorithm_labels
+
+    def _create_horizontal_line(self) -> QWidget:
+        line = QWidget()  # https://stackoverflow.com/questions/10053839/how-does-designer-create-a-line-widget"
+        line.setFixedHeight(2)
+        line.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        line.setStyleSheet("background-color: #c0c0c0;")
+        return line
+
+
+class ErrorBox(QMessageBox):
+
+    def __init__(self, box_type: str = None, parent=None):
+        """Constructor."""
+
+        super(ErrorBox, self).__init__(parent)
+
+        header = None
+
+        # Set icon
+        self.setWindowIcon(QIcon("icons:about-medium.png"))  # Window icon
+
+        if box_type == "warning":
+            self.setIcon(QMessageBox.Warning)  # Icon
+            header = "Warning!"
+        elif box_type == "information":
+            self.setIcon(QMessageBox.Information)  # Icon
+            header = "Heads-Up!"
+
+        else:
+            self.setIconPixmap(QPixmap("icons:about-medium.png"))
+
+        self.setWindowTitle(header)  # Window title
+        self.setText(header)  # Main text

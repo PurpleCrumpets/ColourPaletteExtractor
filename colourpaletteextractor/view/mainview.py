@@ -41,7 +41,7 @@ class MainView(QMainWindow):
 
     app_icon = "app_icon"
 
-    def __init__(self, parent=None):
+    def __init__(self, temp_path: str, parent=None):
         """Constructor."""
 
         # Show GUI when using a Mac:
@@ -84,7 +84,7 @@ class MainView(QMainWindow):
         QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons", icon_dir))
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
 
-        self._create_gui()  # Generate GUI components
+        self._create_gui(temp_path=temp_path)  # Generate main GUI components
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
 
@@ -106,7 +106,7 @@ class MainView(QMainWindow):
         else:
             event.ignore()
 
-    def _create_gui(self):
+    def _create_gui(self, temp_path: str):
         """Assemble the GUI components."""
         # Adapted from: https://realpython.com/python-pyqt-gui-calculator/
 
@@ -123,8 +123,7 @@ class MainView(QMainWindow):
         self._create_status_bar()
         self._create_colour_palette_dock()
 
-        # Create preferences panel
-        self._create_preferences_dialog_box()
+        self._create_preferences_dialog_box(temp_path=temp_path)  # Create preferences panel
 
     def set_display_text(self, text):
         """Set display's text."""
@@ -194,14 +193,19 @@ class MainView(QMainWindow):
         self.generate_report_action = QAction(QIcon("icons:document-text-outline.svg"), "Generate &Report...", self)
         self.generate_report_action.setShortcut("Ctrl+R")
 
+        # Generate all reports
+        self.generate_all_report_action = QAction("Generate All Re&ports...", self)
+        self.generate_all_report_action.setShortcut("Ctrl+" + meta_key + "+R")
+
+
         # Generate Colour Palette
         self.generate_palette_action = QAction(QIcon("icons:color-palette-outline.svg"), "&Generate Colour Palette", self)
         self.generate_palette_action.setShortcut("Ctrl+G")
         # self.generate_palette_action.setStatusTip("Generate the colour palette...")
 
         # Generate All Colour Palettes
-        self.generate_all_action = QAction("Generate &All Colour Palettes", self)
-        self.generate_all_action.setShortcut("Ctrl+" + meta_key + "+G")
+        self.generate_all_palette_action = QAction("Generate &All Colour Palettes", self)
+        self.generate_all_palette_action.setShortcut("Ctrl+" + meta_key + "+G")
 
         # Preferences
         if sys.platform == "darwin":
@@ -277,9 +281,10 @@ class MainView(QMainWindow):
         # Edit Menu
         self.menu = self.menuBar().addMenu("&Edit")
         self.menu.addAction(self.generate_palette_action)
-        self.menu.addAction(self.generate_all_action)
+        self.menu.addAction(self.generate_all_palette_action)
         self.menu.addSeparator()
         self.menu.addAction(self.generate_report_action)
+        self.menu.addAction(self.generate_all_report_action)
 
         # View Menu
         self.menu = self.menuBar().addMenu("&View")
@@ -381,8 +386,8 @@ class MainView(QMainWindow):
         self.status = otherviews.StatusBar()
         self.setStatusBar(self.status)
 
-    def _create_preferences_dialog_box(self):
-        self.preferences = otherviews.PreferencesWidget()
+    def _create_preferences_dialog_box(self, temp_path: str):
+        self.preferences = otherviews.PreferencesWidget(temp_path=temp_path)
 
     def show_file_dialog_box(self, supported_file_types):
         """Show dialog box for importing images."""
