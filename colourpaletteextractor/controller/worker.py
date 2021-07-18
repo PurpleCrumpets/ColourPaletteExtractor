@@ -118,7 +118,6 @@ class ReportGeneratorWorker(QRunnable):
 class ReportGeneratorWorkerSignals(QObject):
 
     # Data types for each signal
-    # finished = Signal(object, str)
     finished = Signal(int)
     error = Signal(tuple)
     result = Signal(object)

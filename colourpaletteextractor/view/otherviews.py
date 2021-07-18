@@ -1,8 +1,10 @@
 import sys
 
-from PySide2.QtGui import QIcon, QPixmap
+from PySide2.QtCore import Qt
+from PySide2.QtGui import QIcon, QPixmap, QPainter
 from PySide2.QtWidgets import QWidget, QProgressBar, \
-    QStatusBar, QMessageBox, QLabel, QTabWidget, QDialog, QVBoxLayout, QCheckBox, QRadioButton, QGridLayout
+    QStatusBar, QMessageBox, QLabel, QTabWidget, QDialog, QVBoxLayout, QCheckBox, QRadioButton, QGridLayout, \
+    QStyleOption
 
 __author__ = "Tim Churchfield"
 
@@ -35,7 +37,8 @@ class StatusBar(QStatusBar):
         self.set_pre_palette_message()
 
     def _add_status_bar_elements(self):
-        self._status_label = QLabel("")
+        # self._status_label = QLabel("")
+        self._status_label = ElidedLabel(text="", width=100, parent=self)
         self._progress_bar = ProgressBar()
         self._progress_bar.setFixedWidth(250)
 
@@ -69,6 +72,9 @@ class StatusBar(QStatusBar):
         elif state == 2:
             # Show progress bar if colour palette is being generated
             self.set_post_palette_message()
+        elif state == 3:
+            self.set_intra_report_message()
+
 
     def set_pre_palette_message(self):
 
@@ -99,8 +105,46 @@ class StatusBar(QStatusBar):
         # self.removeWidget(self._progress_bar)
         self._status_label.setText("Toggle between the original and recoloured image using " + command)
 
+    def set_intra_report_message(self):
+        self._status_label.setText("Generating colour palette report")
+
+
     def update_progress_bar(self, n):
         self._progress_bar.setValue(n)
+
+
+class ElidedLabel(QLabel):
+    "Adapted from https://stackoverflow.com/questions/35080148/how-to-hide-or-cut-a-qwidget-text-when-i-change-main-window-size"
+    "and: https://www.mimec.org/blog/status-bar-and-elided-label"
+    "both accessed 18/07/2020"
+
+    _width = _text = _elided = None
+
+    def __init__(self, text='', width=40, parent=None):
+        super(ElidedLabel, self).__init__(text, parent)
+        self.setMinimumWidth(width if width > 0 else 1)
+
+    def elided_text(self):
+        return self._elided or ''
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        self.drawFrame(painter)
+        margin = self.margin()
+        rect = self.contentsRect()
+        rect.adjust(margin, margin, -margin, -margin)
+        text = self.text()
+        width = rect.width()
+        if text != self._text or width != self._width:
+            self._text = text
+            self._width = width
+            self._elided = self.fontMetrics().elidedText(
+                text, Qt.ElideRight, width)
+        option = QStyleOption()
+        option.initFrom(self)
+        self.style().drawItemText(
+            painter, rect, self.alignment(), option.palette,
+            self.isEnabled(), self._elided, self.foregroundRole())
 
 
 class ProgressBar(QProgressBar):

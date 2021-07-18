@@ -29,12 +29,21 @@ class NewTab(QScrollArea):
         self._toggle_recoloured_image_available = False  # Initially no recoloured image associated with tab
         self._toggle_recoloured_image_pressed = False  # Initially button is not pressed
         self._generate_palette_available = True
+        self._generate_report_available = False  # Initially cannot generate report
 
         # Setting properties to allow scrolling of image
         self.setWidgetResizable(False)
 
         self._status_bar_state = 0  # Initially no colour palette present
         self._progress_bar_value = 0  # Initially zero % complete
+
+    @property
+    def generate_report_available(self) -> bool:
+        return self._generate_report_available
+
+    @generate_report_available.setter
+    def generate_report_available(self, value: bool) -> None:
+        self._generate_report_available = value
 
     @property
     def generate_palette_available(self) -> bool:
@@ -59,7 +68,7 @@ class NewTab(QScrollArea):
     @status_bar_state.setter
     def status_bar_state(self, value):
 
-        if isinstance(value, int) and 0 <= value <= 2:
+        if isinstance(value, int) and 0 <= value <= 3:
             self._status_bar_state = value
         else:
             # TODO: throw exception if invalid status

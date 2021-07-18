@@ -7,14 +7,16 @@ import time
 
 import matplotlib.pyplot as plt
 import numpy as np
+from PySide2 import QtCore
 from skimage.io import imsave
 from fpdf import FPDF
 
 
 from colourpaletteextractor.model.imagedata import ImageData
+from colourpaletteextractor.view.tabview import NewTab
 
 
-def generate_report(directory: str, image_data: ImageData):
+def generate_report(directory: str, tab: NewTab, image_data: ImageData, progress_callback: QtCore.SignalInstance):
 
     # old_dir = directory
     # print(old_dir)
@@ -29,20 +31,23 @@ def generate_report(directory: str, image_data: ImageData):
         return
 
     print("Generating PDF report for image...")
-    generator = ReportGenerator(directory=directory, image_data=image_data)
+    generator = ReportGenerator(directory=directory, tab=tab, image_data=image_data, progress_callback=progress_callback)
 
     # Create report
     pdf = generator.create_report()
 
     # Save report
     generator.save_report(pdf)
+    progress_callback.emit(tab, 100)  # 100% progress
 
 
 class ReportGenerator:
 
-    def __init__(self, directory: str, image_data: ImageData) -> None:
+    def __init__(self, directory: str, tab: NewTab, image_data: ImageData, progress_callback: QtCore.SignalInstance) -> None:
         self._directory = directory
+        self._tab = tab
         self._image_data = image_data
+        self._progress_callback = progress_callback
         self._image_file_type = ".png"
 
     def save_report(self, pdf: FPDF):
@@ -90,6 +95,9 @@ class ReportGenerator:
         # return True  # TODO: possibly return true if all works well?
 
     def create_report(self) -> FPDF:
+        # Set progress bar back to zero
+        self._progress_callback.emit(self._tab, 0)  # 0% progress
+
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font('helvetica', 'B', 16)
@@ -98,12 +106,16 @@ class ReportGenerator:
         # Temporarily saving original and recoloured image
         print("Adding original image to report...")
         self._add_image(pdf=pdf, image=self._image_data.image)  # Add original image
+        self._progress_callback.emit(self._tab, 30)  # 30% progress
+
         print("Adding recoloured image to report...")
         self._add_image(pdf=pdf, image=self._image_data.recoloured_image)  # Add recoloured image
+        self._progress_callback.emit(self._tab, 60)  # 60% progress
 
         # Create colour frequency chart
         print("Creating and adding colour frequency chart to report...")
         self._add_chart(pdf=pdf)
+        self._progress_callback.emit(self._tab, 90)  # 90% progress
 
         return pdf
 
