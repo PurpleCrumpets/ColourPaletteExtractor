@@ -4,6 +4,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,7 +22,7 @@ def generate_report(directory: str, tab: NewTab, image_data: ImageData, progress
     # old_dir = directory
     # print(old_dir)
     # directory = "C:\\Users\\timch\\OneDrive - University of St Andrews\\University\\MScProject\\Test Dir"
-    print(directory)
+    # print(directory)
 
     # Checking if image_data is suitable
 
@@ -149,10 +150,17 @@ class ReportGenerator:
         sizes = self._image_data.colour_palette_relative_frequency
 
         fig, ax = plt.subplots()
-        ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, normalize=True)
+
+        # Suppressing FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+        #   if s != self._text:
+        # See: https://stackoverflow.com/questions/40659212/futurewarning-elementwise-comparison-failed-returning-scalar-but-in-the-futur
+        with warnings.catch_warnings():
+            warnings.simplefilter(action='ignore', category=FutureWarning)
+            ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, normalize=True)
 
         ax.axis('equal')
         plt.tight_layout()
+
         # plt.show()  # TODO: remove when no longer needed as does not work on Windows as outside main thread
 
         # Create temporary file to hold the image of the graph in

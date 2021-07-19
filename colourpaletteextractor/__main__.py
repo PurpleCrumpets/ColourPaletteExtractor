@@ -32,7 +32,7 @@ if __name__ == '__main__':
         qtmodern.windows._FL_STYLESHEET = root / 'qtmodern/frameless.qss'
 
     model = model.ColourPaletteExtractorModel()  # Model
-    temp_path = model.get_temp_dir_path()
+    temp_path = model.output_dir.name  # Initial default directory
 
     # Create instance of QApplication
     app = QApplication(sys.argv)

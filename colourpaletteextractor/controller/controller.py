@@ -175,6 +175,8 @@ class ColourPaletteExtractorController(QRunnable):
             self._view.status.update_progress_bar(percent)
             self._update_status_bar(tab)
 
+            if percent == 0 or percent == 100:  # Start and end of progress - refresh the GUI
+                self.current_tab_changed(-2)
             # if percent == 100:
             #     self._view.status.set_status_bar(2)
 
@@ -221,34 +223,22 @@ class ColourPaletteExtractorController(QRunnable):
         image_id = tab.image_id
         image_data = self._model.get_image_data(image_id)
 
-        # Temporarily disable buttons for the given tab
-        self._toggle_tab_button_states(tab=tab, activate=False)
-
-        # Set tab status bar state to generating colour palette report
-        tab.status_bar_state = 3
-
-        # Update state of tab buttons
-        if self._view.tabs.currentWidget() == tab:
-            self._update_state_of_tab_buttons(tab)
-
-        # Refresh tab # TODO: why does this break everything??
-        # self._reset_tab(tab=tab, remove_data=False)
-        # self.current_tab_changed(-2)  # -2 does not correspond to any particular tab
-
-        # Get temporary directory to store results
-        temp_dir = self._model.get_temp_dir_path()
+        # Update tab properties and refresh GUI
+        self._toggle_tab_button_states(tab=tab, activate=False)  # Disable buttons for the given tab
+        tab.status_bar_state = 3  # Tab status to generating colour palette report
+        progress_callback.emit(tab, 0)
 
         # Generate report
-        generatereport.generate_report(directory=temp_dir,
+        output_dir = self._model.output_dir.name  # Directory to store results
+        generatereport.generate_report(directory=output_dir,
                                        tab=tab,
                                        image_data=image_data,
                                        progress_callback=progress_callback)
 
-        # Set image_data status bar state to colour palette generated
-        tab.status_bar_state = 2
-
-        # Re-enable buttons for the given tab
-        self._toggle_tab_button_states(tab=tab, activate=True)
+        # Update tab properties and refresh tab
+        self._toggle_tab_button_states(tab=tab, activate=True)  # Re-enable buttons for the given tab
+        tab.status_bar_state = 2  # Tab status to colour palette generated
+        progress_callback.emit(tab, 100)
 
     def _generate_all_palettes(self) -> None:
 
@@ -279,67 +269,54 @@ class ColourPaletteExtractorController(QRunnable):
             # Get image data for the current tab
             tab = self._view.tabs.currentWidget()
 
-        # Temporarily disable buttons for the given tab
-        self._toggle_tab_button_states(tab=tab, activate=False)
+        # Update tab properties and refresh GUI
 
-        # Set tab status bar state to generating colour palette
-        tab.status_bar_state = 1
-
-        # Reset state of tab
-        self._reset_tab(tab=tab, remove_data=True)
-
-        progress_callback.emit(tab, 0)
+        self._toggle_tab_button_states(tab=tab, activate=False)  # Disable buttons for the given tab
+        tab.status_bar_state = 1  # Set tab status to generating colour palette
+        self._reset_tab_image_properties(tab=tab)  # Remove recoloured image and colour palette
+        progress_callback.emit(tab, 0)  # Update GUI
 
         # Generate colour palette
         image_id = tab.image_id
         self._model.generate_palette(image_id, tab, progress_callback)
 
-        # Set image_data status bar state to colour palette generated
-        tab.status_bar_state = 2
+        # Update tab properties and refresh tab
+        self._toggle_tab_button_states(tab=tab, activate=True)  # Re-enable buttons for the tab
+        tab.status_bar_state = 2  # Tab status to colour palette generated
+        progress_callback.emit(tab, 100)  # Update GUI
 
         # TODO: add try block for status bar updates in case of failure
 
-        # Re-enable buttons for the tab
-        self._toggle_tab_button_states(tab=tab, activate=True)
-
         # Add colour palette to the GUI representation of the colour palette
-        image_data = self._model.get_image_data(image_id)
-        colour_palette = image_data.colour_palette
-
+        # image_data = self._model.get_image_data(image_id)
+        # colour_palette = image_data.colour_palette
         # return colour_palette, image_id
 
     @staticmethod
     def _toggle_tab_button_states(tab: NewTab, activate: bool):
+        """Turns off/on the three main buttons on the GUI that should not be interacted with
+        when the particular tab is doing something."""
 
-        # Enable/disable palette generation action for the given tab
-        tab.generate_palette_available = activate
-
-        # Enable/disable toggle button for showing recoloured image for the given tab
-        tab.toggle_recoloured_image_available = activate
-
-        # Enable/disable report generation action for the given tab
-        tab.generate_report_available = activate
+        tab.generate_palette_available = activate  # Palette generation
+        tab.toggle_recoloured_image_available = activate  # Toggle button for showing recoloured image
+        tab.generate_report_available = activate  # Report generation
 
 
-    def _reset_tab(self, tab, remove_data=False):
+    def _reset_tab_image_properties(self, tab: NewTab) -> None:
 
-        if remove_data:
-            # Reset image data
-            image_id = tab.image_id
-            image_data = self._model.get_image_data(image_id)
-            image_data.colour_palette = []  # Remove colour palette
-            image_data.recoloured_image = None  # Removing recoloured image
+        # Reset image data
+        image_id = tab.image_id
+        image_data = self._model.get_image_data(image_id)
+        image_data.colour_palette = []  # Remove colour palette
+        image_data.recoloured_image = None  # Removing recoloured image
 
-            # Reset tab data
-            image = image_data.image
-            tab.image_display.update_image(image)
+        # Reset tab data
+        image = image_data.image
+        tab.image_display.update_image(image)
 
         # Reset tab buttons
         tab.toggle_recoloured_image_available = False
         tab.toggle_recoloured_image_pressed = False
-
-        # Refresh tab
-        self.current_tab_changed(-2)  # -2 does not correspond to any particular tab
 
 
 

@@ -65,6 +65,8 @@ class ColourPaletteExtractorModel:
         # Create temporary directory for storing generated reports
         self._temp_dir = tempfile.TemporaryDirectory(prefix="ColourPaletteExtractor")
 
+        self._output_dir = self._temp_dir
+
     def evaluate_expression(self, expression):
         """slot function.
         :param expression:
@@ -78,8 +80,12 @@ class ColourPaletteExtractorModel:
 
         return result
 
-    def get_temp_dir_path(self):
-        return self._temp_dir.name
+    @property
+    def output_dir(self):
+        return self._output_dir
+
+    # def get_temp_dir_path(self):
+    #     return self._temp_dir.name
 
     def close_temporary_directory(self) -> None:
         self._temp_dir.cleanup()  # Removing temporary directory

@@ -71,7 +71,7 @@ class NewTab(QScrollArea):
         if isinstance(value, int) and 0 <= value <= 3:
             self._status_bar_state = value
         else:
-            # TODO: throw exception if invalid status
+            # TODO: throw exception if invalid status (change these to words ie generating palette etc.
             pass
 
     @property

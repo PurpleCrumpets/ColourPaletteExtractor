@@ -15,7 +15,7 @@
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 __author__ = "Tim Churchfield"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 
 def get_header():
