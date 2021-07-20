@@ -19,10 +19,6 @@ class ColourPaletteExtractorController(QRunnable):
         """Constructor."""
         super().__init__()
 
-        # Creating thread pool
-        self._thread_pool = QThreadPool()
-        print("Multithreading with maximum %d threads" % self._thread_pool.maxThreadCount())
-
         # Assigning model and view
         self._view = view
         self._model = model
@@ -43,7 +39,22 @@ class ColourPaletteExtractorController(QRunnable):
             algorithm_button.toggled.connect(partial(self._set_algorithm, algorithm))
 
     def _connect_output_directory_selector_signals(self) -> None:
-        pass
+
+        # TODO:
+        # Get default path as string
+        # create fake button for updating the paths
+        # get info from text box
+
+        temp_dir = self._model.temp_dir.name
+        # self._view.preferences.default_path_button.connect(partial(self._set_output_path, pressed_status=None, new_path=temp_dir))  # Get temp dir from the model
+        # self._view.preferences.user_path_button.connect(partial(self._set_output_path))  # Get the user dir from the config file
+        # self._view.preferences.browse_button.connect()
+
+    def _set_output_path(self, pressed_status, new_path: str) -> None:
+        print("Setting default path")
+        print(new_path)
+
+
 
     def _set_algorithm(self, algorithm, pressed_status=None) -> None:
         self._model.set_algorithm(algorithm)
@@ -211,7 +222,6 @@ class ColourPaletteExtractorController(QRunnable):
         worker.signals.progress.connect(self._update_progress_bar)  # Intermediate Progress
 
         QThreadPool.globalInstance().start(worker)
-        # self._thread_pool.start(worker)
         print("Started worker to generate report...")
 
     def _generate_report(self, tab, progress_callback):

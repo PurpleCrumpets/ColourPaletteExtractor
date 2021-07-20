@@ -197,6 +197,9 @@ class PreferencesWidget(QDialog):
     def get_algorithms_and_buttons(self) -> tuple[list[object], list[QRadioButton]]:
         return self._algorithms, self._algorithm_buttons
 
+    # def get_output_directory_buttons(self) -> list[object]:
+    #     return self._output_directory_buttons
+
     def show_preferences(self):
         self.exec_()
 
@@ -232,33 +235,34 @@ class PreferencesWidget(QDialog):
         line = self._create_horizontal_line()
         layout.addWidget(line, 1, 0, 1, 3)  # Horizontal line spacer
 
-        # Default path
-        default_path_button = QRadioButton()  # TODO: get the current temp path by triggering the button?
-        default_path_button.setChecked(True)
-        layout.addWidget(default_path_button, 2, 0)
+        # Default path button and label
+        self.default_path_button = QRadioButton()  # TODO: get the current temp path by triggering the button?
+        self.default_path_button.setChecked(True)
+        layout.addWidget(self.default_path_button, 2, 0)
+
         # default_path_label = QLabel("[DEFAULT] " + self._temp_path)
 
         default_path_label = QLabel("Temporary Output Folder "
-                                    + "(all unsaved reports will be lost on closing the application).")
-
+                                    + "(all unsaved reports will be lost upon closing the application).")
         layout.addWidget(default_path_label, 2, 1)
 
         # User-selected path
-        user_path_button = QRadioButton()
-        layout.addWidget(user_path_button, 3, 0)
-        layout.addWidget(QLabel("Alternative Ouput Folder:"), 3, 1)
+        self.user_path_button = QRadioButton()
+        layout.addWidget(self.user_path_button, 3, 0)
+        layout.addWidget(QLabel("Alternative Output Folder:"), 3, 1)
+
 
         documents_directory = self._get_default_documents_directory()
         print(documents_directory)
-        user_path_selector = QLineEdit(documents_directory)  # TODO: Default to user's documents folder (ColourPaletteExtractor) - if it doesn't exist, it will be created
-        user_path_selector.setReadOnly(True)
-        user_path_selector.setDisabled(True)
-        layout.addWidget(user_path_selector, 4, 1)
+        self.user_path_selector = QLineEdit(documents_directory)  # TODO: Default to user's documents folder (ColourPaletteExtractor) - if it doesn't exist, it will be created
+        self.user_path_selector.setReadOnly(True)
+        self.user_path_selector.setDisabled(True)
+        layout.addWidget(self.user_path_selector, 4, 1)
 
 
-
-        browse_button = QPushButton("...")
-        layout.addWidget(browse_button, 4, 2)
+        # Browse button for a user to select their desired output directory
+        self.browse_button = QPushButton("...")
+        layout.addWidget(self.browse_button, 4, 2)
 
 
 
@@ -284,8 +288,6 @@ class PreferencesWidget(QDialog):
 
         else:  # Linux
             return "~/Desktop/ColourPaletteExtractor"
-
-
 
     def _algorithm_properties_tab(self):
         self.algorithm_tab = QWidget()

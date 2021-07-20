@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 import darkdetect
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, QThreadPool
 from PySide2.QtWidgets import QApplication
 
 import qtmodern.styles
@@ -23,6 +23,8 @@ def print_hi(name):
 
 if __name__ == '__main__':
     print("Opening ColourPaletteExtractor application...")
+    print("Multithreading with maximum %d threads..." % QThreadPool.globalInstance().maxThreadCount())
+
 
     # Setting path to style sheet
     root = Path()

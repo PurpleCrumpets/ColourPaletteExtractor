@@ -84,8 +84,14 @@ class ColourPaletteExtractorModel:
     def output_dir(self):
         return self._output_dir
 
+    @property
+    def temp_dir(self):
+        return self._temp_dir
+
     # def get_temp_dir_path(self):
     #     return self._temp_dir.name
+
+
 
     def close_temporary_directory(self) -> None:
         self._temp_dir.cleanup()  # Removing temporary directory
