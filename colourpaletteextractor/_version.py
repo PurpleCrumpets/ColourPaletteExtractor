@@ -15,7 +15,12 @@
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 __author__ = "Tim Churchfield"
-__version__ = "0.3.1"
+__version__ = "0.4.0"
+
+__organisation__ = "The University of St Andrews"
+__application_name__ = "ColourPaletteExtractor"
+
+
 
 
 def get_header():

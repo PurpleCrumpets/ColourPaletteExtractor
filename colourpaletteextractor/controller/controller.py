@@ -6,7 +6,7 @@ from PySide2.QtWidgets import QErrorMessage, QMessageBox
 from colourpaletteextractor.controller.worker import ColourPaletteWorker, ReportGeneratorWorker
 from colourpaletteextractor.model import generatereport
 from colourpaletteextractor.model.imagedata import ImageData
-from colourpaletteextractor.model.model import ColourPaletteExtractorModel
+from colourpaletteextractor.model.model import ColourPaletteExtractorModel, get_settings
 from colourpaletteextractor.view import mainview as vw, otherviews
 from colourpaletteextractor.view.mainview import MainView
 from colourpaletteextractor.view.tabview import NewTab
@@ -36,7 +36,7 @@ class ColourPaletteExtractorController(QRunnable):
 
         # Connecting each radio button to the correct command
         for algorithm, algorithm_button in zip(algorithms, algorithm_buttons):
-            algorithm_button.toggled.connect(partial(self._set_algorithm, algorithm))
+            algorithm_button.clicked.connect(partial(self._set_algorithm, algorithm))
 
     def _connect_output_directory_selector_signals(self) -> None:
 
@@ -45,18 +45,30 @@ class ColourPaletteExtractorController(QRunnable):
         # create fake button for updating the paths
         # get info from text box
 
-        temp_dir = self._model.temp_dir.name
-        # self._view.preferences.default_path_button.connect(partial(self._set_output_path, pressed_status=None, new_path=temp_dir))  # Get temp dir from the model
-        # self._view.preferences.user_path_button.connect(partial(self._set_output_path))  # Get the user dir from the config file
-        # self._view.preferences.browse_button.connect()
+        self._view.preferences.default_path_button.clicked.connect(partial(self._set_output_path, use_user_dir=False))
+        self._view.preferences.user_path_button.clicked.connect(partial(self._set_output_path, use_user_dir=True))
+        self._view.preferences.browse_button.clicked.connect(self._get_output_path)
 
-    def _set_output_path(self, pressed_status, new_path: str) -> None:
-        print("Setting default path")
-        print(new_path)
+    def _get_output_path(self):
+        current_path = self._view.preferences.user_path_selector.text()
+        new_path = self._view.preferences.show_output_directory_dialog_box(current_path=current_path)
+
+        # Set new path
+        self._view.preferences.user_path_selector.setText(new_path)
+        self._model.change_output_directory(use_user_dir=True, new_user_directory=new_path)
 
 
+    def _set_output_path(self, use_user_dir: bool) -> None:
+        # if use_user_dir:
+        new_user_directory = self._view.preferences.user_path_selector.text()
+        print(new_user_directory)
+        self._model.change_output_directory(use_user_dir=use_user_dir, new_user_directory=new_user_directory)
 
-    def _set_algorithm(self, algorithm, pressed_status=None) -> None:
+        # Update GUI
+        self._view.preferences.user_path_selector.setEnabled(use_user_dir)
+        self._view.preferences.browse_button.setEnabled(use_user_dir)
+
+    def _set_algorithm(self, algorithm) -> None:
         self._model.set_algorithm(algorithm)
 
     def _connect_signals(self) -> None:
@@ -240,9 +252,8 @@ class ColourPaletteExtractorController(QRunnable):
         progress_callback.emit(tab, 0)
 
         # Generate report
-        output_dir = self._model.output_dir.name  # Directory to store results
-        generatereport.generate_report(directory=output_dir,
-                                       tab=tab,
+        output_dir = self._model.output_dir  # Directory to store results
+        generatereport.generate_report(tab=tab,
                                        image_data=image_data,
                                        progress_callback=progress_callback)
 

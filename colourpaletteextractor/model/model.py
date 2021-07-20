@@ -1,12 +1,19 @@
 # TODO: add ability to run the model by itself, without the GUI using __main__
+import ctypes
 import errno
 import os
+import sys
 import tempfile
 
 from sys import argv
 
-import numpy as np
+from PySide2.QtCore import QStandardPaths, QSettings, QSize
+# from pyqtconfig import QSettingsManager
 
+import numpy as np
+from PySide2.QtWidgets import QDesktopWidget
+
+from colourpaletteextractor import _version
 from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.model.algorithms import nieves2020
 from colourpaletteextractor.model.algorithms import grogan2018
@@ -44,6 +51,14 @@ def generate_colour_palette_from_image(path_to_file: str) -> tuple[np.ndarray, l
     return new_recoloured_image, image_colour_palette, relative_frequency
 
 
+def get_settings() -> QSettings:
+    settings = QSettings(QSettings.IniFormat,
+                         QSettings.UserScope,
+                         _version.__organisation__,
+                         _version.__application_name__)
+    return settings
+
+
 class ColourPaletteExtractorModel:
     DEFAULT_ALGORITHM = nieves2020.Nieves2020
     ERROR_MSG = "Error! :'("
@@ -65,7 +80,80 @@ class ColourPaletteExtractorModel:
         # Create temporary directory for storing generated reports
         self._temp_dir = tempfile.TemporaryDirectory(prefix="ColourPaletteExtractor")
 
-        self._output_dir = self._temp_dir
+        # Set default output directory preferences
+        self._user_dir = os.path.join(QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation),
+                                         "ColourPaletteExtractor",
+                                         "Output")
+        self._use_user_dir = False  # Use temporary directory by default
+        self._output_dir = self._temp_dir.name
+
+        # Read-in settings file
+        self._read_settings()
+
+        # print(str(QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)))
+        # print(str(QStandardPaths.writableLocation(QStandardPaths.AppConfigLocation)))
+
+    def change_output_directory(self, use_user_dir: bool, new_user_directory):
+        print("Updating output directory...")
+
+        if use_user_dir:
+            self.output_dir = self.user_dir
+            self.use_user_dir = True
+        else:
+            self.output_dir = self.temp_dir
+            self.use_user_dir = False
+
+        # Update settings file
+        self._settings.setValue("output directory/use user directory", int(use_user_dir))
+        self._settings.setValue("output directory/user directory", new_user_directory)
+        self._settings.sync()
+
+        # TODO: if user dr is none but was selected - throw an exception?
+
+
+    def _read_settings(self):
+        print("Reading application settings...")
+
+        # Try and set a location config file?? - make the application portable?
+        self._settings = get_settings()
+
+        print(self._settings.fileName())
+
+        # Check if settings file exists
+        if not self._settings.contains('output directory/user directory'):
+            print("Settings file not found...")
+            self._write_default_settings()
+        else:
+            print("Settings file found...")
+            self._settings.setValue('output directory/temporary directory', self._temp_dir.name)  # Update path to new temporary directory
+            self._settings.sync()
+
+    def _write_default_settings(self):
+        print("Writing default settings to config file...")
+
+        # Set default main window preferences
+        self._settings.beginGroup("main window")
+        self._settings.setValue("size", QSize(1200, 800))
+        self._settings.endGroup()
+
+        # Set default output directory preferences
+        self._settings.beginGroup("output directory")
+        self._settings.setValue('temporary directory', self._temp_dir.name)
+        self._settings.setValue('user directory', self._user_dir)
+        self._settings.setValue('use user directory', int(self._use_user_dir))
+        self._settings.endGroup()
+
+        # Set default algorithm preferences
+        self._settings.beginGroup("algorithm")
+        self._settings.setValue('algorithm,', ColourPaletteExtractorModel.DEFAULT_ALGORITHM)
+        self._settings.endGroup()
+
+
+
+        # TODO: add algorithm to this
+
+        self._settings.sync()
+        pass
 
     def evaluate_expression(self, expression):
         """slot function.
@@ -84,14 +172,32 @@ class ColourPaletteExtractorModel:
     def output_dir(self):
         return self._output_dir
 
+    @output_dir.setter
+    def output_dir(self, value: str):
+        self._output_dir = value
+
     @property
     def temp_dir(self):
-        return self._temp_dir
+        return self._temp_dir.name
+
+    @property
+    def user_dir(self):
+        return self._user_dir
+
+    @user_dir.setter
+    def user_dir(self, value: str):
+        self._user_dir = value
+
+    @property
+    def use_user_dir(self):
+        return self._use_user_dir
+
+    @use_user_dir.setter
+    def use_user_dir(self, value:bool):
+        self._use_user_dir = value
 
     # def get_temp_dir_path(self):
     #     return self._temp_dir.name
-
-
 
     def close_temporary_directory(self) -> None:
         self._temp_dir.cleanup()  # Removing temporary directory
@@ -104,7 +210,7 @@ class ColourPaletteExtractorModel:
 
         # Check if provided class name is a sub-class of PaletteAlgorithm
         if issubclass(algorithm_class_name, PaletteAlgorithm):
-            self._algorithm=algorithm_class_name
+            self._algorithm = algorithm_class_name
         else:
             pass
             # TODO: throw error here

@@ -34,14 +34,13 @@ if __name__ == '__main__':
         qtmodern.windows._FL_STYLESHEET = root / 'qtmodern/frameless.qss'
 
     model = model.ColourPaletteExtractorModel()  # Model
-    temp_path = model.output_dir.name  # Initial default directory
 
     # Create instance of QApplication
     app = QApplication(sys.argv)
     app.setAttribute(Qt.AA_DisableWindowContextHelpButton)  # Disable QDialog's question mark button
     # app.setStyle('Macintosh')
 
-    view = mainview.MainView(temp_path=temp_path)  # View
+    view = mainview.MainView()  # View
     controller = controller.ColourPaletteExtractorController(model=model, view=view)  # Controller
 
     # Setting up dark mode for Windows applications

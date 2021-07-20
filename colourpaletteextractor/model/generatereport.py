@@ -17,12 +17,13 @@ from skimage.io import imsave
 from fpdf import FPDF
 
 from colourpaletteextractor.model.imagedata import ImageData
+from colourpaletteextractor.model.model import get_settings
 from colourpaletteextractor.view.tabview import NewTab
 
 matplotlib.pyplot.switch_backend("Agg")
 
 
-def generate_report(directory: str, tab: NewTab, image_data: ImageData, progress_callback: QtCore.SignalInstance):
+def generate_report(tab: NewTab, image_data: ImageData, progress_callback: QtCore.SignalInstance):
     # old_dir = directory
     # print(old_dir)
     # directory = "C:\\Users\\timch\\OneDrive - University of St Andrews\\University\\MScProject\\Test Dir"
@@ -36,7 +37,7 @@ def generate_report(directory: str, tab: NewTab, image_data: ImageData, progress
         return
 
     print("Generating PDF report for image...")
-    generator = ReportGenerator(directory=directory, tab=tab, image_data=image_data,
+    generator = ReportGenerator(tab=tab, image_data=image_data,
                                 progress_callback=progress_callback)
 
     # Create report
@@ -49,13 +50,30 @@ def generate_report(directory: str, tab: NewTab, image_data: ImageData, progress
 
 class ReportGenerator:
 
-    def __init__(self, directory: str, tab: NewTab, image_data: ImageData,
+    def __init__(self, tab: NewTab, image_data: ImageData,
                  progress_callback: QtCore.SignalInstance) -> None:
-        self._directory = directory
+        # self._directory = directory
         self._tab = tab
         self._image_data = image_data
         self._progress_callback = progress_callback
         self._image_file_type = ".png"
+
+        settings = get_settings()
+        self._temp_dir = settings.value("output directory/temporary directory")
+        if int(settings.value("output directory/use user directory")) == 0:
+            self._output_dir = settings.value("output directory/temporary directory")
+        elif int(settings.value("output directory/use user directory")) == 1:
+            self._output_dir = settings.value("output directory/user directory")
+
+        print("Output directory: ", self._output_dir)
+
+        # Check if output directory exists, if not create it
+        if not os.path.isdir(self._output_dir):
+            print("Output directory for reports not found, creating new output directory...")
+            os.makedirs(self._output_dir)
+        else:
+            print("Output directory for reports found...")
+
 
     def save_report(self, pdf: FPDF):
 
@@ -63,14 +81,14 @@ class ReportGenerator:
         name = self._image_data.name.replace(" ", "-")
         extension = self._image_data.extension.replace(".", "-")
         file_name = name + extension + ".pdf"
-        pdf_path = os.path.join(self._directory, file_name)
+        pdf_path = os.path.join(self._output_dir, file_name)
 
         # Check if PDF already exists and iterating its name if so
         count = 1
         while os.path.isfile(pdf_path):
             print(file_name + " already exists, trying to find a valid name...")
             file_name = name + extension + '(' + str(count) + ')' + '.pdf'
-            pdf_path = os.path.join(self._directory, file_name)
+            pdf_path = os.path.join(self._output_dir, file_name)
             count += 1
 
         # Writing PDF to directory
@@ -131,7 +149,7 @@ class ReportGenerator:
         # TODO: could alternatively find the original file - but it may have moved since then!
 
         # Create temporary file to hold the image in
-        temp_image = tempfile.NamedTemporaryFile(dir=self._directory,
+        temp_image = tempfile.NamedTemporaryFile(dir=self._temp_dir,
                                                  suffix=self._image_file_type,
                                                  mode='w',
                                                  delete=False)
@@ -155,7 +173,7 @@ class ReportGenerator:
         figure, ax = self._create_bar_plot()
 
         # Create temporary file to hold the image of the graph in
-        temp_image = tempfile.NamedTemporaryFile(dir=self._directory,
+        temp_image = tempfile.NamedTemporaryFile(dir=self._temp_dir,
                                                  suffix=self._image_file_type,
                                                  mode='w',
                                                  delete=False)

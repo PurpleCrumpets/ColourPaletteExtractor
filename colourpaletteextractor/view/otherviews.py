@@ -2,11 +2,11 @@ import sys
 import ctypes.wintypes
 
 from PySide2 import QtCore
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, QSettings
 from PySide2.QtGui import QIcon, QPixmap, QPainter
 from PySide2.QtWidgets import QWidget, QProgressBar, \
     QStatusBar, QMessageBox, QLabel, QTabWidget, QDialog, QVBoxLayout, QCheckBox, QRadioButton, QGridLayout, \
-    QStyleOption, QPushButton, QLineEdit, QFrame, QSizePolicy
+    QStyleOption, QPushButton, QLineEdit, QFrame, QSizePolicy, QFileDialog
 
 __author__ = "Tim Churchfield"
 
@@ -14,6 +14,7 @@ from colourpaletteextractor import _version
 from colourpaletteextractor._version import get_header, get_licence
 from colourpaletteextractor.model import model
 from colourpaletteextractor.model.algorithms import palettealgorithm
+from colourpaletteextractor.model.model import get_settings
 
 
 class AlgorithmDialogBox(QWidget):
@@ -186,13 +187,35 @@ class AboutBox(QMessageBox):
 
 class PreferencesWidget(QDialog):
 
-    def __init__(self, temp_path: str, parent=None):
+    def __init__(self, parent=None):
 
         super(PreferencesWidget, self).__init__(parent)
 
-        self._temp_path = temp_path
+        self._read_settings()
 
         self._set_properties()
+
+    def show_output_directory_dialog_box(self, current_path: str):
+        """Show dialog box for selecting output directory for reports."""
+
+        return QFileDialog.getExistingDirectory(self, "Select output folder", current_path, QFileDialog.ShowDirsOnly)
+
+    def _read_settings(self):
+        self._settings = get_settings()
+
+        # Check if settings file exists
+        if not self._settings.contains('output directory/user directory'):
+            print("Settings file not found...")
+            # TODO: throw exception
+
+        # Load values
+        self._settings.beginGroup("output directory")
+        self._temp_dir = self._settings.value('temporary directory')
+        self._user_output_dir = self._settings.value('user directory')
+        self._use_user_dir = self._settings.value('use user directory')
+        self._settings.endGroup()
+
+
 
     def get_algorithms_and_buttons(self) -> tuple[list[object], list[QRadioButton]]:
         return self._algorithms, self._algorithm_buttons
@@ -237,7 +260,6 @@ class PreferencesWidget(QDialog):
 
         # Default path button and label
         self.default_path_button = QRadioButton()  # TODO: get the current temp path by triggering the button?
-        self.default_path_button.setChecked(True)
         layout.addWidget(self.default_path_button, 2, 0)
 
         # default_path_label = QLabel("[DEFAULT] " + self._temp_path)
@@ -252,11 +274,10 @@ class PreferencesWidget(QDialog):
         layout.addWidget(QLabel("Alternative Output Folder:"), 3, 1)
 
 
-        documents_directory = self._get_default_documents_directory()
-        print(documents_directory)
-        self.user_path_selector = QLineEdit(documents_directory)  # TODO: Default to user's documents folder (ColourPaletteExtractor) - if it doesn't exist, it will be created
+        # documents_directory = self._get_default_documents_directory()
+        # print(documents_directory)
+        self.user_path_selector = QLineEdit(self._user_output_dir)  # TODO: Default to user's documents folder (ColourPaletteExtractor) - if it doesn't exist, it will be created
         self.user_path_selector.setReadOnly(True)
-        self.user_path_selector.setDisabled(True)
         layout.addWidget(self.user_path_selector, 4, 1)
 
 
@@ -265,6 +286,15 @@ class PreferencesWidget(QDialog):
         layout.addWidget(self.browse_button, 4, 2)
 
 
+        # Selecting temporary or user selected radio button
+        if int(self._use_user_dir) == 1:
+            self.user_path_button.setChecked(True)
+            self.user_path_selector.setEnabled(True)
+            self.browse_button.setEnabled(True)
+        else:
+            self.default_path_button.setChecked(True)
+            self.user_path_selector.setDisabled(True)
+            self.browse_button.setDisabled(True)  # TODO: not sure this is working
 
         # Setting layout of buttons
         self.output_tab.setLayout(layout)

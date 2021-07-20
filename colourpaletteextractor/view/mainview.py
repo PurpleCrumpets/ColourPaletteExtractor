@@ -8,13 +8,14 @@ import qdarkstyle
 import platform
 
 from PySide2 import QtGui
-from PySide2.QtCore import Qt, QDir
-from PySide2.QtGui import QIcon, QKeySequence, QPixmap
+from PySide2.QtCore import Qt, QDir, QRect
+from PySide2.QtGui import QIcon, QKeySequence, QPixmap, QGuiApplication
 from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, \
-    QSizePolicy, QMessageBox
+    QSizePolicy, QMessageBox, QApplication
 
 __author__ = "Tim Churchfield"
 
+from colourpaletteextractor.model.model import get_settings
 from colourpaletteextractor.view import otherviews, tabview
 
 
@@ -41,7 +42,7 @@ class MainView(QMainWindow):
 
     app_icon = "app_icon"
 
-    def __init__(self, temp_path: str, parent=None):
+    def __init__(self, parent=None):
         """Constructor."""
 
         # Show GUI when using a Mac:
@@ -84,7 +85,8 @@ class MainView(QMainWindow):
         QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons", icon_dir))
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
 
-        self._create_gui(temp_path=temp_path)  # Generate main GUI components
+        self._create_gui()  # Generate main GUI components
+        self._read_settings()
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
 
@@ -102,11 +104,49 @@ class MainView(QMainWindow):
         # Analysing user's response
         if reply == QMessageBox.Close:
             self.close_action.trigger()
+
+            # Save main window size and position to settings
+            self._write_settings()
             event.accept()
         else:
             event.ignore()
 
-    def _create_gui(self, temp_path: str):
+    def _read_settings(self):
+        settings = get_settings()
+
+        settings.beginGroup("main window")
+
+        # Resize main window
+        if settings.contains('size'):
+            size = settings.value("size")
+            self.resize(size)
+
+        # Reposition main window
+        if settings.contains('position'):
+            position = settings.value("position")
+            self.move(position)
+        else:
+            # Centre screen based on its current size
+            # # Adapted from: https://stackoverflow.com/questions/9357944/how-to-make-a-widget-in-the-center-of-the-screen-in-pyside-pyqt
+            center_point = QtGui.QScreen.availableGeometry(QApplication.primaryScreen()).center()
+            fg = self.frameGeometry()
+            fg.moveCenter(center_point)
+            self.move(fg.topLeft())
+
+        settings.endGroup()
+
+    def _write_settings(self):
+        settings = get_settings()
+
+        settings.beginGroup("main window")
+        settings.setValue("position", self.pos())
+        settings.setValue("size", self.size())
+        settings.endGroup()
+
+        settings.sync()
+
+
+    def _create_gui(self):
         """Assemble the GUI components."""
         # Adapted from: https://realpython.com/python-pyqt-gui-calculator/
 
@@ -123,7 +163,7 @@ class MainView(QMainWindow):
         self._create_status_bar()
         self._create_colour_palette_dock()
 
-        self._create_preferences_dialog_box(temp_path=temp_path)  # Create preferences panel
+        self._create_preferences_dialog_box()  # Create preferences panel
 
     def set_display_text(self, text):
         """Set display's text."""
@@ -386,8 +426,8 @@ class MainView(QMainWindow):
         self.status = otherviews.StatusBar()
         self.setStatusBar(self.status)
 
-    def _create_preferences_dialog_box(self, temp_path: str):
-        self.preferences = otherviews.PreferencesWidget(temp_path=temp_path)
+    def _create_preferences_dialog_box(self):
+        self.preferences = otherviews.PreferencesWidget()
 
     def show_file_dialog_box(self, supported_file_types):
         """Show dialog box for importing images."""
