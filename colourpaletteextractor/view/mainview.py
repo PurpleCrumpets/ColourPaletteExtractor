@@ -188,6 +188,7 @@ class MainView(QMainWindow):
         self.tabs = QTabWidget()
         self.tabs.setDocumentMode(True)
         self.tabs.setTabsClosable(True)
+        self.tabs.setUsesScrollButtons(True)
 
         self.setCentralWidget(self.tabs)
 
