@@ -150,10 +150,9 @@ class ReportGenerator:
         os.remove(temp_image.name)
 
     def _add_chart(self, pdf: FPDF):
-        # plt.ioff()  # Disable interactive plotting
 
-        plot = self._create_bar_plot()
-        fig = plot.get_figure()
+        # Create bar plot
+        figure, ax = self._create_bar_plot()
 
         # Create temporary file to hold the image of the graph in
         temp_image = tempfile.NamedTemporaryFile(dir=self._directory,
@@ -165,16 +164,17 @@ class ReportGenerator:
         # os.chmod(temp_image.name, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
         # Save temporary image and close file
-        fig.savefig(temp_image.name, bbox_inches='tight')
+        figure.savefig(temp_image.name, bbox_inches='tight')
         temp_image.close()
 
         # Add temporary image to the pdf
         pdf.image(name=temp_image.name, w=150)
+        # plt.close(figure)
 
         # Delete temporary image file
         os.remove(temp_image.name)
 
-        plt.close(fig)  # May not be necessary
+
 
     def _create_bar_plot(self):
 
@@ -190,6 +190,7 @@ class ReportGenerator:
 
         # Create plot
         sns.set_theme(style="ticks", context="paper")
+        fig, ax = plt.subplots()
         ax = sns.barplot(x=labels, y=data)
 
         # Set title and axis labels
@@ -216,7 +217,7 @@ class ReportGenerator:
             for i in range(0, len(raw_labels)):
                 bars[0][i].set_color(colours[i][:])
         else:
-            # TODO: throw exception here!
+            # TODO: throw exception here! if more than one bar container
             pass
 
-        return ax
+        return fig, ax

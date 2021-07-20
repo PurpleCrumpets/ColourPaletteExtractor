@@ -210,7 +210,8 @@ class ColourPaletteExtractorController(QRunnable):
         worker.signals.finished.connect(self.current_tab_changed)  # Function called at the very end
         worker.signals.progress.connect(self._update_progress_bar)  # Intermediate Progress
 
-        self._thread_pool.start(worker)
+        QThreadPool.globalInstance().start(worker)
+        # self._thread_pool.start(worker)
         print("Started worker to generate report...")
 
     def _generate_report(self, tab, progress_callback):
@@ -257,7 +258,8 @@ class ColourPaletteExtractorController(QRunnable):
         # worker.signals.result.connect(self._update_tab)  # Uses the result of the main function
         worker.signals.finished.connect(self.current_tab_changed)  # Function called at the very end
         worker.signals.progress.connect(self._update_progress_bar)  # Intermediate Progress
-        self._thread_pool.start(worker)
+        QThreadPool.globalInstance().start(worker)
+        # self._thread_pool.start(worker)
         print("Started worker to generate colour palette...")
 
         # TODO: add cancel button?
