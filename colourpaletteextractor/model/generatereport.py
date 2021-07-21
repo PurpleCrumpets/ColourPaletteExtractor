@@ -183,11 +183,12 @@ class ReportGenerator:
 
         # Save temporary image and close file
         figure.savefig(temp_image.name, bbox_inches='tight')
+        figure.clf()
+        # plt.close(figure)
         temp_image.close()
 
         # Add temporary image to the pdf
         pdf.image(name=temp_image.name, w=150)
-        # plt.close(figure)
 
         # Delete temporary image file
         os.remove(temp_image.name)
@@ -242,6 +243,7 @@ class ReportGenerator:
                 bars[0][i].set_edgecolor("black")
         else:
             # TODO: throw exception here! if more than one bar container
+            print("More than one bar container found! ", len(raw_labels))
             pass
 
 

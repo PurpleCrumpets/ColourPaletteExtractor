@@ -24,12 +24,23 @@ class ColourPaletteExtractorController(QRunnable):
         self._model = model
 
         # Connect signals and slots
-        self._connect_signals()
-        self._connect_algorithm_selector_signals()
-        self._connect_output_directory_selector_signals()
+        self._connect_main_window_signals()
+        self._connect_preferences_signals()
 
         # Signal creation of instructions tab
         self._create_default_tab()
+
+    def _connect_preferences_signals(self):
+        self._view.preferences.reset_preferences_button.clicked.connect(self._reset_preferences)
+        self._connect_algorithm_selector_signals()
+        self._connect_output_directory_selector_signals()
+
+
+    def _reset_preferences(self):
+        self._model.write_default_settings()  # Update settings file
+        self._view.preferences.update_preferences()
+        # Update preferences panel
+
 
     def _connect_algorithm_selector_signals(self) -> None:
         algorithms, algorithm_buttons = self._view.preferences.get_algorithms_and_buttons()
@@ -71,7 +82,7 @@ class ColourPaletteExtractorController(QRunnable):
     def _set_algorithm(self, algorithm) -> None:
         self._model.set_algorithm(algorithm)
 
-    def _connect_signals(self) -> None:
+    def _connect_main_window_signals(self) -> None:
         """
 
         :return:
@@ -168,7 +179,7 @@ class ColourPaletteExtractorController(QRunnable):
     def _open_file(self) -> None:
         """Add new image."""
 
-        supported_files = self._model.supported_image_types
+        supported_files = self._model.SUPPORTED_IMAGE_TYPES
         file_names, _ = self._view.show_file_dialog_box(supported_files)
 
         for file_name in file_names:
@@ -252,7 +263,6 @@ class ColourPaletteExtractorController(QRunnable):
         progress_callback.emit(tab, 0)
 
         # Generate report
-        output_dir = self._model.output_dir  # Directory to store results
         generatereport.generate_report(tab=tab,
                                        image_data=image_data,
                                        progress_callback=progress_callback)

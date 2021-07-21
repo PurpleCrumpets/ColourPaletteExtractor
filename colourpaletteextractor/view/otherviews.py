@@ -6,7 +6,7 @@ from PySide2.QtCore import Qt, QSettings
 from PySide2.QtGui import QIcon, QPixmap, QPainter
 from PySide2.QtWidgets import QWidget, QProgressBar, \
     QStatusBar, QMessageBox, QLabel, QTabWidget, QDialog, QVBoxLayout, QCheckBox, QRadioButton, QGridLayout, \
-    QStyleOption, QPushButton, QLineEdit, QFrame, QSizePolicy, QFileDialog
+    QStyleOption, QPushButton, QLineEdit, QFrame, QSizePolicy, QFileDialog, QHBoxLayout
 
 __author__ = "Tim Churchfield"
 
@@ -192,13 +192,32 @@ class PreferencesWidget(QDialog):
         super(PreferencesWidget, self).__init__(parent)
 
         self._read_settings()
-
         self._set_properties()
+
+    def show_preferences(self):
+        self.exec_()
+
+    def update_preferences(self):
+        self._read_settings()
+
+        for button, algorithm in zip(self._algorithm_buttons, self._algorithms):
+            if algorithm == self._default_algorithm:
+                button.setChecked(True)
+                break
+
+        self.user_path_selector.setEnabled(self._use_user_dir)
+        self.browse_button.setEnabled(self._use_user_dir)
+        self.default_path_button.setChecked(not self._use_user_dir)
+
+
 
     def show_output_directory_dialog_box(self, current_path: str):
         """Show dialog box for selecting output directory for reports."""
 
         return QFileDialog.getExistingDirectory(self, "Select output folder", current_path, QFileDialog.ShowDirsOnly)
+
+    def get_algorithms_and_buttons(self) -> tuple[list[object], list[QRadioButton]]:
+        return self._algorithms, self._algorithm_buttons
 
     def _read_settings(self):
         self._settings = get_settings()
@@ -208,23 +227,17 @@ class PreferencesWidget(QDialog):
             print("Settings file not found...")
             # TODO: throw exception
 
-        # Load values
+        # Load values from settings
         self._settings.beginGroup("output directory")
         self._temp_dir = self._settings.value('temporary directory')
         self._user_output_dir = self._settings.value('user directory')
         self._use_user_dir = self._settings.value('use user directory')
         self._settings.endGroup()
 
-
-
-    def get_algorithms_and_buttons(self) -> tuple[list[object], list[QRadioButton]]:
-        return self._algorithms, self._algorithm_buttons
-
-    # def get_output_directory_buttons(self) -> list[object]:
-    #     return self._output_directory_buttons
-
-    def show_preferences(self):
-        self.exec_()
+        self._settings.beginGroup("algorithm")
+        self._default_algorithm = self._settings.value('default algorithm')
+        self._selected_algorithm = self._settings.value('selected algorithm')
+        self._settings.endGroup()
 
     def _set_properties(self):
 
@@ -232,8 +245,6 @@ class PreferencesWidget(QDialog):
         self.setWindowIcon(QIcon("icons:about-medium.png"))
 
         layout = QVBoxLayout()  # Top-level layout
-        self.setLayout(layout)
-
         tabs = QTabWidget()  # tab widget for holding preferences
         layout.addWidget(tabs)  # Add tabs to layout
 
@@ -244,25 +255,29 @@ class PreferencesWidget(QDialog):
         self._output_properties_tab()
         tabs.addTab(self.output_tab, "Output Directory")
 
+        # Add reset preferences button
+        self.reset_preferences_button = QPushButton("Reset Preferences")
+        self.reset_preferences_button.setAutoDefault(False)
+        self.reset_preferences_button.setDefault(False)
+        layout.addWidget(self.reset_preferences_button, alignment=QtCore.Qt.AlignRight)
+
+        # Set layout
+        self.setLayout(layout)
+
     def _output_properties_tab(self):
         self.output_tab = QWidget()
-
-        # Get default path (from model)
-
-        # Create and populate layout of algorithm options
         layout = QGridLayout()
 
         # Path requirements explanation
         layout.addWidget(QLabel("Select the output folder for the colour palette reports:"), 0, 0, 1, 2)
 
+        # Horizontal line spacer
         line = self._create_horizontal_line()
-        layout.addWidget(line, 1, 0, 1, 3)  # Horizontal line spacer
+        layout.addWidget(line, 1, 0, 1, 3)
 
         # Default path button and label
         self.default_path_button = QRadioButton()  # TODO: get the current temp path by triggering the button?
         layout.addWidget(self.default_path_button, 2, 0)
-
-        # default_path_label = QLabel("[DEFAULT] " + self._temp_path)
 
         default_path_label = QLabel("Temporary Output Folder "
                                     + "(all unsaved reports will be lost upon closing the application).")
@@ -273,16 +288,15 @@ class PreferencesWidget(QDialog):
         layout.addWidget(self.user_path_button, 3, 0)
         layout.addWidget(QLabel("Alternative Output Folder:"), 3, 1)
 
-
-        # documents_directory = self._get_default_documents_directory()
-        # print(documents_directory)
         self.user_path_selector = QLineEdit(self._user_output_dir)  # TODO: Default to user's documents folder (ColourPaletteExtractor) - if it doesn't exist, it will be created
         self.user_path_selector.setReadOnly(True)
         layout.addWidget(self.user_path_selector, 4, 1)
 
-
         # Browse button for a user to select their desired output directory
         self.browse_button = QPushButton("...")
+        self.browse_button.setAutoDefault(False)
+        self.browse_button.setDefault(False)
+
         layout.addWidget(self.browse_button, 4, 2)
 
 
@@ -291,6 +305,7 @@ class PreferencesWidget(QDialog):
             self.user_path_button.setChecked(True)
             self.user_path_selector.setEnabled(True)
             self.browse_button.setEnabled(True)
+
         else:
             self.default_path_button.setChecked(True)
             self.user_path_selector.setDisabled(True)
@@ -299,31 +314,8 @@ class PreferencesWidget(QDialog):
         # Setting layout of buttons
         self.output_tab.setLayout(layout)
 
-    def _get_default_documents_directory(self) -> str:
-
-        if sys.platform == "win32":
-
-            CSIDL_PERSONAL = 5  # My Documents
-            SHGFP_TYPE_CURRENT = 0  # Get current, not default value
-
-            buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
-            ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
-
-            print(buf.value)
-            documents_path = buf.value + "\\ColourPaletteExtractor"
-            return documents_path
-
-        elif sys.platform == "darwin":
-            return "~/Documents/ColourPaletteExtractor"
-
-        else:  # Linux
-            return "~/Desktop/ColourPaletteExtractor"
-
     def _algorithm_properties_tab(self):
         self.algorithm_tab = QWidget()
-
-        # Get default algorithm
-        default_algorithm = model.ColourPaletteExtractorModel.DEFAULT_ALGORITHM
 
         # Create and populate layout of algorithm options
         layout = QGridLayout()
@@ -347,15 +339,19 @@ class PreferencesWidget(QDialog):
 
             # Adding algorithm button
             new_button = self._create_algorithm_radio_button(name)
-            if algorithm_class == default_algorithm:  # Set default algorithm
+            if algorithm_class == self._default_algorithm:  # Set default algorithm
 
-                new_button.setChecked(True)
+                # new_button.setChecked(True)
                 default_algorithm_found = True
                 new_button.setText("[DEFAULT] " + name)  # Updating the name of the default algorithm
 
-            elif algorithm_class == default_algorithm and default_algorithm_found:
+            elif algorithm_class == self._default_algorithm and default_algorithm_found:
                 # TODO: throw exception
                 pass
+
+            # Set selected algorithm
+            if algorithm_class == self._selected_algorithm:
+                new_button.setChecked(True)
 
             self._algorithm_buttons.append(new_button)
 
@@ -435,6 +431,26 @@ class PreferencesWidget(QDialog):
         line.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         line.setStyleSheet("background-color: #c0c0c0;")
         return line
+
+    # def _get_default_documents_directory(self) -> str:
+    #
+    #     if sys.platform == "win32":
+    #
+    #         CSIDL_PERSONAL = 5  # My Documents
+    #         SHGFP_TYPE_CURRENT = 0  # Get current, not default value
+    #
+    #         buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+    #         ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
+    #
+    #         print(buf.value)
+    #         documents_path = buf.value + "\\ColourPaletteExtractor"
+    #         return documents_path
+    #
+    #     elif sys.platform == "darwin":
+    #         return "~/Documents/ColourPaletteExtractor"
+    #
+    #     else:  # Linux
+    #         return "~/Desktop/ColourPaletteExtractor"
 
 
 class ErrorBox(QMessageBox):

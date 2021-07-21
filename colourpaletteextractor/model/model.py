@@ -8,10 +8,9 @@ import tempfile
 from sys import argv
 
 from PySide2.QtCore import QStandardPaths, QSettings, QSize
-# from pyqtconfig import QSettingsManager
+
 
 import numpy as np
-from PySide2.QtWidgets import QDesktopWidget
 
 from colourpaletteextractor import _version
 from colourpaletteextractor.model.imagedata import ImageData
@@ -60,35 +59,38 @@ def get_settings() -> QSettings:
 
 
 class ColourPaletteExtractorModel:
-    DEFAULT_ALGORITHM = nieves2020.Nieves2020
-    ERROR_MSG = "Error! :'("
-    supported_image_types = {"png", "jpg", "jpeg"}
 
-    def __init__(self, algorithm_name=None):
+    # Default preferences for the settings file (if it doesn't yet exist)
+    DEFAULT_ALGORITHM = nieves2020.Nieves2020
+    DEFAULT_USER_DIRECTORY = os.path.join(QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation),
+                                          _version.__application_name__,
+                                          "Output")
+    DEFAULT_USE_USER_DIRECTORY = False
+
+    ERROR_MSG = "Error! :'("
+    SUPPORTED_IMAGE_TYPES = {"png", "jpg", "jpeg"}
+
+    def __init__(self, algorithm_class_name=None):
 
         self._image_data_id_counter = 0
         self._image_data_id_dictionary = {}
 
-        # self._images = []
-        if algorithm_name is None:
-            # self._algorithm = nieves2020.Nieves2020()  # Default algorithm
-            self._algorithm = ColourPaletteExtractorModel.DEFAULT_ALGORITHM
-            # self._algorithm = "nieves_2020"  # Default algorithm
-        else:
-            print("Algorithm not None")  # TODO: add new algorithm
-
         # Create temporary directory for storing generated reports
-        self._temp_dir = tempfile.TemporaryDirectory(prefix="ColourPaletteExtractor")
-
-        # Set default output directory preferences
-        self._user_dir = os.path.join(QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation),
-                                         "ColourPaletteExtractor",
-                                         "Output")
-        self._use_user_dir = False  # Use temporary directory by default
-        self._output_dir = self._temp_dir.name
+        self._temp_dir = tempfile.TemporaryDirectory(prefix=_version.__application_name__)
 
         # Read-in settings file
         self._read_settings()
+
+        # Update selected algorithm
+        if algorithm_class_name is not None:
+
+            # Check if provided algorithm class name is valid
+            if self._check_algorithm_valid(algorithm_class_name=algorithm_class_name):
+                # TODO: check it is an instance
+                self._settings.setValue("algorithm/selected algorithm", algorithm_class_name)
+            else:
+                pass
+                # TODO: Throw exception?
 
         # print(str(QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)))
         # print(str(QStandardPaths.writableLocation(QStandardPaths.AppConfigLocation)))
@@ -96,20 +98,12 @@ class ColourPaletteExtractorModel:
     def change_output_directory(self, use_user_dir: bool, new_user_directory):
         print("Updating output directory...")
 
-        if use_user_dir:
-            self.output_dir = self.user_dir
-            self.use_user_dir = True
-        else:
-            self.output_dir = self.temp_dir
-            self.use_user_dir = False
-
         # Update settings file
         self._settings.setValue("output directory/use user directory", int(use_user_dir))
         self._settings.setValue("output directory/user directory", new_user_directory)
         self._settings.sync()
 
         # TODO: if user dr is none but was selected - throw an exception?
-
 
     def _read_settings(self):
         print("Reading application settings...")
@@ -122,13 +116,14 @@ class ColourPaletteExtractorModel:
         # Check if settings file exists
         if not self._settings.contains('output directory/user directory'):
             print("Settings file not found...")
-            self._write_default_settings()
+            self.write_default_settings()
         else:
             print("Settings file found...")
-            self._settings.setValue('output directory/temporary directory', self._temp_dir.name)  # Update path to new temporary directory
+            self._settings.setValue('output directory/temporary directory',
+                                    self._temp_dir.name)  # Update path to new temporary directory
             self._settings.sync()
 
-    def _write_default_settings(self):
+    def write_default_settings(self):
         print("Writing default settings to config file...")
 
         # Set default main window preferences
@@ -139,21 +134,18 @@ class ColourPaletteExtractorModel:
         # Set default output directory preferences
         self._settings.beginGroup("output directory")
         self._settings.setValue('temporary directory', self._temp_dir.name)
-        self._settings.setValue('user directory', self._user_dir)
-        self._settings.setValue('use user directory', int(self._use_user_dir))
+        self._settings.setValue('user directory', ColourPaletteExtractorModel.DEFAULT_USER_DIRECTORY)
+        self._settings.setValue('use user directory', int(ColourPaletteExtractorModel.DEFAULT_USE_USER_DIRECTORY))
         self._settings.endGroup()
 
         # Set default algorithm preferences
         self._settings.beginGroup("algorithm")
-        self._settings.setValue('algorithm,', ColourPaletteExtractorModel.DEFAULT_ALGORITHM)
+        self._settings.setValue('default algorithm', ColourPaletteExtractorModel.DEFAULT_ALGORITHM)
+        self._settings.setValue('selected algorithm', ColourPaletteExtractorModel.DEFAULT_ALGORITHM)
         self._settings.endGroup()
 
-
-
-        # TODO: add algorithm to this
-
+        # Update settings file
         self._settings.sync()
-        pass
 
     def evaluate_expression(self, expression):
         """slot function.
@@ -168,52 +160,31 @@ class ColourPaletteExtractorModel:
 
         return result
 
-    @property
-    def output_dir(self):
-        return self._output_dir
-
-    @output_dir.setter
-    def output_dir(self, value: str):
-        self._output_dir = value
-
-    @property
-    def temp_dir(self):
-        return self._temp_dir.name
-
-    @property
-    def user_dir(self):
-        return self._user_dir
-
-    @user_dir.setter
-    def user_dir(self, value: str):
-        self._user_dir = value
-
-    @property
-    def use_user_dir(self):
-        return self._use_user_dir
-
-    @use_user_dir.setter
-    def use_user_dir(self, value:bool):
-        self._use_user_dir = value
-
-    # def get_temp_dir_path(self):
-    #     return self._temp_dir.name
-
     def close_temporary_directory(self) -> None:
         self._temp_dir.cleanup()  # Removing temporary directory
 
     def _get_algorithm(self):
-        return self._algorithm()  # Creating a new instance of the algorithm
+        return self._settings.value("algorithm/selected algorithm")()  # Create a new instance of the algorithm
+
+    def _check_algorithm_valid(self, algorithm_class_name):
+
+        # Check if provided class name is a sub-class of PaletteAlgorithm
+        if issubclass(algorithm_class_name, PaletteAlgorithm):
+            return True
+        else:
+            pass
+            # TODO: throw error here
 
     def set_algorithm(self, algorithm_class_name=DEFAULT_ALGORITHM):
         """Set the algorithm use to extract the colour palette of an image."""
 
         # Check if provided class name is a sub-class of PaletteAlgorithm
-        if issubclass(algorithm_class_name, PaletteAlgorithm):
-            self._algorithm = algorithm_class_name
-        else:
-            pass
-            # TODO: throw error here
+        if self._check_algorithm_valid(algorithm_class_name=algorithm_class_name):
+            print("Updating selected algorithm to " + str(algorithm_class_name) + "...")
+
+            # Update settings file
+            self._settings.setValue("algorithm/selected algorithm", algorithm_class_name)
+            self._settings.sync()
 
     def add_image(self, file_name_and_path: str):
         """From the path to an image, create a new image_data object and add it to the
