@@ -209,12 +209,12 @@ class ReportGenerator:
         # Create plot
         sns.set_theme(style="ticks", context="paper")
         fig, ax = plt.subplots()
-        ax = sns.barplot(x=labels, y=data)
+        ax = sns.barplot(x=labels, y=data, edgecolor="black")
 
         # Set title and axis labels
         ax.set_title(label="Relative Frequency of Colours in Recoloured Image", fontsize=16)
-        ax.set_xlabel(xlabel="Colour Palette", fontsize=10)
-        ax.set_ylabel(ylabel="Relative Frequency", fontsize=10)
+        ax.set_xlabel(xlabel="Colour Palette", fontsize=11)
+        ax.set_ylabel(ylabel="Relative Frequency", fontsize=11)
 
         # Format tick labels
         # for tick in ax.xaxis.get_major_ticks():  # X-axis tick labels
@@ -233,9 +233,15 @@ class ReportGenerator:
         bars = [i for i in ax.containers if isinstance(i, BarContainer)]
         if len(bars) == 1:
             for i in range(0, len(raw_labels)):
+                bar = bars[0][i]
                 bars[0][i].set_color(colours[i][:])
+                bars[0][i].set_edgecolor("black")
         else:
             # TODO: throw exception here! if more than one bar container
             pass
+
+
+
+
 
         return fig, ax
