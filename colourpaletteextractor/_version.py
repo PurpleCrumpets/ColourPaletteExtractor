@@ -14,18 +14,15 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+__version__ = "0.4.1"
 __author__ = "Tim Churchfield"
-__version__ = "0.4.0"
-
 __organisation__ = "The University of St Andrews"
 __application_name__ = "ColourPaletteExtractor"
 
 
-
-
 def get_header():
-    header = "ColourPaletteExtractor is a simple tool to generate the colour palette of an image. \n \n" + \
-              "    Copyright (C) 2020  Tim Churchfield \n \n" + \
+    header = __application_name__ + " is a simple tool to generate the colour palette of an image. \n \n" + \
+              "    Copyright (C) 2020 " + __author__ + " \n \n" + \
               "    Version " + __version__ + "\n"
 
     return header
@@ -42,6 +39,7 @@ def get_licence():
               "If not, see <https://www.gnu.org/licenses/>."
 
     return licence
+
 
 def print_version():
     print(__version__)

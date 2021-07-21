@@ -4,7 +4,7 @@ import os
 
 
 import darkdetect
-import qdarkstyle
+# import qdarkstyle
 import platform
 
 from PySide2 import QtGui
@@ -64,7 +64,7 @@ class MainView(QMainWindow):
             self.setWindowIcon(QIcon(icon_name))
 
             # Set application theme
-            dark_stylesheet = qdarkstyle.load_stylesheet_pyside2()
+            # dark_stylesheet = qdarkstyle.load_stylesheet_pyside2()
             # self.setStyleSheet(dark_stylesheet)
 
         # Set older macOS version (anything before Big Sur) settings

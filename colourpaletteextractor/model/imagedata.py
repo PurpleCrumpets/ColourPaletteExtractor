@@ -3,11 +3,10 @@ from PySide2.QtGui import QImage
 from skimage import io, color
 # from skimage.viewer import ImageViewer
 # from cv2 import imread, imshow, waitKey, COLOR_BGR2GRAY, cvtColor, split, COLOR_BGR2LAB
+from colourpaletteextractor.model.algorithms.palettealgorithm import PaletteAlgorithm
 
 
 class ImageData:
-
-    # default_file =
 
     def __init__(self, file_name_and_path=None):
         """Constructor."""
@@ -15,13 +14,12 @@ class ImageData:
         self._recoloured_image = None
         self._colour_palette = []
         self._colour_palette_relative_frequency = []
+        self._algorithm_used = None
 
         # TODO: Need to check that the image has been saved using three colour channels (assuming RGB)
         # TODO: Check colour space and adapt to that
         # Otherwise - remove alpha channel in the case of PNG images
         # Convert from greyscale to rgb as well
-        # viewer = ImageViewer(self._image)
-        # viewer.show()
 
         if file_name_and_path is None:
             # self._image =
@@ -44,8 +42,15 @@ class ImageData:
                                                                    self._colour_palette),
                                                                key=lambda pair: pair[0],
                                                                reverse=reverse)]
-
         self._colour_palette_relative_frequency.sort(reverse=reverse)
+
+    @property
+    def algorithm_used(self):
+        return self._algorithm_used
+
+    @algorithm_used.setter
+    def algorithm_used(self, value: type[PaletteAlgorithm]):
+        self._algorithm_used = value
 
     @property
     def colour_palette_relative_frequency(self):

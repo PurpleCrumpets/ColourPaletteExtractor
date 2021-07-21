@@ -1,6 +1,6 @@
 import time
 from functools import partial  # Import partial to connect signals with methods that need to take extra arguments
-from PySide2.QtCore import QFileInfo, QRunnable, QThreadPool
+from PySide2.QtCore import QFileInfo, QRunnable, QThreadPool, QThread
 from PySide2.QtWidgets import QErrorMessage, QMessageBox
 
 from colourpaletteextractor.controller.worker import ColourPaletteWorker, ReportGeneratorWorker
@@ -50,12 +50,6 @@ class ColourPaletteExtractorController(QRunnable):
             algorithm_button.clicked.connect(partial(self._set_algorithm, algorithm))
 
     def _connect_output_directory_selector_signals(self) -> None:
-
-        # TODO:
-        # Get default path as string
-        # create fake button for updating the paths
-        # get info from text box
-
         self._view.preferences.default_path_button.clicked.connect(partial(self._set_output_path, use_user_dir=False))
         self._view.preferences.user_path_button.clicked.connect(partial(self._set_output_path, use_user_dir=True))
         self._view.preferences.browse_button.clicked.connect(self._get_output_path)
@@ -239,7 +233,6 @@ class ColourPaletteExtractorController(QRunnable):
         # TODO: Re-enable generate all palettes action
 
     def _generate_report_worker(self, tab: NewTab = None) -> None:
-
         worker = ReportGeneratorWorker(self._generate_report, tab=tab)  # Execute main function
         worker.signals.finished.connect(self.current_tab_changed)  # Function called at the very end
         worker.signals.progress.connect(self._update_progress_bar)  # Intermediate Progress

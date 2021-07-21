@@ -222,16 +222,15 @@ class ColourPaletteExtractorModel:
         self._image_data_id_dictionary.pop(image_data_id)
         # TODO: add checks if not found
 
-    def _get_image_copy(self, image_data_id):
-        print("Retrieving image...")
-        # image_data = self._images[index]
-        image_data = self._image_data_id_dictionary.get(image_data_id)
-
-        return image_data.image.copy()
-        # TODO: Add checks for the index in case it is out of range
+    # def _get_image_copy(self, image_data_id):
+    #     print("Retrieving copy of image...")
+    #     image_data = self._image_data_id_dictionary.get(image_data_id)
+    #
+    #     return image_data.image.copy()
 
     def get_image_data(self, image_data_id):
         return self._image_data_id_dictionary.get(image_data_id)
+        # TODO: Add checks for the index in case it is out of range
 
     @property
     def image_data_id_dictionary(self):
@@ -240,15 +239,21 @@ class ColourPaletteExtractorModel:
     def generate_palette(self, image_data_id, tab, progress_callback=None, temp_algorithm=None):
         print("Generating colour palette for image:", image_data_id)
 
-        image_data = self._get_image_copy(image_data_id)
-
         # Get algorithm and process image with it
         algorithm = self._get_algorithm(algorithm=temp_algorithm)
         if progress_callback is not None:
             algorithm.set_progress_callback(progress_callback, tab)
 
+        # Set algorithm type used for the given image
+
+        image_data = self.get_image_data(image_data_id)
+        image_data.algorithm_used = type(algorithm)
+
+        # Generate colour palette
+        # image = self._get_image_copy(image_data_id)
+        image = image_data.image.copy()
         new_recoloured_image, image_colour_palette, new_relative_frequencies = \
-            algorithm.generate_colour_palette(image_data)
+            algorithm.generate_colour_palette(image)
 
         # Assigning properties to image_data
         self._image_data_id_dictionary[image_data_id].recoloured_image = new_recoloured_image

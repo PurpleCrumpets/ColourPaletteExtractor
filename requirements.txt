@@ -1,11 +1,9 @@
+numpy~=1.21.1
 setuptools~=57.2.0
-Cython~=0.29.23
-PySide2~=5.15.2
-numpy~=1.21.0
 scikit-image~=0.18.2
-darkdetect~=0.3.1
-QDarkStyle~=3.0.2
-qtmodern~=0.2.0
-fpdf~=1.7.2
 matplotlib~=3.4.2
 seaborn~=0.11.1
+darkdetect~=0.3.1
+qtmodern~=0.2.0
+PySide2~=5.15.2
+fpdf2~=2.4.2
