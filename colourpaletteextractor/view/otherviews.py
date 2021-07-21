@@ -209,8 +209,6 @@ class PreferencesWidget(QDialog):
         self.browse_button.setEnabled(self._use_user_dir)
         self.default_path_button.setChecked(not self._use_user_dir)
 
-
-
     def show_output_directory_dialog_box(self, current_path: str):
         """Show dialog box for selecting output directory for reports."""
 
@@ -351,6 +349,7 @@ class PreferencesWidget(QDialog):
 
             # Set selected algorithm
             if algorithm_class == self._selected_algorithm:
+                print("Setting checked")  # TODO: this did not appear to work on Windows???
                 new_button.setChecked(True)
 
             self._algorithm_buttons.append(new_button)
