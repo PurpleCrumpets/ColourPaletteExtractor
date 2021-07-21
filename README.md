@@ -9,6 +9,12 @@
     This is free software, and you are welcome to redistribute it
     under certain conditions; see LICENCE.md for details.
 
+## Requirements
+
+Due to the extensive use of ```types```, please use ```Python 3.9+``` or greater.
+
+The Python package requirements can be found in the ```requirements.txt``` file. 
+
 
 ## Using ColourPaletteExtractor
 

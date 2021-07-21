@@ -9,7 +9,6 @@ from sys import argv
 
 from PySide2.QtCore import QStandardPaths, QSettings, QSize
 
-
 import numpy as np
 
 from colourpaletteextractor import _version
@@ -20,8 +19,9 @@ from colourpaletteextractor.model.algorithms import dummyalgorithm
 from colourpaletteextractor.model.algorithms.palettealgorithm import PaletteAlgorithm
 
 
-def generate_colour_palette_from_image(path_to_file: str) -> tuple[np.ndarray, list[np.ndarray], list[float]]:
+def generate_colour_palette_from_image(path_to_file: str, algorithm: type[PaletteAlgorithm] = None) -> tuple[np.ndarray, list[np.ndarray], list[float]]:
     # TODO: check output types
+
     model = ColourPaletteExtractorModel()
 
     if os.path.isfile(path_to_file) is False:
@@ -35,7 +35,12 @@ def generate_colour_palette_from_image(path_to_file: str) -> tuple[np.ndarray, l
     print("Added image!")
 
     # Get colour palette of the image (image 0 in list)
-    model.generate_palette(image_data_id, "Tab_0", None)
+
+    if algorithm is None:
+        model.generate_palette(image_data_id, "Tab_0", None,
+                               temp_algorithm=ColourPaletteExtractorModel.DEFAULT_ALGORITHM)
+    else:
+        model.generate_palette(image_data_id, "Tab_0", None, temp_algorithm=algorithm)
 
     print("\n---------------")
     print("Colour Palette:")
@@ -59,7 +64,6 @@ def get_settings() -> QSettings:
 
 
 class ColourPaletteExtractorModel:
-
     # Default preferences for the settings file (if it doesn't yet exist)
     DEFAULT_ALGORITHM = nieves2020.Nieves2020
     DEFAULT_USER_DIRECTORY = os.path.join(QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation),
@@ -163,8 +167,19 @@ class ColourPaletteExtractorModel:
     def close_temporary_directory(self) -> None:
         self._temp_dir.cleanup()  # Removing temporary directory
 
-    def _get_algorithm(self):
-        return self._settings.value("algorithm/selected algorithm")()  # Create a new instance of the algorithm
+    def _get_algorithm(self, algorithm: type[PaletteAlgorithm] = None):
+        if algorithm is None:
+            print(self._settings.value("algorithm/selected algorithm"))
+            print(self._settings.value("algorithm/selected algorithm")())
+            return self._settings.value("algorithm/selected algorithm")()  # Create a new instance of the algorithm
+
+        else:
+            print("Using temporary algorithm...")
+            if self._check_algorithm_valid(algorithm_class_name=algorithm):
+                return algorithm()
+            else:
+                # TODO throw exception
+                pass
 
     def _check_algorithm_valid(self, algorithm_class_name):
 
@@ -222,13 +237,13 @@ class ColourPaletteExtractorModel:
     def image_data_id_dictionary(self):
         return self._image_data_id_dictionary
 
-    def generate_palette(self, image_data_id, tab, progress_callback=None):
+    def generate_palette(self, image_data_id, tab, progress_callback=None, temp_algorithm=None):
         print("Generating colour palette for image:", image_data_id)
 
         image_data = self._get_image_copy(image_data_id)
 
         # Get algorithm and process image with it
-        algorithm = self._get_algorithm()
+        algorithm = self._get_algorithm(algorithm=temp_algorithm)
         if progress_callback is not None:
             algorithm.set_progress_callback(progress_callback, tab)
 
