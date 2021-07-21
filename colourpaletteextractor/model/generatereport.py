@@ -206,6 +206,10 @@ class ReportGenerator:
             label = "[" + str(label[0]) + ", " + str(label[1]) + ", " + str(label[2]) + "]"
             labels.append(label)
 
+        # Rescale relative frequencies from 0-1, to 0--100
+        data = np.array(data)
+        data = data * 100
+
         # Create plot
         sns.set_theme(style="ticks", context="paper")
         fig, ax = plt.subplots()
@@ -214,7 +218,7 @@ class ReportGenerator:
         # Set title and axis labels
         ax.set_title(label="Relative Frequency of Colours in Recoloured Image", fontsize=16)
         ax.set_xlabel(xlabel="Colour Palette", fontsize=11)
-        ax.set_ylabel(ylabel="Relative Frequency", fontsize=11)
+        ax.set_ylabel(ylabel="Relative Frequency (%)", fontsize=11)
 
         # Format tick labels
         # for tick in ax.xaxis.get_major_ticks():  # X-axis tick labels
