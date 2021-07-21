@@ -220,15 +220,15 @@ class MainView(QMainWindow):
         self.open_action.setShortcut("Ctrl+O")
         # self.open_action.setStatusTip("Open new image(s)...")
 
-        # Save
-        self.save_action = QAction(QIcon("icons:save-outline.svg"), "&Save Results...", self)
-        self.save_action.setShortcut("Ctrl+S")
-        self.save_action.setDisabled(True)
-
-        # Print
-        self._print_action = QAction(QIcon("icons:print-outline.svg"), "&Print...", self)
-        self._print_action.setShortcut(QKeySequence.Print)
-        self._print_action.setDisabled(True)  # TODO: Needs to be implemented
+        # # Save
+        # self.save_action = QAction(QIcon("icons:save-outline.svg"), "&Save Results...", self)
+        # self.save_action.setShortcut("Ctrl+S")
+        # self.save_action.setDisabled(True)
+        #
+        # # Print
+        # self._print_action = QAction(QIcon("icons:print-outline.svg"), "&Print...", self)
+        # self._print_action.setShortcut(QKeySequence.Print)
+        # self._print_action.setDisabled(True)  # TODO: Needs to be implemented
 
         # Generate report
         self.generate_report_action = QAction(QIcon("icons:document-text-outline.svg"), "Generate &Report...", self)
@@ -310,10 +310,10 @@ class MainView(QMainWindow):
         self.menu.addAction(self.preferences_menu_action)
         self.menu.addSeparator()
         self.menu.addAction(self.open_action)
-        self.menu.addSeparator()
-        self.menu.addAction(self.save_action)
-        self.menu.addSeparator()
-        self.menu.addAction(self._print_action)
+        # self.menu.addSeparator()
+        # self.menu.addAction(self.save_action)
+        # self.menu.addSeparator()
+        # self.menu.addAction(self._print_action)
 
         if sys.platform != "darwin":
             self.menu.addSeparator()

@@ -131,7 +131,7 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.show_help_action.triggered.connect(self._create_default_tab)
 
         # Save event
-        self._view.save_action.triggered.connect(self._save_file)
+        # self._view.save_action.triggered.connect(self._save_file)
 
     def _close_application(self):
         print("Removing temporary directory and its contents before closing application...")
@@ -196,9 +196,9 @@ class ColourPaletteExtractorController(QRunnable):
                 # Create new tab linked to the image
                 self._create_new_tab(new_image_data_id, new_image_data)
 
-    def _save_file(self) -> None:
-        """Save palette and image together."""
-        print("Not implemented")
+    # def _save_file(self) -> None:
+    #     """Save palette and image together."""
+    #     print("Not implemented")
 
     def _update_progress_bar(self, tab: NewTab, percent: int) -> None:
         # Update progress status value
