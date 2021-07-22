@@ -188,8 +188,14 @@ class ColourPaletteExtractorController(QRunnable):
 
     def _close_current_tab(self, tab_index: int) -> None:
 
-        # Remove image_data from dictionary in model
+        # Get image data
         image_data_id = self._view.tabs.currentWidget().image_id
+        image_data = self._model.get_image_data(image_data_id)
+
+        image_data.continue_thread = False
+
+
+        # Remove image_data from dictionary in model
         self._model.remove_image_data(image_data_id)
 
         # Close currently selected tab in GUI
@@ -360,17 +366,18 @@ class ColourPaletteExtractorController(QRunnable):
         image_id = tab.image_id
         self._model.generate_palette(image_id, tab, progress_callback)
 
-        # Update tab properties and refresh tab
-        recoloured_image = self._model.get_image_data(image_id).recoloured_image
-        if recoloured_image is None:
-            palette_generated = False
-            tab.status_bar_state = 0  # Colour palette ws not generated
-        else:
-            palette_generated = True
-            tab.status_bar_state = 2  # Tab status to colour palette generated
-        self._toggle_tab_button_states(tab=tab, activate=True, palette_generated=palette_generated)  # Re-enable buttons for the tab
+        # Update tab properties and refresh tab if it still exists
+        if image_id in self._model.image_data_id_dictionary:
+            recoloured_image = self._model.get_image_data(image_id).recoloured_image
+            if recoloured_image is None:
+                palette_generated = False
+                tab.status_bar_state = 0  # Colour palette ws not generated
+            else:
+                palette_generated = True
+                tab.status_bar_state = 2  # Tab status to colour palette generated
+            self._toggle_tab_button_states(tab=tab, activate=True, palette_generated=palette_generated)  # Re-enable buttons for the tab
 
-        progress_callback.emit(tab, 100)  # Update GUI
+            progress_callback.emit(tab, 100)  # Update GUI
 
         # TODO: add try block for status bar updates in case of failure
 

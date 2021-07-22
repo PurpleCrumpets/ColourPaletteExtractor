@@ -12,7 +12,7 @@ import numpy as np
 import seaborn as sns
 from PySide2 import QtCore
 from skimage.io import imsave
-from fpdf import FPDF
+from fpdf import FPDF, HTMLMixin
 
 from colourpaletteextractor import _version
 from colourpaletteextractor.model.imagedata import ImageData
@@ -43,7 +43,7 @@ def generate_report(tab: NewTab, image_data: ImageData, progress_callback: QtCor
     progress_callback.emit(tab, 100)  # 100% progress
 
 
-class ColourPaletteReport(FPDF):
+class ColourPaletteReport(FPDF, HTMLMixin):
 
     A4_HEIGHT = 297  # mm
     A4_WIDTH = 210  # mm
@@ -169,9 +169,13 @@ class ReportGenerator:
 
         pdf.set_font('Times', '', 10)
         pdf.set_left_margin(int(ColourPaletteReport.MARGIN * 1.5))
-        pdf.write(5, " - Name: " + algorithm().name)
+        pdf.write(5, " - Name: " + algorithm().name)  # Name of the algorithm
         pdf.ln(5)
-        pdf.write(5, " - Class: " + str(algorithm))
+        pdf.write(5, " - Class: " + str(algorithm))  # Python class
+        pdf.ln(5)
+        pdf.write(5, " - Reference: ")  # Python class
+        # pdf.write_html('<a href="https://github.com/PyFPDF/fpdf2">Link defined as HTML</a>')
+        pdf.write_html('<a href="' + algorithm().url + '">' + algorithm().url + '</a>')
         pdf.set_left_margin(ColourPaletteReport.MARGIN)
         pdf.ln(10)
 

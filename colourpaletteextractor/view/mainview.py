@@ -311,10 +311,6 @@ class MainView(QMainWindow):
         self.menu.addAction(self.preferences_menu_action)
         self.menu.addSeparator()
         self.menu.addAction(self.open_action)
-        # self.menu.addSeparator()
-        # self.menu.addAction(self.save_action)
-        # self.menu.addSeparator()
-        # self.menu.addAction(self._print_action)
 
         if sys.platform != "darwin":
             self.menu.addSeparator()
@@ -419,7 +415,6 @@ class MainView(QMainWindow):
         about_button.setIcon(QIcon("icons:information-circle-outline.svg"))
         about_button.setDefaultAction(self.about_action)
         about_button.setAutoRaise(True)
-        # about_button.setToolButtonStyle(Qt.ToolButtonIconOnly)
         self.tools.addWidget(about_button)
         self.tools.addSeparator()
 

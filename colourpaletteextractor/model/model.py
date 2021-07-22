@@ -265,13 +265,15 @@ class ColourPaletteExtractorModel:
         new_recoloured_image, image_colour_palette, new_relative_frequencies = \
             algorithm.generate_colour_palette(image)
 
-        # Assigning properties to image_data
-        self._image_data_id_dictionary[image_data_id].recoloured_image = new_recoloured_image
-        self._image_data_id_dictionary[image_data_id].colour_palette = image_colour_palette
-        self._image_data_id_dictionary[image_data_id].colour_palette_relative_frequency = new_relative_frequencies
+        # Check if image_data_id still exists
+        if image_data_id in self._image_data_id_dictionary:
+            # Assigning properties to image_data
+            self._image_data_id_dictionary[image_data_id].recoloured_image = new_recoloured_image
+            self._image_data_id_dictionary[image_data_id].colour_palette = image_colour_palette
+            self._image_data_id_dictionary[image_data_id].colour_palette_relative_frequency = new_relative_frequencies
 
-        # Sorting colour palette by relative frequency
-        self._image_data_id_dictionary[image_data_id].sort_colour_palette(reverse=True)
+            # Sorting colour palette by relative frequency
+            self._image_data_id_dictionary[image_data_id].sort_colour_palette(reverse=True)
 
         # print(new_recoloured_image.shape, len(image_colour_palette))
 
