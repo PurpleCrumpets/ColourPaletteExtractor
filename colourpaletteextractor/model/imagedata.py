@@ -16,6 +16,8 @@ class ImageData:
         self._colour_palette_relative_frequency = []
         self._algorithm_used = None
 
+        self._continue_thread = True
+
         # TODO: Need to check that the image has been saved using three colour channels (assuming RGB)
         # TODO: Check colour space and adapt to that
         # Otherwise - remove alpha channel in the case of PNG images
@@ -43,6 +45,14 @@ class ImageData:
                                                                key=lambda pair: pair[0],
                                                                reverse=reverse)]
         self._colour_palette_relative_frequency.sort(reverse=reverse)
+
+    @property
+    def continue_thread(self):
+        return self._continue_thread
+
+    @continue_thread.setter
+    def continue_thread(self, value: bool):
+        self._continue_thread = value
 
     @property
     def algorithm_used(self):

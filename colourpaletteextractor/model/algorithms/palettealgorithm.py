@@ -46,8 +46,12 @@ class PaletteAlgorithm(ABC):
 
         # Parameters used for progress callback
         self._tab = None
+        self._image_data = None
         self._progress_callback = None
         self._percent = 0
+
+        #
+        self._continue_thread = True
 
     # @property
     # def percent(self):
@@ -57,6 +61,14 @@ class PaletteAlgorithm(ABC):
     # def percent(self, increment):
     #     self._percent += increment
     #     # TODO: add checks for value
+
+    @property
+    def continue_thread(self):
+        return self._continue_thread
+
+    @continue_thread.setter
+    def continue_thread(self, value):
+        self._continue_thread = value
 
     @property
     def name(self):
@@ -71,24 +83,30 @@ class PaletteAlgorithm(ABC):
         """From the given image, return its colour palette"""
         pass
 
-    def set_progress_callback(self, progress_callback, tab):
+    def set_progress_callback(self, progress_callback, tab, image_data):
         self._progress_callback = progress_callback
         self._tab = tab
+        self._image_data = image_data
 
-    def _increment_progress(self, increment):
+    def _increment_progress(self, increment) -> None:
         self._percent += increment
         # TODO: throw exception if larger than 100%
         if self._progress_callback is not None:
             self._progress_callback.emit(self._tab, self._percent)
+            self._set_continue_thread_status()
+
 
     def _get_increment_percent(self, final_percent, denominator):
         current_percent = self._percent
         return (final_percent - current_percent) / denominator
 
-    def _set_progress(self, new_progress):
+    def _set_progress(self, new_progress) -> None:
         self._percent = new_progress
         if self._progress_callback is not None:
             self._progress_callback.emit(self._tab, self._percent)
+            self._set_continue_thread_status()
+
+
 
     @staticmethod
     def _get_relative_frequencies(relevant_cubes: list[CielabCube], total_pixels: int) -> list[float]:
@@ -99,3 +117,8 @@ class PaletteAlgorithm(ABC):
             frequencies.append(frequency)
 
         return frequencies
+
+    def _set_continue_thread_status(self) -> None:
+        # Check if thread should still be run
+        self._continue_thread = self._image_data.continue_thread
+

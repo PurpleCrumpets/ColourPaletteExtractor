@@ -78,6 +78,7 @@ class ColourPaletteExtractorModel:
 
         self._image_data_id_counter = 0
         self._image_data_id_dictionary = {}
+        self._active_thread_counter = 0
 
         # Create temporary directory for storing generated reports
         self._temp_dir = tempfile.TemporaryDirectory(prefix=_version.__application_name__)
@@ -98,6 +99,14 @@ class ColourPaletteExtractorModel:
 
         # print(str(QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)))
         # print(str(QStandardPaths.writableLocation(QStandardPaths.AppConfigLocation)))
+
+    @property
+    def active_thread_counter(self) -> int:
+        return self._active_thread_counter
+
+    @active_thread_counter.setter
+    def active_thread_counter(self, value: int) -> None:
+        self._active_thread_counter = value
 
     def change_output_directory(self, use_user_dir: bool, new_user_directory):
         print("Updating output directory...")
@@ -239,14 +248,15 @@ class ColourPaletteExtractorModel:
     def generate_palette(self, image_data_id, tab, progress_callback=None, temp_algorithm=None):
         print("Generating colour palette for image:", image_data_id)
 
+        image_data = self.get_image_data(image_data_id)
+        image_data.continue_thread = True
+
         # Get algorithm and process image with it
         algorithm = self._get_algorithm(algorithm=temp_algorithm)
         if progress_callback is not None:
-            algorithm.set_progress_callback(progress_callback, tab)
+            algorithm.set_progress_callback(progress_callback, tab, image_data)
 
         # Set algorithm type used for the given image
-
-        image_data = self.get_image_data(image_data_id)
         image_data.algorithm_used = type(algorithm)
 
         # Generate colour palette
@@ -263,7 +273,7 @@ class ColourPaletteExtractorModel:
         # Sorting colour palette by relative frequency
         self._image_data_id_dictionary[image_data_id].sort_colour_palette(reverse=True)
 
-        print(new_recoloured_image.shape, len(image_colour_palette))
+        # print(new_recoloured_image.shape, len(image_colour_palette))
 
 
 if __name__ == "__main__":

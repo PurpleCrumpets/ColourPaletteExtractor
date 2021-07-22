@@ -17,7 +17,7 @@ __author__ = "Tim Churchfield"
 
 from colourpaletteextractor.model.model import get_settings
 from colourpaletteextractor.view import otherviews, tabview
-
+from colourpaletteextractor.view.otherviews import BatchGenerationProgressWidget
 
 resources_dir = "resources"
 
@@ -164,6 +164,7 @@ class MainView(QMainWindow):
         self._create_colour_palette_dock()
 
         self._create_preferences_dialog_box()  # Create preferences panel
+        self.batch_progress_widget = BatchGenerationProgressWidget()
 
     def set_display_text(self, text):
         """Set display's text."""

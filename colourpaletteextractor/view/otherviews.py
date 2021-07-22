@@ -1,9 +1,9 @@
 import sys
 import ctypes.wintypes
 
-from PySide2 import QtCore
+from PySide2 import QtCore, QtGui
 from PySide2.QtCore import Qt, QSettings
-from PySide2.QtGui import QIcon, QPixmap, QPainter
+from PySide2.QtGui import QIcon, QPixmap, QPainter, QMovie
 from PySide2.QtWidgets import QWidget, QProgressBar, \
     QStatusBar, QMessageBox, QLabel, QTabWidget, QDialog, QVBoxLayout, QCheckBox, QRadioButton, QGridLayout, \
     QStyleOption, QPushButton, QLineEdit, QFrame, QSizePolicy, QFileDialog, QHBoxLayout
@@ -78,7 +78,6 @@ class StatusBar(QStatusBar):
         elif state == 3:
             self.set_intra_report_message()
 
-
     def set_pre_palette_message(self):
 
         if sys.platform == "win32" or sys.platform == "linux":
@@ -110,7 +109,6 @@ class StatusBar(QStatusBar):
 
     def set_intra_report_message(self):
         self._status_label.setText("Generating colour palette report")
-
 
     def update_progress_bar(self, n):
         self._progress_bar.setValue(n)
@@ -286,7 +284,8 @@ class PreferencesWidget(QDialog):
         layout.addWidget(self.user_path_button, 3, 0)
         layout.addWidget(QLabel("Alternative Output Folder:"), 3, 1)
 
-        self.user_path_selector = QLineEdit(self._user_output_dir)  # TODO: Default to user's documents folder (ColourPaletteExtractor) - if it doesn't exist, it will be created
+        self.user_path_selector = QLineEdit(
+            self._user_output_dir)  # TODO: Default to user's documents folder (ColourPaletteExtractor) - if it doesn't exist, it will be created
         self.user_path_selector.setReadOnly(True)
         layout.addWidget(self.user_path_selector, 4, 1)
 
@@ -296,7 +295,6 @@ class PreferencesWidget(QDialog):
         self.browse_button.setDefault(False)
 
         layout.addWidget(self.browse_button, 4, 2)
-
 
         # Selecting temporary or user selected radio button
         if int(self._use_user_dir) == 1:
@@ -476,3 +474,71 @@ class ErrorBox(QMessageBox):
 
         self.setWindowTitle(header)  # Window title
         self.setText(header)  # Main text
+
+
+class BatchGenerationProgressWidget(QDialog):
+
+    def __init__(self):
+        super().__init__()
+
+        self._total_count = 0
+        self._current_count = 0
+
+        self._set_properties()
+
+    def show_widget(self, total_count: int):
+        self._total_count = total_count
+        self._current_count = 0
+        self._set_label_text()
+        self._progress_bar.setValue(self._current_count)
+        self._progress_bar.setMaximum(self._total_count)
+        self.show()
+        # self.exec_()
+
+    def _set_properties(self):
+        self.setWindowTitle("Progress")
+        self.setWindowIcon(QIcon("icons:about-medium.png"))
+
+        self.setWindowFlags(Qt.Window | Qt.WindowTitleHint | Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
+        # self.setWindowModality(Qt.NonModal)
+
+        main_layout = QVBoxLayout()  # Top-level layout
+        self.setLayout(main_layout)
+
+        # Text label
+        secondary_layout = QHBoxLayout()
+        main_layout.addLayout(secondary_layout)
+        self.label = QLabel()
+        self._set_label_text()
+        secondary_layout.addWidget(self.label)
+
+        # Animated progress gif
+        self._progress_gif = QMovie("images:animated-colour-palette.gif")
+        self._progress_gif.setScaledSize(QtCore.QSize(40, 40))
+        self._progress_label = QLabel()
+        self._progress_label.setMovie(self._progress_gif)
+        self._progress_gif.start()
+        secondary_layout.addWidget(self._progress_label, alignment=QtCore.Qt.AlignRight)
+
+        # Progress bar
+        self._progress_bar = ProgressBar()
+        self._progress_bar.setMinimum(0)
+        self._progress_bar.setMaximum(self._total_count)
+        main_layout.addWidget(self._progress_bar)
+
+        # Cancel button
+        self.cancel_batch_button = QPushButton("Cancel")
+        self.cancel_batch_button.setAutoDefault(False)
+        self.cancel_batch_button.setDefault(False)
+        main_layout.addWidget(self.cancel_batch_button, alignment=QtCore.Qt.AlignRight)
+
+    def update_progress(self):
+        self._current_count += 1
+
+        self._set_label_text()
+        self._progress_bar.setValue(self._current_count)
+
+    def _set_label_text(self) -> None:
+        self.label.setText("Generated colour palette for "
+                            + str(self._current_count) + "/"
+                            + str(self._total_count) + " images")
