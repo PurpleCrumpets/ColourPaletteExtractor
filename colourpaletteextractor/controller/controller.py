@@ -434,7 +434,10 @@ class ColourPaletteExtractorController(QRunnable):
 
         image_data = self._model.get_image_data(image_data_id)
 
-        return image_data.colour_palette
+        if image_data is None:
+            return []
+        else:
+            return image_data.colour_palette
 
     def _get_relative_frequencies(self, tab):
 

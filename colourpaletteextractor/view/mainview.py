@@ -207,12 +207,12 @@ class MainView(QMainWindow):
             meta_key = "Alt"
 
         # Close application
-        # if sys.platform == "darwin":
-        #     self.close_action = QAction("Close Application", self)
-        # else:
         self._close_request_action = QAction("E&xit", self)
+        if sys.platform != "darwin":
+            self._close_request_action.setShortcut("Ctrl+w")
         self._close_request_action.triggered.connect(self.close)
         self.close_action = QAction(self)
+
         # self.exit_action = QAction(QIcon("icons:exit-outline.svg"), "Quit ColourPaletteExtractor", self)
 
 

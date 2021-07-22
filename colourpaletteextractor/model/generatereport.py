@@ -263,6 +263,7 @@ class ReportGenerator:
                                                  mode='w',
                                                  delete=False)
 
+        print(pdf.get_y())
         # Save temporary image and close file
         imsave(temp_image.name, image)
         temp_image.close()
@@ -282,6 +283,10 @@ class ReportGenerator:
             new_width = int(width * 2 / 3)
             new_start_position = int((ColourPaletteReport.A4_WIDTH - new_width) / 2)  # mm
 
+        elif (pdf.get_y() + new_height + 10) > ColourPaletteReport.MAX_IMAGE_HEIGHT:  # Image and caption won't fit on current page
+            pdf.add_page()
+            new_width = ColourPaletteReport.IMAGE_WIDTH  # Default width
+            new_start_position = ColourPaletteReport.IMAGE_START_POSITION  # Default image position
         else:
             new_width = ColourPaletteReport.IMAGE_WIDTH  # Default width
             new_start_position = ColourPaletteReport.IMAGE_START_POSITION  # Default image position
