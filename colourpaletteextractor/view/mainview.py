@@ -221,16 +221,6 @@ class MainView(QMainWindow):
         self.open_action.setShortcut("Ctrl+O")
         # self.open_action.setStatusTip("Open new image(s)...")
 
-        # # Save
-        # self.save_action = QAction(QIcon("icons:save-outline.svg"), "&Save Results...", self)
-        # self.save_action.setShortcut("Ctrl+S")
-        # self.save_action.setDisabled(True)
-        #
-        # # Print
-        # self._print_action = QAction(QIcon("icons:print-outline.svg"), "&Print...", self)
-        # self._print_action.setShortcut(QKeySequence.Print)
-        # self._print_action.setDisabled(True)  # TODO: Needs to be implemented
-
         # Generate report
         self.generate_report_action = QAction(QIcon("icons:document-text-outline.svg"), "Generate &Report...", self)
         self.generate_report_action.setShortcut("Ctrl+R")
@@ -238,7 +228,6 @@ class MainView(QMainWindow):
         # Generate all reports
         self.generate_all_report_action = QAction("Generate All Re&ports...", self)
         self.generate_all_report_action.setShortcut("Ctrl+" + meta_key + "+R")
-
 
         # Generate Colour Palette
         self.generate_palette_action = QAction(QIcon("icons:color-palette-outline.svg"), "&Generate Colour Palette", self)
@@ -248,6 +237,11 @@ class MainView(QMainWindow):
         # Generate All Colour Palettes
         self.generate_all_palette_action = QAction("Generate &All Colour Palettes", self)
         self.generate_all_palette_action.setShortcut("Ctrl+" + meta_key + "+G")
+
+        # Stop action
+        self.stop_action = QAction(QIcon("icons:stop-circle-outline.svg"), "&Stop", self)
+        self.stop_action.setShortcut("Escape")
+        self.stop_action.setDisabled(True)
 
         # Preferences
         if sys.platform == "darwin":
@@ -323,6 +317,8 @@ class MainView(QMainWindow):
         self.menu.addSeparator()
         self.menu.addAction(self.generate_report_action)
         self.menu.addAction(self.generate_all_report_action)
+        self.menu.addSeparator()
+        self.menu.addAction(self.stop_action)
 
         # View Menu
         self.menu = self.menuBar().addMenu("&View")
@@ -397,6 +393,12 @@ class MainView(QMainWindow):
         self.tools.addWidget(spacer)
 
         # Right-aligned actions
+
+        # Stop button
+        stop_button = QToolButton(self)
+        stop_button.setDefaultAction(self.stop_action)
+        self.tools.addWidget(stop_button)
+        self.tools.addSeparator()
 
         # Preferences button
         preferences_button = QToolButton(self)

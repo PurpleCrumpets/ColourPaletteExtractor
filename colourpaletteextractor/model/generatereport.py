@@ -3,6 +3,7 @@ import subprocess
 import sys
 import tempfile
 from datetime import datetime
+from typing import Union
 
 import matplotlib
 # mpl.use("Agg")
@@ -24,6 +25,8 @@ matplotlib.pyplot.switch_backend("Agg")
 
 def generate_report(tab: NewTab, image_data: ImageData, progress_callback: QtCore.SignalInstance):
 
+    image_data.continue_thread = True
+
     # Checking if image_data is suitable
 
     # image_data needs to have a recoloured image and a colour palette
@@ -39,7 +42,8 @@ def generate_report(tab: NewTab, image_data: ImageData, progress_callback: QtCor
     pdf = generator.create_report()
 
     # Save report
-    generator.save_report(pdf)
+    if pdf is not None:
+        generator.save_report(pdf)
     progress_callback.emit(tab, 100)  # 100% progress
 
 
@@ -51,7 +55,6 @@ class ColourPaletteReport(FPDF, HTMLMixin):
     IMAGE_WIDTH = 150  # mm
     IMAGE_START_POSITION = int((A4_WIDTH - IMAGE_WIDTH) / 2)  # mm
     MAX_IMAGE_HEIGHT = A4_HEIGHT - 40  # mm
-
 
     def __init__(self, image_data: ImageData):
         super().__init__()
@@ -88,6 +91,7 @@ class ReportGenerator:
         self._image_data = image_data
         self._progress_callback = progress_callback
         self._image_file_type = ".png"
+        self._continue_thread = True
 
         # Select output directory
         settings = get_settings()
@@ -106,7 +110,13 @@ class ReportGenerator:
         else:
             print("Output directory for reports found...")
 
-    def create_report(self) -> ColourPaletteReport:
+    def _set_progress(self, new_progress) -> None:
+        self._percent = new_progress
+        if self._progress_callback is not None:
+            self._progress_callback.emit(self._tab, self._percent)
+            self._continue_thread = self._image_data.continue_thread  # Check if thread should still be run
+
+    def create_report(self) -> Union[ColourPaletteReport, None]:
         # Set progress bar back to zero
         self._progress_callback.emit(self._tab, 0)  # 0% progress
 
@@ -122,24 +132,32 @@ class ReportGenerator:
         self._add_image(pdf=pdf,
                         image=self._image_data.image,
                         title="Original Image")  # Add original image
-        self._progress_callback.emit(self._tab, 30)  # 30% progress
+        self._set_progress(30)  # Progress = 30%
+        if not self._continue_thread:
+            return None
 
         # Add recoloured image
         print("Adding recoloured image to report...")
         self._add_image(pdf=pdf,
                         image=self._image_data.recoloured_image,
                         title="Recoloured Image")  # Add recoloured image
-        self._progress_callback.emit(self._tab, 60)  # 60% progress
+        self._set_progress(60)  # Progress = 60%
+        if not self._continue_thread:
+            return None
 
         # Create colour frequency chart
         print("Creating and adding colour frequency chart to report...")
         pdf.add_page()
         self._add_chart(pdf=pdf)  # Add chart
-        self._progress_callback.emit(self._tab, 90)  # 90% progress
+        self._set_progress(90)  # Progress = 90%
+        if not self._continue_thread:
+            return None
 
         # Add details
         self._add_details(pdf=pdf)
-        self._progress_callback.emit(self._tab, 95)  # 95% progress
+        self._set_progress(95)  # Progress = 95%
+        if not self._continue_thread:
+            return None
 
         return pdf
 

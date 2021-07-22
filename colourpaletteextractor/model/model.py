@@ -97,7 +97,6 @@ class ColourPaletteExtractorModel:
                 pass
                 # TODO: Throw exception?
 
-        # print(str(QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)))
         # print(str(QStandardPaths.writableLocation(QStandardPaths.AppConfigLocation)))
 
     @property
@@ -260,13 +259,13 @@ class ColourPaletteExtractorModel:
         image_data.algorithm_used = type(algorithm)
 
         # Generate colour palette
-        # image = self._get_image_copy(image_data_id)
         image = image_data.image.copy()
         new_recoloured_image, image_colour_palette, new_relative_frequencies = \
             algorithm.generate_colour_palette(image)
 
         # Check if image_data_id still exists
         if image_data_id in self._image_data_id_dictionary:
+
             # Assigning properties to image_data
             self._image_data_id_dictionary[image_data_id].recoloured_image = new_recoloured_image
             self._image_data_id_dictionary[image_data_id].colour_palette = image_colour_palette

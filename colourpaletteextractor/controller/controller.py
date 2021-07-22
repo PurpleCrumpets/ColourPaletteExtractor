@@ -1,15 +1,13 @@
-import time
 from functools import partial  # Import partial to connect signals with methods that need to take extra arguments
-from PySide2.QtCore import QFileInfo, QRunnable, QThreadPool, QThread
-from PySide2.QtWidgets import QErrorMessage, QMessageBox
+from PySide2.QtCore import QFileInfo, QRunnable, QThreadPool
 
-from colourpaletteextractor.controller.worker import ColourPaletteWorker, ReportGeneratorWorker
+
+from colourpaletteextractor.controller.worker import Worker
 from colourpaletteextractor.model import generatereport
 from colourpaletteextractor.model.imagedata import ImageData
-from colourpaletteextractor.model.model import ColourPaletteExtractorModel, get_settings
+from colourpaletteextractor.model.model import ColourPaletteExtractorModel
 from colourpaletteextractor.view import mainview as vw, otherviews
 from colourpaletteextractor.view.mainview import MainView
-from colourpaletteextractor.view.otherviews import BatchGenerationProgressWidget
 from colourpaletteextractor.view.tabview import NewTab
 
 
@@ -32,13 +30,6 @@ class ColourPaletteExtractorController(QRunnable):
         # Signal creation of instructions tab
         self._create_default_tab()
 
-        # Batch generation progress box
-        self._batch_progress_widget = None
-
-        # Batch threads
-
-        # self._active_workers = []
-
     def _connect_preferences_signals(self):
         self._view.preferences.reset_preferences_button.clicked.connect(self._reset_preferences)
         self._connect_algorithm_selector_signals()
@@ -48,24 +39,14 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.batch_progress_widget.cancel_batch_button.clicked.connect(self._send_stop_signals_to_batch_threads)
 
     def _send_stop_signals_to_batch_threads(self):
-        # print("Stopping threads...")
-
-        self._view.batch_progress_widget.label.setText("Cancelling...")
+        self._view.batch_progress_widget.set_cancel_text()
 
         for image_data_id, image_data in self._model.image_data_id_dictionary.items():
             image_data.continue_thread = False
 
-
-
-
-
-
-
     def _reset_preferences(self):
         self._model.write_default_settings()  # Update settings file
-        self._view.preferences.update_preferences()
-        # Update preferences panel
-
+        self._view.preferences.update_preferences()  # Update preferences panel
 
     def _connect_algorithm_selector_signals(self) -> None:
         algorithms, algorithm_buttons = self._view.preferences.get_algorithms_and_buttons()
@@ -86,7 +67,6 @@ class ColourPaletteExtractorController(QRunnable):
         # Set new path
         self._view.preferences.user_path_selector.setText(new_path)
         self._model.change_output_directory(use_user_dir=True, new_user_directory=new_path)
-
 
     def _set_output_path(self, use_user_dir: bool) -> None:
         # if use_user_dir:
@@ -123,12 +103,12 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.open_action.triggered.connect(self._open_file)
 
         # Generate report event
-        self._view.generate_report_action.triggered.connect(partial(self._generate_report_worker, None))
-        self._view.generate_all_report_action.triggered.connect(self._generate_all_reports)
+        self._view.generate_report_action.triggered.connect(partial(self._generate_worker, "report"))
+        self._view.generate_all_report_action.triggered.connect(partial(self._generate_all, "report"))
 
         # Generate colour palette event
-        self._view.generate_palette_action.triggered.connect(partial(self._generate_colour_palette_worker, None))
-        self._view.generate_all_palette_action.triggered.connect(self._generate_all_palettes)
+        self._view.generate_palette_action.triggered.connect(partial(self._generate_worker, "colour palette"))
+        self._view.generate_all_palette_action.triggered.connect(partial(self._generate_all, "colour palette"))
 
         # Toggle recoloured image event
         self._view.toggle_recoloured_image_action.triggered.connect(self._toggle_recoloured_image)
@@ -149,8 +129,15 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.show_help_menu_action.triggered.connect(self._create_default_tab)
         self._view.show_help_action.triggered.connect(self._create_default_tab)
 
-        # Save event
-        # self._view.save_action.triggered.connect(self._save_file)
+        # Stop event
+        self._view.stop_action.triggered.connect(self._stop_current_thread)
+
+    def _stop_current_thread(self):
+        tab = self._view.tabs.currentWidget()
+
+        image_id = tab.image_id
+        image_data = self._model.get_image_data(image_id)
+        image_data.continue_thread = False
 
     def _close_application(self):
         print("Removing temporary directory and its contents before closing application...")
@@ -194,7 +181,6 @@ class ColourPaletteExtractorController(QRunnable):
 
         image_data.continue_thread = False
 
-
         # Remove image_data from dictionary in model
         self._model.remove_image_data(image_data_id)
 
@@ -221,7 +207,7 @@ class ColourPaletteExtractorController(QRunnable):
                 # Create new tab linked to the image
                 self._create_new_tab(new_image_data_id, new_image_data)
 
-    def _update_progress_bar(self, tab: NewTab, percent: int) -> bool:
+    def _update_progress_bar(self, tab: NewTab, percent: int):
         # Update progress status value
         tab.progress_bar_value = percent
 
@@ -231,42 +217,104 @@ class ColourPaletteExtractorController(QRunnable):
             self._update_status_bar(tab)
 
             if percent == 0 or percent == 100:  # Start and end of progress - refresh the GUI
-                self.current_tab_changed(-2)
-            # if percent == 100:
-            #     self._view.status.set_status_bar(2)
 
-    def _generate_all_reports(self) -> None:
-        # TODO: Temporarily disable generate all palettes action
+                if tab.status_bar_state == 1:
+                    self.current_tab_changed(-2)
+                else:
+                    self.current_tab_changed(-3)
+
+
+
+    def _generate_all(self, batch_type: str):
+
+        # Disable batch actions
+        self._view.generate_all_report_action.setDisabled(True)
+        self._view.generate_all_palette_action.setDisabled(True)
+        self._view.preferences_action.setDisabled(True)  # TODO: this does not disable preferences in the main menu for mac
 
         num_tabs = self._view.tabs.count()
 
-        # Generate worker thread for each tab
+        # Update model thread counter
+        self._model.active_thread_counter = num_tabs
+
+        # Generate worker for each tab
         for i in range(num_tabs):
             tab = self._view.tabs.widget(i)
 
-            # Check if tab has the necessary details to create a report
-            count = 0
-            if tab.generate_report_available:
-                count += 1
-                self._generate_report_worker(tab)
+            if batch_type == "colour palette":
+                self._generate_worker(main_function="colour palette", tab=tab, batch_generation=True)
 
-            if count == 0:
-                # Letting the user know that they must generate colour palettes first before generating a report
-                message = "You need to generate the colour palette for at least one image " \
-                          + "before you can generate a report!"
-                msg_box = otherviews.ErrorBox(box_type="information")
-                msg_box.setInformativeText(message)
-                msg_box.exec_()
+            elif batch_type == "report":
 
-        # TODO: Re-enable generate all palettes action
+                # Check if tab has the necessary details to create a report
+                count = 0
+                if tab.generate_report_available:
+                    count += 1
+                    self._generate_worker(main_function="report", tab=tab, batch_generation=True)
 
-    def _generate_report_worker(self, tab: NewTab = None) -> None:
-        worker = ReportGeneratorWorker(self._generate_report, tab=tab)  # Execute main function
-        worker.signals.finished.connect(self.current_tab_changed)  # Function called at the very end
+                if count == 0:
+                    # Letting the user know that they must generate colour palettes first before generating a report
+                    message = "You need to generate the colour palette for at least one image " \
+                              + "before you can generate a report!"
+                    msg_box = otherviews.ErrorBox(box_type="information")
+                    msg_box.setInformativeText(message)
+                    msg_box.exec_()
+            else:
+                pass
+                # TODO: throw exception
+
+        # Show overall progress widget
+        self._view.batch_progress_widget.show_widget(total_count=num_tabs, batch_type=batch_type)
+
+    def _generate_worker(self, main_function: str, tab: NewTab = None, batch_generation: bool = False) -> None:
+
+        # Get image data
+        if tab is None:
+            tab = self._view.tabs.currentWidget()
+        image_id = tab.image_id
+        image_data = self._model.get_image_data(image_id)
+
+
+        # Select primary function
+        worker = None
+        if main_function == "colour palette":
+            worker = Worker(self._generate_colour_palette, image_data=image_data, function_type=main_function, tab=tab)
+
+        elif main_function == "report":
+            worker = Worker(self._generate_report, image_data=image_data, function_type=main_function, tab=tab)
+        else:
+            pass
+            # TODO: throw exception
+
+        self._connect_worker_signals(worker=worker, batch_generation=batch_generation)
+        QThreadPool.globalInstance().start(worker)
+
+    def _connect_worker_signals(self, worker: Worker, batch_generation: bool):
+        # Connect signals
+        if batch_generation:
+            worker.signals.finished.connect(self._finish_generation)  # Function called at the very end
+        else:
+            worker.signals.finished.connect(self.current_tab_changed)  # Function called at the very end
+
+        # worker.signals.result.connect(self._update_tab)  # Uses the result of the main function
         worker.signals.progress.connect(self._update_progress_bar)  # Intermediate Progress
 
-        QThreadPool.globalInstance().start(worker)
-        print("Started worker to generate report...")
+    def _finish_generation(self, i: int) -> None:
+
+        self._view.batch_progress_widget.update_progress()
+
+
+        self._model.active_thread_counter -= 1
+
+        self.current_tab_changed(i=i)
+
+        if self._model.active_thread_counter == 0:
+            self._view.batch_progress_widget.close()
+
+            # Re-enable batch actions
+            self._view.generate_all_report_action.setEnabled(True)
+            self._view.generate_all_palette_action.setEnabled(True)
+            self._view.preferences_action.setEnabled(True)
 
     def _generate_report(self, tab, progress_callback):
         print("Generating report...")
@@ -293,61 +341,6 @@ class ColourPaletteExtractorController(QRunnable):
         tab.status_bar_state = 2  # Tab status to colour palette generated
         progress_callback.emit(tab, 100)
 
-    def _generate_all_palettes(self) -> None:
-
-        # TODO: Temporarily disable then enable generate all palettes action
-        #  probably need to wait until all processes have finished - is this possible?
-
-        # Disable batch actions
-        self._view.generate_all_report_action.setDisabled(True)
-        self._view.generate_all_palette_action.setDisabled(True)
-
-        num_tabs = self._view.tabs.count()
-
-        # Update model thread counter
-        self._model.active_thread_counter = num_tabs
-
-        # Generate worker for each tab
-        for i in range(num_tabs):
-            tab = self._view.tabs.widget(i)
-            self._generate_colour_palette_worker(tab=tab, batch_generation=True)
-
-        # Show overall progress widget
-        self._view.batch_progress_widget.show_widget(total_count=num_tabs)
-
-    def _generate_colour_palette_worker(self, tab: NewTab = None, batch_generation: bool = False) -> None:
-        worker = ColourPaletteWorker(self._generate_colour_palette, tab=tab)  # Execute main function
-
-        # self._active_workers.append(worker)
-
-        # Connect signals
-        # worker.signals.result.connect(self._update_tab)  # Uses the result of the main function
-
-        if batch_generation:
-            worker.signals.finished.connect(self._finish_generation)  # Function called at the very end
-        else:
-            worker.signals.finished.connect(self.current_tab_changed)  # Function called at the very end
-
-        worker.signals.progress.connect(self._update_progress_bar)  # Intermediate Progress
-        QThreadPool.globalInstance().start(worker)
-        print("Started worker to generate colour palette...")
-
-        # TODO: add cancel button?
-
-    def _finish_generation(self, i: int) -> None:
-
-        self._model.active_thread_counter -= 1
-        self._view.batch_progress_widget.update_progress()
-
-        self.current_tab_changed(i=i)
-
-        if self._model.active_thread_counter == 0:
-            self._view.batch_progress_widget.close()
-
-            # Re-enable batch actions
-            self._view.generate_all_report_action.setEnabled(True)
-            self._view.generate_all_palette_action.setEnabled(True)
-
     def _generate_colour_palette(self, tab, progress_callback):
         """Generate colour palette for current open image."""
 
@@ -356,7 +349,6 @@ class ColourPaletteExtractorController(QRunnable):
             tab = self._view.tabs.currentWidget()
 
         # Update tab properties and refresh GUI
-
         self._toggle_tab_button_states(tab=tab, activate=False)  # Disable buttons for the given tab
         tab.status_bar_state = 1  # Set tab status to generating colour palette
         self._reset_tab_image_properties(tab=tab)  # Remove recoloured image and colour palette
@@ -452,6 +444,7 @@ class ColourPaletteExtractorController(QRunnable):
         """Update current tab index."""
         print("Tab changed to:", i)
 
+        # if i is -2 - dummy change
         # Create new default tab if all have been removed
         if i == -1:
             self._create_default_tab()
@@ -462,24 +455,21 @@ class ColourPaletteExtractorController(QRunnable):
         self._update_state_of_tab_buttons(tab=tab)
 
         # Reload colour palette
-        colour_palette = self._get_colour_palette(tab)
-        relative_frequencies = self._get_relative_frequencies(tab)
+        if i != -3:  # This prevents the GUI from flickering when updating the colour palette needlessly
+            colour_palette = self._get_colour_palette(tab)
+            relative_frequencies = self._get_relative_frequencies(tab)
 
-        if len(colour_palette) == 0:
-            self._view.colour_palette_dock.remove_colour_palette()  # Reset colour palette dock
-        else:
-            self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id, relative_frequencies)
-
+            if len(colour_palette) == 0:
+                self._view.colour_palette_dock.remove_colour_palette()  # Reset colour palette dock
+            else:
+                self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id, relative_frequencies)
 
         # Update status bar
         self._update_status_bar(tab)
 
-
-        # TODO: more things may need to change (ie highlight show map to show that it is on for that image)
-
     def _update_state_of_tab_buttons(self, tab: NewTab):
         if tab.toggle_recoloured_image_available:
-            self._view.toggle_recoloured_image_action.setDisabled(False)
+            self._view.toggle_recoloured_image_action.setEnabled(True)
         else:
             self._view.toggle_recoloured_image_action.setDisabled(True)
 
@@ -491,13 +481,15 @@ class ColourPaletteExtractorController(QRunnable):
 
         # Load colour palette generation button state (available/not available)
         if tab.generate_palette_available:
-            self._view.generate_palette_action.setDisabled(False)
+            self._view.generate_palette_action.setEnabled(True)
+            self._view.stop_action.setDisabled(True)
         else:
             self._view.generate_palette_action.setDisabled(True)
+            self._view.stop_action.setEnabled(True)
 
         # Load colour palette report generation button state (available/not available)
         if tab.generate_report_available:
-            self._view.generate_report_action.setDisabled(False)
+            self._view.generate_report_action.setEnabled(True)
         else:
             self._view.generate_report_action.setDisabled(True)
 
@@ -506,18 +498,3 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.status.set_status_bar(status_bar_state)
         percent = tab.progress_bar_value
         self._view.status.update_progress_bar(percent)
-
-
-
-    # def _calculate_result(self):
-    #     """Evaluate expressions."""
-    #     result = self._model.evaluate_expression(self._view.display_text())
-    #     self._view.set_display_text(result)
-    #
-    # def _build_expression(self, sub_exp):
-    #     """Build expression."""
-    #     if self._view.display_text() == md.ColourPaletteExtractorModel.ERROR_MSG:
-    #         self._view.clear_display()
-    #
-    #     _expression = self._view.display_text() + sub_exp
-    #     self._view.set_display_text(_expression)

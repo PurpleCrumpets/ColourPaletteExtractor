@@ -200,10 +200,12 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                     # TODO: Optimisation section - talk about how storing cubes in a np.array is faster to find
                     #   them again, rather than in a list that must be iterated through each time
 
-            # Update progress bar (every other loop to reduce GUI thread burden)
-            if update_progress == 3:
-                self._increment_progress(4 * increment_percent)
+            # Update progress bar (every eighth loop to reduce GUI thread burden)
+            if update_progress == 7:
+                self._increment_progress(8 * increment_percent)
                 update_progress = 0
+                if not self._continue_thread:
+                    return
             else:
                 update_progress += 1
 
@@ -240,10 +242,12 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                 cube = cubes[pixel_coordinates[0], pixel_coordinates[1], pixel_coordinates[2]]
                 cube.add_pixel_to_cube(pixel, c_star)
 
-            # Update progress bar (every fourth loop to reduce GUI thread burden)
-            if update_progress == 3:
-                self._increment_progress(4 * increment_percent)
+            # Update progress bar (every eighth loop to reduce GUI thread burden)
+            if update_progress == 7:
+                self._increment_progress(8 * increment_percent)
                 update_progress = 0
+                if not self._continue_thread:
+                    return
             else:
                 update_progress += 1
 
@@ -332,9 +336,11 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                         #     cube.relevant = True
 
             # Update progress bar (every fourth loop to reduce GUI thread burden)
-            if update_progress == 3:
-                self._increment_progress(increment_percent)
+            if update_progress == 7:
+                self._increment_progress(8 * increment_percent)
                 update_progress = 0
+                if not self._continue_thread:
+                    return
             else:
                 update_progress += 1
 
@@ -366,10 +372,12 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
                         relevant_cubes.append(cube)
                         num_relevant_cubes += 1
 
-            # Update progress bar (every fourth loop to reduce GUI thread burden)
-            if update_progress == 3:
-                self._increment_progress(4 * increment_percent)
+            # Update progress bar (every eighth loop to reduce GUI thread burden)
+            if update_progress == 7:
+                self._increment_progress(8 * increment_percent)
                 update_progress = 0
+                if not self._continue_thread:
+                    return
             else:
                 update_progress += 1
 
@@ -491,10 +499,12 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
             # If not, find the nearest relevant colour and use that
             # TODO: this technically might not be the nearest colour...
 
-            # Update progress bar (every fourth loop to reduce GUI thread burden)
-            if update_progress == 3:
-                self._increment_progress(4 * increment_percent)
+            # Update progress bar (every eighth loop to reduce GUI thread burden)
+            if update_progress == 7:
+                self._increment_progress(8 * increment_percent)
                 update_progress = 0
+                if not self._continue_thread:
+                    return
             else:
                 update_progress += 1
 

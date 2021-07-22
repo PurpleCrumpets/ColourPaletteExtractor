@@ -481,19 +481,23 @@ class BatchGenerationProgressWidget(QDialog):
     def __init__(self):
         super().__init__()
 
+        self._cancel_text = "Cancelling..."
+
+        self._batch_type = ""
         self._total_count = 0
         self._current_count = 0
 
         self._set_properties()
 
-    def show_widget(self, total_count: int):
+    def show_widget(self, total_count: int, batch_type: str):
         self._total_count = total_count
         self._current_count = 0
+        self._batch_type = batch_type
+        self.label.setText("")
         self._set_label_text()
         self._progress_bar.setValue(self._current_count)
         self._progress_bar.setMaximum(self._total_count)
         self.show()
-        # self.exec_()
 
     def _set_properties(self):
         self.setWindowTitle("Progress")
@@ -535,10 +539,14 @@ class BatchGenerationProgressWidget(QDialog):
     def update_progress(self):
         self._current_count += 1
 
-        self._set_label_text()
         self._progress_bar.setValue(self._current_count)
+        self._set_label_text()
+
+    def set_cancel_text(self):
+        self.label.setText(self._cancel_text)
 
     def _set_label_text(self) -> None:
-        self.label.setText("Generated colour palette for "
-                            + str(self._current_count) + "/"
-                            + str(self._total_count) + " images")
+        if self.label.text() != self._cancel_text:
+            self.label.setText("Generated " + self._batch_type + " for "
+                                + str(self._current_count) + "/"
+                                + str(self._total_count) + " images")
