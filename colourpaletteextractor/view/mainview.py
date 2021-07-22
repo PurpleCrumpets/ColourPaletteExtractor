@@ -239,8 +239,8 @@ class MainView(QMainWindow):
         self.generate_all_palette_action.setShortcut("Ctrl+" + meta_key + "+G")
 
         # Stop action
-        self.stop_action = QAction(QIcon("icons:stop-circle-outline.svg"), "&Stop", self)
-        self.stop_action.setShortcut("Escape")
+        self.stop_action = QAction(QIcon("icons:stop-circle-outline.svg"), "&Stop Current Tab", self)
+        self.stop_action.setShortcut("Ctrl+s")
         self.stop_action.setDisabled(True)
 
         # Preferences
@@ -265,7 +265,7 @@ class MainView(QMainWindow):
 
         # Toggle original-recoloured image
         self.toggle_recoloured_image_action = QAction(QIcon("icons:eye-outline.svg"),
-                                                      "Show &Recoloured Image", self, checkable=True)
+                                                      "Toggle &Recoloured Image", self, checkable=True)
         self.toggle_recoloured_image_action.setChecked(False)
         self.toggle_recoloured_image_action.setDisabled(True)  # Initially disabled by default
         self.toggle_recoloured_image_action.setShortcut("Ctrl+T")

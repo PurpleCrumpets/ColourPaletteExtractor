@@ -259,6 +259,7 @@ class ColourPaletteExtractorController(QRunnable):
                     msg_box = otherviews.ErrorBox(box_type="information")
                     msg_box.setInformativeText(message)
                     msg_box.exec_()
+                    return
             else:
                 pass
                 # TODO: throw exception
@@ -429,6 +430,8 @@ class ColourPaletteExtractorController(QRunnable):
         """Finds the image data associated with the given tab and returns its colour palette."""
 
         image_data_id = tab.image_id
+        # TODO can occasionally get an error here - not sure why
+
         image_data = self._model.get_image_data(image_data_id)
 
         return image_data.colour_palette
