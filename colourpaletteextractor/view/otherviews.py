@@ -204,6 +204,7 @@ class PreferencesWidget(QDialog):
                 break
 
         self.user_path_selector.setEnabled(self._use_user_dir)
+        self.user_path_selector.setText(self._user_output_dir)
         self.browse_button.setEnabled(self._use_user_dir)
         self.default_path_button.setChecked(not self._use_user_dir)
 

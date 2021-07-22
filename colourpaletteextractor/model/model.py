@@ -69,6 +69,9 @@ class ColourPaletteExtractorModel:
     DEFAULT_USER_DIRECTORY = os.path.join(QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation),
                                           _version.__application_name__,
                                           "Output")
+    if sys.platform == "win32":
+        DEFAULT_USER_DIRECTORY = DEFAULT_USER_DIRECTORY.replace("\\", "/")  # Consistent looking path
+
     DEFAULT_USE_USER_DIRECTORY = False
     DEFAULT_HEIGHT = 894  # Based on size of 'how-to' image
     DEFAULT_WIDTH = 1523  # Based on size of 'how-to' image
