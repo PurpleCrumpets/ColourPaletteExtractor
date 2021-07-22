@@ -70,6 +70,8 @@ class ColourPaletteExtractorModel:
                                           _version.__application_name__,
                                           "Output")
     DEFAULT_USE_USER_DIRECTORY = False
+    DEFAULT_HEIGHT = 894  # Based on size of 'how-to' image
+    DEFAULT_WIDTH = 1523  # Based on size of 'how-to' image
 
     ERROR_MSG = "Error! :'("
     SUPPORTED_IMAGE_TYPES = {"png", "jpg", "jpeg"}
@@ -140,7 +142,8 @@ class ColourPaletteExtractorModel:
 
         # Set default main window preferences
         self._settings.beginGroup("main window")
-        self._settings.setValue("size", QSize(1200, 800))
+        self._settings.setValue("size", QSize(ColourPaletteExtractorModel.DEFAULT_WIDTH,
+                                              ColourPaletteExtractorModel.DEFAULT_HEIGHT))
         self._settings.endGroup()
 
         # Set default output directory preferences

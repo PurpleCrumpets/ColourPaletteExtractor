@@ -244,7 +244,7 @@ class ImageDisplay(QLabel):
 
 class ColourPaletteDock(QDockWidget):
 
-    _MINIMUM_SIZE = 100
+    _MINIMUM_SIZE = 115
 
     def __init__(self, parent=None):
         """Constructor."""

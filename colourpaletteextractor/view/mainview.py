@@ -38,7 +38,10 @@ class MainView(QMainWindow):
 
 
     # default_new_tab_image = "images:800px-University_of_St_Andrews_arms.jpg"
-    default_new_tab_image = "images:jon_schueler_to_what_end_does_this_achieve_1987.jpg"
+    if darkdetect.isDark():
+        default_new_tab_image = "images:how-to-dark-mode.png"
+    else:
+        default_new_tab_image = "images:how-to-light-mode.png"
 
     app_icon = "app_icon"
 
@@ -53,9 +56,9 @@ class MainView(QMainWindow):
 
         # Setting icon path based on whether the system's dark mode/light mode is in use
         if darkdetect.isDark():
-            icon_dir = "dark_mode"
+            icon_dir = "dark-mode"
         else:
-            icon_dir = "light_mode"
+            icon_dir = "light-mode"
 
         # Set Windows 10 specific settings
         if sys.platform == "win32":

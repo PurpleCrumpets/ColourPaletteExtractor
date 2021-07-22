@@ -163,7 +163,7 @@ class ColourPaletteExtractorController(QRunnable):
         new_image_data_id, new_image_data = self._model.add_image(file_name_and_path=default_file)
 
         # Set the name of the default tab
-        new_image_data.name = "How to Extract the Colour Palette"
+        new_image_data.name = "Quick Start Guide"
 
         # Create new tab linked to the image
         if new_image_data is not None:
