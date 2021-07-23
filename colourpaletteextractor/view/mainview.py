@@ -3,7 +3,6 @@ import sys
 import os
 
 import darkdetect
-import platform
 
 from PySide2 import QtGui
 from PySide2.QtCore import Qt, QDir
@@ -11,32 +10,26 @@ from PySide2.QtGui import QIcon, QKeySequence, QPixmap
 from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, \
     QSizePolicy, QMessageBox, QApplication
 
-
 from colourpaletteextractor.model.model import get_settings
+
 import colourpaletteextractor.view.otherviews as otherviews
 import colourpaletteextractor.view.tabview as tabview
 
-from colourpaletteextractor.view.otherviews import BatchGenerationProgressWidget
-
-resources_dir = "resources"
-
-
 
 class MainView(QMainWindow):
-    """The main window of the colour palette extractor tool"""
+    """The main window of the ColourPaletteExtractor application.
 
-    if getattr(sys, "frozen", False):
-        # If the application is run as a bundle, the PyInstaller bootloader extends the sys module
-        # by a flag frozen=Truer and sets the app path into variable _MEIPASS'.
-        # resources_path = sys._MEIPASS
-        resources_path = os.path.join(sys._MEIPASS, resources_dir, )
+    """
 
+    # Set the correct path to resources depending on whether the application is been run from a Python script or as
+    # a dedicated application/bundle.
+    RESOURCES_DIR = "resources"
+    if getattr(sys, "frozen", False):  # Running as a bundle
+        resources_path = os.path.join(sys._MEIPASS, RESOURCES_DIR, )
     else:
-        resources_path = os.path.join(os.path.dirname(__file__), resources_dir, )
+        resources_path = os.path.join(os.path.dirname(__file__), RESOURCES_DIR, )
 
-
-
-    # default_new_tab_image = "images:800px-University_of_St_Andrews_arms.jpg"
+    # Select the appropriate quick start guide depending on the system's theme (dark/light mode)
     if darkdetect.isDark():
         default_new_tab_image = "images:how-to-dark-mode.png"
     else:
@@ -45,15 +38,15 @@ class MainView(QMainWindow):
     app_icon = "app_icon"
 
     def __init__(self, parent=None):
-        """Constructor."""
 
         # Show GUI when using a Mac:
-        # https://www.loekvandenouweland.com/content/pyside2-big-sur-does-not-show-window.html
-        os.environ['QT_MAC_WANTS_LAYER'] = '1'  # TODO: Check if this is necessary
+        # See: https://www.loekvandenouweland.com/content/pyside2-big-sur-does-not-show-window.html
+        # Accessed 23/07/2021
+        os.environ['QT_MAC_WANTS_LAYER'] = '1'
 
         super(MainView, self).__init__(parent)
 
-        # Setting icon path based on whether the system's dark mode/light mode is in use
+        # Sett the icon path based on the system's theme (dark/light mode)
         if darkdetect.isDark():
             icon_dir = "dark-mode"
         else:
@@ -64,31 +57,26 @@ class MainView(QMainWindow):
             icon_name = MainView.app_icon + ".ico"
             self.setWindowIcon(QIcon(icon_name))
 
-
-        # # Set older macOS version (anything before Big Sur) settings
-        # if sys.platform == "darwin":
-        #     mac_os_version, _, _ = platform.mac_ver()
-        #     mac_os_version = mac_os_version.split(".")
-        #
-        #     if int(mac_os_version[0]) < 11:
-        #         # Set application theme
-        #         pass
-
-        # Setting paths to resources
+        # Set paths to resources
         QDir.setCurrent(MainView.resources_path)
         if not QDir.setCurrent(MainView.resources_path):
-            print(FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), resources_dir))
-            # TODO fix exception handling
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), MainView.RESOURCES_DIR)
 
         QDir.addSearchPath("icons", os.path.join(MainView.resources_path, "icons", icon_dir))
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
 
         self._create_gui()  # Generate main GUI components
-        self._read_settings()
+        self._set_size_and_shape()  # Set size/shape of GUI
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
+        """Intercept GUI close event to check if the user wishes to close the GUI.
 
-        # Message box to ask for permission to close from the user
+        Args:
+            event (QtGui.QCloseEvent): Close event
+
+        """
+
+        # Message box to ask for permission to close the GUI
         close_box = QMessageBox()
         close_box.setIconPixmap(QPixmap("icons:about-small.png"))
         close_box.setWindowIcon(QIcon("icons:about-small.png"))
@@ -99,7 +87,7 @@ class MainView(QMainWindow):
 
         reply = close_box.exec_()
 
-        # Analysing user's response
+        # Analyse user's response
         if reply == QMessageBox.Close:
             self.close_action.trigger()
 
@@ -109,7 +97,7 @@ class MainView(QMainWindow):
         else:
             event.ignore()
 
-    def _read_settings(self):
+    def _set_size_and_shape(self) -> None:
         settings = get_settings()
 
         settings.beginGroup("main window")
@@ -133,18 +121,7 @@ class MainView(QMainWindow):
 
         settings.endGroup()
 
-    def _write_settings(self):
-        settings = get_settings()
-
-        settings.beginGroup("main window")
-        settings.setValue("position", self.pos())
-        settings.setValue("size", self.size())
-        settings.endGroup()
-
-        settings.sync()
-
-
-    def _create_gui(self):
+    def _create_gui(self) -> None:
         """Assemble the GUI components."""
         # Adapted from: https://realpython.com/python-pyqt-gui-calculator/
 
@@ -162,20 +139,17 @@ class MainView(QMainWindow):
         self._create_colour_palette_dock()
 
         self._create_preferences_dialog_box()  # Create preferences panel
-        self.batch_progress_widget = BatchGenerationProgressWidget()
+        self.batch_progress_widget = otherviews.BatchGenerationProgressWidget()
 
-    def set_display_text(self, text):
-        """Set display's text."""
-        self.display.setText(text)
-        self.display.setFocus()
+    def _write_settings(self) -> None:
+        settings = get_settings()
 
-    def display_text(self):
-        """Get display's text."""
-        return self.display.text()
+        settings.beginGroup("main window")
+        settings.setValue("position", self.pos())
+        settings.setValue("size", self.size())
+        settings.endGroup()
 
-    def clear_display(self):
-        """Clear the display."""
-        self.set_display_text(" ")
+        settings.sync()
 
     def _set_main_window_properties(self):
         """Set the properties of the main window of the GUI."""

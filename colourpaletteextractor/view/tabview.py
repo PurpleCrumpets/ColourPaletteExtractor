@@ -3,11 +3,7 @@ import darkdetect
 from PySide2.QtCore import QEvent, Qt, QPointF
 from PySide2.QtGui import QPixmap, QColor, QPainter, QWheelEvent
 from PySide2.QtWidgets import QScrollArea, QLabel, QWidget, QDockWidget, QApplication
-
-__author__ = "Tim Churchfield"
-
 from PySide2.examples.widgets.layouts import flowlayout
-# from colourpaletteextractor.model.imagedata import ImageData
 
 import colourpaletteextractor.model.imagedata as imagedata
 

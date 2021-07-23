@@ -1,24 +1,5 @@
 import numpy as np
 
-
-def get_cielab_cube(cubes, pixel_coordinates):
-    """Return the cube with the same simplified coordinates as the given pixel."""
-    # pixel_coordinates = np.ndarray.tolist(pixel_coordinates)
-    cube_found = False
-    for cube in cubes:
-        cube_coordinates = cube.get_cube_coordinates()
-        # print(pixel_coordinates.type)
-        if pixel_coordinates[0] == cube_coordinates[0]:
-        # if pixel_coordinates == cube_coordinates:
-            cube_found = True
-            return cube
-        # print(pixel_coordinates)
-        # print(cube_coordinates)
-        # print(cube_coordinates.type)
-    print("Cube not found for pixel with coordinates: ", pixel_coordinates)
-
-
-
 class CielabCube:
 
     def __init__(self, l_star_coord, a_star_coord, b_star_coord):
@@ -138,5 +119,31 @@ def get_relative_frequencies(relevant_cubes: list[CielabCube], total_pixels: int
         frequencies.append(frequency)
 
     return frequencies
+
+
+def get_cielab_cube(cubes, pixel_coordinates):
+    """Return the cube with the same simplified coordinates as the given pixel.
+
+    Args:
+        cubes:
+        pixel_coordinates:
+
+    Returns:
+
+    """
+
+    # pixel_coordinates = np.ndarray.tolist(pixel_coordinates)
+    cube_found = False
+    for cube in cubes:
+        cube_coordinates = cube.get_cube_coordinates()
+        # print(pixel_coordinates.type)
+        if pixel_coordinates[0] == cube_coordinates[0]:
+            # if pixel_coordinates == cube_coordinates:
+            cube_found = True
+            return cube
+        # print(pixel_coordinates)
+        # print(cube_coordinates)
+        # print(cube_coordinates.type)
+    print("Cube not found for pixel with coordinates: ", pixel_coordinates)
 
 

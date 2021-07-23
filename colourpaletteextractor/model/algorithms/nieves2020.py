@@ -4,8 +4,8 @@ from skimage import color
 from skimage import img_as_ubyte
 import time
 
-from colourpaletteextractor.model.algorithms import cielabcube, palettealgorithm
-
+import colourpaletteextractor.model.algorithms.cielabcube as cielabcube
+import colourpaletteextractor.model.algorithms.palettealgorithm as palettealgorithm
 
 # from colourpaletteextractor.model.algorithms import nieves2020cython
 

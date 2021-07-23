@@ -7,8 +7,6 @@ from PySide2 import QtCore
 import colourpaletteextractor.view.tabview as tabview
 import colourpaletteextractor.model.imagedata as imagedata
 
-from colourpaletteextractor.model.algorithms.cielabcube import CielabCube
-
 
 def get_implemented_algorithms():
     """Recursively finds all subclasses of the :class:`.PaletteAlgorithm` class.
