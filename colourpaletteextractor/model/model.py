@@ -14,8 +14,8 @@ import numpy as np
 from colourpaletteextractor import _version
 from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.model.algorithms import nieves2020
-from colourpaletteextractor.model.algorithms import grogan2018
-from colourpaletteextractor.model.algorithms import dummyalgorithm
+# from colourpaletteextractor.model.algorithms import grogan2018
+# from colourpaletteextractor.model.algorithms import dummyalgorithm
 from colourpaletteextractor.model.algorithms.palettealgorithm import PaletteAlgorithm
 
 

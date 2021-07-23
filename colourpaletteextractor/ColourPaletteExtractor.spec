@@ -24,7 +24,7 @@ block_cipher = None
 
 
 a = Analysis(['__main__.py'],
-             pathex=['C:\\Users\\timch\\PycharmProjects\\MSc-CS-Project---ColourPaletteExtractor\\colourpaletteextractor'],
+             pathex=['/Users/tim/OneDrive - University of St Andrews/University/MScProject/ColourPaletteExtractor/colourpaletteextractor'],
              binaries=[],
              datas=added_files,
              hiddenimports=[],
@@ -67,7 +67,7 @@ if sys.platform == "darwin":
              name='ColourPaletteExtractor.app',
              icon='app_icon.icns',
              bundle_identifier=None,
-             version='0.4.0',
+             version='0.5.1',
              info_plist={
                'NSPrincipalClass': 'NSApplication',
                'NSAppleScriptEnabled': False,

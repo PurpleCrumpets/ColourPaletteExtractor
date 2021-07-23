@@ -30,6 +30,12 @@ Alternative algorithms may be implemented in the future.
 
 ## 2) Compiling Instructions
 
+### Set-up a New Virtual Python Environment
+
+
+create a new virtual python environment
+install the package requirements using the
+
 ### macOS
 
 Using
