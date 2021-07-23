@@ -1,4 +1,5 @@
 # import pyximport; pyximport.install(setup_args={"include_dirs": np.get_include()})
+from __future__ import annotations
 import numpy as np
 from skimage import color
 from skimage import img_as_ubyte

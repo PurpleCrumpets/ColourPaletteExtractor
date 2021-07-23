@@ -1,3 +1,4 @@
+from __future__ import annotations
 import darkdetect
 
 from PySide2.QtCore import QEvent, Qt, QPointF

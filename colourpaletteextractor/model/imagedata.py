@@ -1,10 +1,10 @@
+from __future__ import annotations
+
 import os.path
 from PySide2.QtGui import QImage
 from skimage import io, color
-# from skimage.viewer import ImageViewer
-# from cv2 import imread, imshow, waitKey, COLOR_BGR2GRAY, cvtColor, split, COLOR_BGR2LAB
-from colourpaletteextractor.model.algorithms.palettealgorithm import PaletteAlgorithm
 
+import colourpaletteextractor.model.algorithms.palettealgorithm as palettealgorithm
 
 class ImageData:
 
@@ -59,7 +59,7 @@ class ImageData:
         return self._algorithm_used
 
     @algorithm_used.setter
-    def algorithm_used(self, value: type[PaletteAlgorithm]):
+    def algorithm_used(self, value: type[palettealgorithm.PaletteAlgorithm]):
         self._algorithm_used = value
 
     @property
