@@ -1,8 +1,23 @@
 import numpy as np
 
 class CielabCube:
+    """A cube representing a fixed region in the CIELAB colour space.
 
-    def __init__(self, l_star_coord, a_star_coord, b_star_coord):
+    The cube is used to hold pixels in an image that exist within the cube's region of the CIELAB colour space. The
+    input parameters do not refer to the actual L*, a* and b* values, but depend on the `CUBE_SIZE` specified by the
+    colour palette algorithm (in particular, any variant on the `Nieves 2020`_ algorithm).
+
+    Args:
+        l_star_coord: Perceptual lightness cube coordinate
+        a_star_coord: Green-red cube coordinate
+        b_star_coord: Blue-yellow cube coordinate
+
+    .. _Nieves 2020:
+       https://doi.org/10.1364/AO.378659
+    """
+
+    def __init__(self, l_star_coord: int, a_star_coord: int, b_star_coord: int):
+
         self._l_star_coord = l_star_coord
         self._a_star_coord = a_star_coord
         self._b_star_coord = b_star_coord
@@ -16,7 +31,7 @@ class CielabCube:
         self._mean_colour = np.empty([3])
         self._c_stars = []
 
-        self._relevant = False
+        self._relevant = False  # Cube is initially not considered to be a relevant colour
 
     @property
     def pixel_count_after_reassignment(self):
