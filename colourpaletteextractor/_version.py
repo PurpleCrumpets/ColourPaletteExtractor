@@ -22,7 +22,7 @@ __application_name__ = "ColourPaletteExtractor"
 
 def get_header():
     header = __application_name__ + " is a simple tool to generate the colour palette of an image. \n \n" + \
-              "    Copyright (C) 2020 " + __author__ + " \n \n" + \
+              "    Copyright (C) 2021 " + __author__ + " \n \n" + \
               "    Version " + __version__ + "\n"
 
     return header
