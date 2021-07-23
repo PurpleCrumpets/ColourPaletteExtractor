@@ -12,14 +12,6 @@ Subpackages
 Submodules
 ----------
 
-colourpaletteextractor.model.createpdf module
----------------------------------------------
-
-.. automodule:: colourpaletteextractor.model.createpdf
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 colourpaletteextractor.model.dummyimagescript module
 ----------------------------------------------------
 

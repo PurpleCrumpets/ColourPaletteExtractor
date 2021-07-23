@@ -1,5 +1,5 @@
 import darkdetect
-from PySide2 import QtGui
+
 from PySide2.QtCore import QEvent, Qt, QPointF
 from PySide2.QtGui import QPixmap, QColor, QPainter, QWheelEvent
 from PySide2.QtWidgets import QScrollArea, QLabel, QWidget, QDockWidget, QApplication
@@ -7,7 +7,9 @@ from PySide2.QtWidgets import QScrollArea, QLabel, QWidget, QDockWidget, QApplic
 __author__ = "Tim Churchfield"
 
 from PySide2.examples.widgets.layouts import flowlayout
-from colourpaletteextractor.model.imagedata import ImageData
+# from colourpaletteextractor.model.imagedata import ImageData
+
+import colourpaletteextractor.model.imagedata as imagedata
 
 
 class NewTab(QScrollArea):
@@ -169,7 +171,7 @@ class ImageDisplay(QLabel):
 
     def update_image(self, image):
 
-        self.pixmap = ImageData.get_image_as_q_image(image)
+        self.pixmap = imagedata.ImageData.get_image_as_q_image(image)
         self.pixmap = QPixmap(self.pixmap)
         self._set_pixmap(self.pixmap)
 

@@ -116,7 +116,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm):
             return None, [], []
 
         # Get relative frequency of each colour
-        relative_frequencies = self._get_relative_frequencies(relevant_cubes=relevant_cubes,
+        relative_frequencies = cielabcube.get_relative_frequencies(relevant_cubes=relevant_cubes,
                                                               total_pixels=int(pixel_count))
 
         self._set_progress(100)  # Progress = 100%
@@ -623,7 +623,7 @@ class Nieves2020CentredCubes(palettealgorithm.PaletteAlgorithm):
             return None, [], []
 
         # Get relative frequency of each colour
-        relative_frequencies = self._get_relative_frequencies(relevant_cubes=relevant_cubes,
+        relative_frequencies = cielabcube.get_relative_frequencies(relevant_cubes=relevant_cubes,
                                                               total_pixels=int(pixel_count))
 
         self._set_progress(100)  # Progress = 100%

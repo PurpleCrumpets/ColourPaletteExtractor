@@ -18,6 +18,7 @@ def get_cielab_cube(cubes, pixel_coordinates):
     print("Cube not found for pixel with coordinates: ", pixel_coordinates)
 
 
+
 class CielabCube:
 
     def __init__(self, l_star_coord, a_star_coord, b_star_coord):
@@ -118,5 +119,24 @@ class CielabCube:
         # TODO: possbly convert to numpy array and append that way to save converting it later?
     # Alternatively, create a new 2d matrix and give each pixel a number corresponding to the given cube
     # Therefore, you would not need to create a bunch of object?
+
+
+def get_relative_frequencies(relevant_cubes: list[CielabCube], total_pixels: int) -> list[float]:
+    """Calculate the relative frequency of
+
+    Args:
+        relevant_cubes:
+        total_pixels:
+
+    Returns:
+
+    """
+
+    frequencies = []
+    for cube in relevant_cubes:
+        frequency = cube.pixel_count_after_reassignment / total_pixels
+        frequencies.append(frequency)
+
+    return frequencies
 
 

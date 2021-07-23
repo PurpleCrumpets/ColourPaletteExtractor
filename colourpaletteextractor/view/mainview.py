@@ -2,21 +2,20 @@ import errno
 import sys
 import os
 
-
 import darkdetect
-# import qdarkstyle
 import platform
 
 from PySide2 import QtGui
-from PySide2.QtCore import Qt, QDir, QRect
-from PySide2.QtGui import QIcon, QKeySequence, QPixmap, QGuiApplication
+from PySide2.QtCore import Qt, QDir
+from PySide2.QtGui import QIcon, QKeySequence, QPixmap
 from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, \
     QSizePolicy, QMessageBox, QApplication
 
-__author__ = "Tim Churchfield"
 
 from colourpaletteextractor.model.model import get_settings
-from colourpaletteextractor.view import otherviews, tabview
+import colourpaletteextractor.view.otherviews as otherviews
+import colourpaletteextractor.view.tabview as tabview
+
 from colourpaletteextractor.view.otherviews import BatchGenerationProgressWidget
 
 resources_dir = "resources"
@@ -60,24 +59,20 @@ class MainView(QMainWindow):
         else:
             icon_dir = "light-mode"
 
-        # Set Windows 10 specific settings
+        # Set Windows 10 specific application icon
         if sys.platform == "win32":
-            # Set application icon
             icon_name = MainView.app_icon + ".ico"
             self.setWindowIcon(QIcon(icon_name))
 
-            # Set application theme
-            # dark_stylesheet = qdarkstyle.load_stylesheet_pyside2()
-            # self.setStyleSheet(dark_stylesheet)
 
-        # Set older macOS version (anything before Big Sur) settings
-        if sys.platform == "darwin":
-            mac_os_version, _, _ = platform.mac_ver()
-            mac_os_version = mac_os_version.split(".")
-
-            if int(mac_os_version[0]) < 11:
-                # Set application theme
-                pass
+        # # Set older macOS version (anything before Big Sur) settings
+        # if sys.platform == "darwin":
+        #     mac_os_version, _, _ = platform.mac_ver()
+        #     mac_os_version = mac_os_version.split(".")
+        #
+        #     if int(mac_os_version[0]) < 11:
+        #         # Set application theme
+        #         pass
 
         # Setting paths to resources
         QDir.setCurrent(MainView.resources_path)
