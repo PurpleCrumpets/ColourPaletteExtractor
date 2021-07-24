@@ -171,9 +171,9 @@ class ReportGenerator:
         pdf.write(5, "The recoloured image is created by reassigning each pixel's colour to the most representative "
                   + "colour found in the colour palette. For the algorithm proposed by Nieves et al. (2020), this "
                   + "is the colour in the colour palette that is closest to the pixel's colour in the CIELAB colour"
-                  + " space (shortest Euclidean distance). The graph above shows the relative frequency of the colours "
-                  + "in the colour palette when used to recolour the original image. On the X-axis, each label refers "
-                  + "to the colour's sRGB triplet.")
+                  + " space (the shortest Euclidean distance). The graph above shows the relative frequency of the"
+                  + " colours in the colour palette when used to recolour the original image. On the X-axis, each label"
+                  + " refers to the colour's sRGB triplet.")
         pdf.ln(10)
 
         # File name and path

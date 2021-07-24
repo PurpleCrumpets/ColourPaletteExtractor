@@ -8,20 +8,10 @@ Subpackages
    :maxdepth: 4
 
    colourpaletteextractor.controller
+   colourpaletteextractor.examples
    colourpaletteextractor.model
    colourpaletteextractor.tests
    colourpaletteextractor.view
-
-Submodules
-----------
-
-colourpaletteextractor.testscript module
-----------------------------------------
-
-.. automodule:: colourpaletteextractor.testscript
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 Module contents
 ---------------

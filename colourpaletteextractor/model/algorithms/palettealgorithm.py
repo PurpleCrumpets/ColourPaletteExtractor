@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import inspect
 from abc import ABC, abstractmethod
 from typing import Optional
 
@@ -34,11 +35,17 @@ def get_implemented_algorithms():
     while path:
         parent = path.pop()
         for child in parent.__subclasses__():
+            print(child)
+            if inspect.isabstract(child):
+                path.append(child)
+                continue
+
             if not '.' in str(child):
                 # In a multi inheritance scenario, __subclasses__()
                 # also returns interim-classes that don't have all the
                 # methods. With this hack, we skip them.
                 continue
+
             if child not in result:
                 result.add(child)
                 path.append(child)
