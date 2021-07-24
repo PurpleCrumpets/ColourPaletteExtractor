@@ -334,6 +334,7 @@ class PreferencesWidget(QDialog):
 
             # Check if class has abstract method - hence should not be added as a selectable algorithm
             if inspect.isabstract(algorithm_class):
+                self._algorithms.remove(algorithm_class)
                 continue
 
             algorithm = algorithm_class()

@@ -105,11 +105,11 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         # Get colour palette as a list of rgb colours
         colour_palette = []
         for cube in relevant_cubes:
-            print("New colour")
-            print(cube.mean_colour)
+            # print("New colour")
+            # print(cube.mean_colour)
             colour = convert_lab_2_rgb(cube.mean_colour)  # Scale to 8-bit
             colour_palette.append(colour)
-            print(colour)
+            # print(colour)
         self._set_progress(97)  # Progress = 97%
         if not self._continue_thread:
             return None, [], []
@@ -212,6 +212,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
 
                     # Step 6-11: Determining if cube is relevant
                     if num_pixels > threshold_pixel_count:  # possibly >= (pseudo-code in paper uses >)
+                        print("Cube meets primary requirements with:", num_pixels, "pixels")
                         cube.relevant = True
 
                     elif num_pixels == 0:  # No pixels in cube
@@ -233,10 +234,23 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
                         # print(secondary_threshold_pixel_count, c_star_cube_count, l_star_cube_count)
 
                         # Check if cube meets secondary relevancy requirements
-                        if (c_star_cube_count > secondary_threshold_pixel_count) \
-                                or (l_star_cube_count > secondary_threshold_pixel_count):
+                        if c_star_cube_count > secondary_threshold_pixel_count:
                             cube.relevant = True
-                            print(c_star_cube_count, l_star_cube_count, threshold_pixel_count, num_pixels)
+                            print("Cube below meets secondary requirements for C*...")
+                            print("----C* cube count:", c_star_cube_count,
+                                  "; L* cube count:", l_star_cube_count,
+                                  "; Threshold pixel count:", threshold_pixel_count,
+                                  "; Secondary threshold pixel count", secondary_threshold_pixel_count,
+                                  "; Number of pixels:", num_pixels)
+
+                        elif l_star_cube_count > secondary_threshold_pixel_count:
+                            cube.relevant = True
+                            print("Cube below meets secondary requirements for L*...")
+                            print("----C* cube count:", c_star_cube_count,
+                                  "; L* cube count:", l_star_cube_count,
+                                  "; Threshold pixel count:", threshold_pixel_count,
+                                  "; Secondary threshold pixel count", secondary_threshold_pixel_count,
+                                  "; Number of pixels:", num_pixels)
 
                         else:
                             cube.relevant = False
