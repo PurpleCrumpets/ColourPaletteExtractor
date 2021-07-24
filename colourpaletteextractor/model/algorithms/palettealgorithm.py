@@ -35,7 +35,6 @@ def get_implemented_algorithms():
     while path:
         parent = path.pop()
         for child in parent.__subclasses__():
-            print(child)
             if inspect.isabstract(child):
                 path.append(child)
                 continue

@@ -1,4 +1,4 @@
-from colourpaletteextractor.model.algorithms.nieves2020 import Nieves2020
+from colourpaletteextractor.model.algorithms.nieves2020 import Nieves2020OffsetCubes
 from colourpaletteextractor.model.model import generate_colour_palette_from_image
 
 # Path to sample image
@@ -10,5 +10,5 @@ recoloured_image, colour_palette, relative_frequencies = generate_colour_palette
 
 # Specifying the algorithm to use
 print("Specifying the algorithm to use")
-recoloured_image, colour_palette, relative_frequencies = generate_colour_palette_from_image(path_to_file=file_name,
-                                                                                            algorithm=Nieves2020)
+recoloured_image, colour_palette, relative_frequencies \
+    = generate_colour_palette_from_image(path_to_file=file_name, algorithm=Nieves2020OffsetCubes)

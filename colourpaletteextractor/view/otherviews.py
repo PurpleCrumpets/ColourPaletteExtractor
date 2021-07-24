@@ -328,8 +328,6 @@ class PreferencesWidget(QDialog):
         self._algorithm_buttons = []
         algorithm_labels = []
 
-        # print(self._algorithms)
-
         # Create radio button and hyperlink for each algorithm
         default_algorithm_found = False
         for algorithm_class in self._algorithms:

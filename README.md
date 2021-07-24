@@ -93,10 +93,19 @@ colour palette itself, and the relative frequencies of these colours in the reco
 activate your new Python virtual environment, navigate to the ```ColourPaletteExtractor``` folder and use the following
 command to run the script:
 
-         python3 -m colourpaletteextractor.examples.generatecolourpaletteexample.py
+         python3 -m colourpaletteextractor.examples.generatecolourpaletteexample
 
 
 ## 4) Compiling Instructions
+
+To build the ```ColourPaletteExtractor``` application from the source code, it is highly recommended that a new
+Python virtual environment is set-up. This will allow for the minimum number of Python packages to be installed, 
+reducing the size of the resultant application. PLease install the Python packages listed in the ```requirements.txt```
+[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt). Please
+note that ```Sphinx```, ```sphinx-rtd-theme``` and ```pytest``` are only required if you wish to rebuild the
+documentation (the two Sphinx packages) or run the test suite for the implemented algorithms (the latter package).
+
+
 
 ### Set-up a New Virtual Python Environment
 
