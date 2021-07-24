@@ -66,7 +66,7 @@ def get_settings() -> QSettings:
 
 class ColourPaletteExtractorModel:
     # Default preferences for the settings file (if it doesn't yet exist)
-    DEFAULT_ALGORITHM: type[PaletteAlgorithm] = nieves2020.Nieves2020
+    DEFAULT_ALGORITHM: type[PaletteAlgorithm] = nieves2020.Nieves2020CentredCubes
     DEFAULT_USER_DIRECTORY: str = os.path.join(QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation),
                                                _version.__application_name__,
                                                "Output")
@@ -283,40 +283,40 @@ class ColourPaletteExtractorModel:
         # print(new_recoloured_image.shape, len(image_colour_palette))
 
 
-# if __name__ == "__main__":
-#
-#     # data_dir = "data"
-#     # print(__file__)
-#     # os.getcwd() - where script executed from!
-#     # print(argv[0])  # Gives you absolute path to the file that was run - this could be useful later on
-#
-#     file_name = argv[1]
-#
-#     if len(argv) == 3:
-#         model_type = argv[2]
-#
-#     recoloured_image, colour_palette, relative_frequencies = generate_colour_palette_from_image(file_name)
-#
-#     # print(os.path.isfile(file_name))
-#
-#     # # Check if file is an image
-#     # found = False
-#     # for file_type in model.supported_image_types:
-#     #     file_type = "." + file_type
-#     #     if search(file_type, file_name):
-#     #         found = True
-#     #         # model.add_image()
-#     #         break
-#     # Check if file can be found
-#     #
-#     #
-#     # # Check if file is a path
-#     # if os.path.isdir(file_name):
-#     #     print("Found directory")
-#
-#     # TODO Check inputs
-#     # If provided with a directory, apply to all valid files inside
-#     # Else if just a file - just do that one
-#     # If provided with a second argument - this is used to control the algorithm used to extract
-#
-#     # model.add_image()
+if __name__ == "__main__":
+
+    # data_dir = "data"
+    # print(__file__)
+    # os.getcwd() - where script executed from!
+    # print(argv[0])  # Gives you absolute path to the file that was run - this could be useful later on
+
+    file_name = argv[1]
+
+    if len(argv) == 3:
+        model_type = argv[2]
+
+    recoloured_image, colour_palette, relative_frequencies = generate_colour_palette_from_image(file_name)
+
+    # print(os.path.isfile(file_name))
+
+    # # Check if file is an image
+    # found = False
+    # for file_type in model.supported_image_types:
+    #     file_type = "." + file_type
+    #     if search(file_type, file_name):
+    #         found = True
+    #         # model.add_image()
+    #         break
+    # Check if file can be found
+    #
+    #
+    # # Check if file is a path
+    # if os.path.isdir(file_name):
+    #     print("Found directory")
+
+    # TODO Check inputs
+    # If provided with a directory, apply to all valid files inside
+    # Else if just a file - just do that one
+    # If provided with a second argument - this is used to control the algorithm used to extract
+
+    # model.add_image()

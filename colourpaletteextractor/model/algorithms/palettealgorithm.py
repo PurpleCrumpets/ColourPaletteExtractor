@@ -154,7 +154,7 @@ class PaletteAlgorithm(ABC):
         """Increase the algorithm's progress by the provided value.
 
         Args:
-            increment (int): Percentage to increase by
+            increment (float): Percentage to increase by
 
         Raises:
             ValueError: If ``increment` increases self._percent over 100%

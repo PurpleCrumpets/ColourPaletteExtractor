@@ -1,5 +1,7 @@
+import inspect
 import sys
 import ctypes.wintypes
+from abc import ABC
 
 from PySide2 import QtCore, QtGui
 from PySide2.QtCore import Qt, QSettings
@@ -330,6 +332,10 @@ class PreferencesWidget(QDialog):
         default_algorithm_found = False
         for algorithm_class in self._algorithms:
 
+            # Check if class has abstract method - hence should not be added as a selectable algorithm
+            if inspect.isabstract(algorithm_class):
+                continue
+
             algorithm = algorithm_class()
             name = algorithm.name
             url = algorithm.url
@@ -377,6 +383,13 @@ class PreferencesWidget(QDialog):
         if not default_algorithm_found:
             # TODO: throw exception
             pass
+
+    def _my_isabstract(self, obj) -> bool:
+        """Get if ABC is in the object's __bases__ attribute."""
+        try:
+            return ABC in obj.__bases__
+        except AttributeError:
+            return False
 
     def _create_algorithm_radio_button(self, name: str) -> QRadioButton:
 
