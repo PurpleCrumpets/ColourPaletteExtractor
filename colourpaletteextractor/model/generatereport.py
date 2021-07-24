@@ -166,6 +166,16 @@ class ReportGenerator:
         pdf.ln(5)
         pdf.cell(w=0, h=10, txt=title, border=0, ln=1)  # Add section title
 
+        # Description of what recoloured image means
+        pdf.set_font('Times', '', 10)
+        pdf.write(5, "The recoloured image is created by reassigning each pixel's colour to the most representative "
+                  + "colour found in the colour palette. For the algorithm proposed by Nieves et al. (2020), this "
+                  + "is the colour in the colour palette that is closest to the pixel's colour in the CIELAB colour"
+                  + " space (shortest Euclidean distance). The graph above shows the relative frequency of the colours "
+                  + "in the colour palette when used to recolour the original image. On the X-axis, each label refers "
+                  + "to the colour's sRGB triplet.")
+        pdf.ln(10)
+
         # File name and path
         pdf.set_font('Times', '', 10)
         pdf.write(5, chr(127) + "  ")
