@@ -224,34 +224,34 @@ def test_primary_requirements_2():
 def test_primary_requirements_3():
     image = helperfunctions.get_image("./colourpaletteextractor/tests/testImages/multi-colour-1.png")
 
-    # Colour 1:  4% sRGB[0, 0, 0]       -> LAB[0, 0, 0]
-    # Colour 2:  4% sRGB[48, 48, 48]    -> LAB[20, 0, 0]
-    # Colour 3:  4% sRGB[94, 94, 94]    -> LAB[40, 0, 0]
-    # Colour 4:  4% sRGB[145, 145, 145] -> LAB[60, 0, 0]
-    # Colour 5:  4% sRGB[198, 198, 198] -> LAB[80, 0, 0]
-    # Colour 6:  4% sRGB[255, 255, 255] -> LAB[100, 0, 0]
+    # Colour 1:  4% sRGB[0, 0, 0]       -> LAB[0, 0, 0] - good
+    # Colour 2:  4% sRGB[48, 48, 48]    -> LAB[20, 0, 0] - good
+    # Colour 3:  4% sRGB[94, 94, 94]    -> LAB[40, 0, 0] - good
+    # Colour 4:  4% sRGB[145, 145, 145] -> LAB[60, 0, 0] - good
+    # Colour 5:  4% sRGB[198, 198, 198] -> LAB[80, 0, 0] - good
+    # Colour 6:  4% sRGB[255, 255, 255] -> LAB[80, 20, 20] - good
 
-    # Colour 7:  4% sRGB[255, 241, 255] -> LAB[100, 20, 0]
-    # Colour 8:  4% sRGB[255, 226, 255] -> LAB[100, 40, 0]
-    # Colour 9:  4% sRGB[255, 207, 255] -> LAB[100, 60, 0]
-    # Colour 10: 4% sRGB[255, 185, 255] -> LAB[100, 80, 0]
-    # Colour 11: 4% sRGB[255, 155, 255] -> LAB[100, 100, 0]
-    # Colour 12: 4% sRGB[255, 113, 255] -> LAB[100, 120, 0]
+    # Colour 7:  4% sRGB[244, 184, 162] -> LAB[80, 20, 20] - good
+    # Colour 8:  4% sRGB[180, 208, 121] -> LAB[80, -20, 40] - good
+    # Colour 9:  4% sRGB[135, 218, 119] -> LAB[80, -40, 40] - good
+    # Colour 10: 4% sRGB[0, 238, 255]   -> LAB[80, -80, -100] - good
+    # Colour 11: 4% sRGB[255, 155, 255] -> LAB[80, 60, -60] - good
+    # Colour 12: 4% sRGB[136, 154, 0]   -> LAB[60, -20, 100] - good
 
-    # Colour 13: 4% sRGB[255, 118, 255] -> LAB[100, 120, -20]
-    # Colour 14: 4% sRGB[255, 123, 255] -> LAB[100, 120, -40]
-    # Colour 15: 4% sRGB[255, 129, 255] -> LAB[100, 120, -60]
-    # Colour 16: 4% sRGB[255, 135, 255] -> LAB[100, 120, -80]
-    # Colour 17: 4% sRGB[255, 142, 255] -> LAB[100, 120, -100]
-    # Colour 18: 4% sRGB[255, 150, 255] -> LAB[100, 120, -120]
+    # Colour 13: 4% sRGB[103, 155, 144] -> LAB[60, -20, 0] - good
+    # Colour 14: 4% sRGB[255, 72, 0]    -> LAB[80, 100, 100] - good
+    # Colour 15: 4% sRGB[19, 163, 144]  -> LAB[60, -40, 0] - good
+    # Colour 16: 4% sRGB[0, 69, 0]      -> LAB[20, -100, 60] - good
+    # Colour 17: 4% sRGB[0, 71, 107]    -> LAB[20, -100, -40] - good
+    # Colour 18: 4% sRGB[0, 79, 205]    -> LAB[20, -100, -100] - good
 
-    # Colour 19: 4% sRGB[75, 36, 49]    -> LAB[20, 20, 0]
-    # Colour 20: 4% sRGB[81, 35, 20]    -> LAB[20, 20, 20]
-    # Colour 21: 4% sRGB[134, 81, 63]   -> LAB[40, 20, 20]
-    # Colour 22: 4% sRGB[159, 63, 65]   -> LAB[40, 40, 19]
-    # Colour 23: 4% sRGB[162, 62, 29]   -> LAB[40, 40, 40]
-    # Colour 24: 4% sRGB[223, 113, 76]  -> LAB[60, 40, 40]
-    # Colour 25: 4% sRGB[249, 90, 78]   -> LAB[60, 60, 40]
+    # Colour 19: 4% sRGB[75, 36, 49]    -> LAB[20, 20, 0] - good
+    # Colour 20: 4% sRGB[81, 35, 20]    -> LAB[20, 20, 20] - good
+    # Colour 21: 4% sRGB[134, 81, 63]   -> LAB[40, 20, 20] - good
+    # Colour 22: 4% sRGB[159, 63, 65]   -> LAB[40, 40, 19] - good
+    # Colour 23: 4% sRGB[162, 62, 29]   -> LAB[40, 40, 40] - good
+    # Colour 24: 4% sRGB[223, 113, 76]  -> LAB[60, 40, 40] - good
+    # Colour 25: 4% sRGB[249, 90, 78]   -> LAB[60, 60, 40] - good
 
     # All colours meets the primary requirements threshold
 
@@ -265,63 +265,63 @@ def test_primary_requirements_3():
         print(colour)
 
     # Check values found
-    assert [0, 0, 0] in colour_palette  # Good
-    assert [48, 48, 48] in colour_palette  # Good
-    assert [94, 94, 94] in colour_palette  # Good
-    assert [145, 145, 145] in colour_palette  # Good
-    assert [198, 198, 198] in colour_palette  # Good
-    # assert [255, 255, 255] in colour_palette
+    assert [0, 0, 0] in colour_palette  # Colour 1
+    assert [48, 48, 48] in colour_palette  # Colour 2
+    assert [94, 94, 94] in colour_palette  # Colour 3
+    assert [145, 145, 145] in colour_palette  # Colour 4
+    assert [198, 198, 198] in colour_palette  # Colour 5
+    assert [255, 255, 255] in colour_palette  # Colour 6
 
-    # assert [255, 241, 255] in colour_palette
-    # assert [255, 226, 255] in colour_palette
-    # assert [255, 207, 255] in colour_palette
-    # assert [255, 185, 255] in colour_palette
-    # assert [255, 155, 255] in colour_palette
-    assert [255, 113, 255] in colour_palette
+    assert [244, 184, 162] in colour_palette  # Colour 7
+    assert [180, 208, 121] in colour_palette  # Colour 8
+    assert [135, 218, 119] in colour_palette  # Colour 9
+    assert [0, 240, 196] in colour_palette  # Colour 10
+    assert [0, 238, 255] in colour_palette  # Colour 11
+    assert [136, 154, 0] in colour_palette  # Colour 12
 
-    # assert [255, 118, 255] in colour_palette
-    # assert [255, 123, 255] in colour_palette
-    # assert [255, 129, 255] in colour_palette
-    # assert [255, 135, 255] in colour_palette
-    # assert [255, 142, 255] in colour_palette
-    # assert [255, 150, 255] in colour_palette
+    assert [103, 155, 144] in colour_palette  # Colour 13
+    assert [255, 72, 0] in colour_palette  # Color 14
+    assert [19, 163, 144] in colour_palette  # Colour 15
+    assert [0, 69, 0] in colour_palette  # Colour 16
+    assert [0, 71, 107] in colour_palette  # Colour 17
+    assert [0, 79, 205] in colour_palette  # Colour 18
 
-    assert [75, 36, 49] in colour_palette
-    assert [81, 35, 20] in colour_palette
-    assert [134, 81, 63] in colour_palette
-    assert [159, 63, 65] in colour_palette
-    assert [162, 62, 29] in colour_palette
-    assert [223, 113, 76] in colour_palette
-    assert [249, 90, 78] in colour_palette
+    assert [75, 36, 49] in colour_palette  # Colour 19
+    assert [81, 35, 20] in colour_palette  # Colour 20
+    assert [134, 81, 63] in colour_palette  # Colour 21
+    assert [159, 63, 65] in colour_palette  # Colour 22
+    assert [162, 62, 29] in colour_palette  # Colour 23
+    assert [223, 113, 76] in colour_palette  # Colour 24
+    assert [249, 90, 78] in colour_palette  # Colour 25
 
     # Check relative frequencies
-    assert 0.04 == relative_frequencies[colour_palette.index([0, 0, 0])]
-    assert 0.04 == relative_frequencies[colour_palette.index([48, 48, 48])]
-    assert 0.04 == relative_frequencies[colour_palette.index([94, 94, 94])]
-    assert 0.04 == relative_frequencies[colour_palette.index([145, 145, 145])]
-    assert 0.04 == relative_frequencies[colour_palette.index([198, 198, 198])]
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 255, 255])]
+    assert 0.04 == relative_frequencies[colour_palette.index([0, 0, 0])]  # Colour 1
+    assert 0.04 == relative_frequencies[colour_palette.index([48, 48, 48])]  # Colour 2
+    assert 0.04 == relative_frequencies[colour_palette.index([94, 94, 94])]  # Colour 3
+    assert 0.04 == relative_frequencies[colour_palette.index([145, 145, 145])]  # Colour 4
+    assert 0.04 == relative_frequencies[colour_palette.index([198, 198, 198])]  # Colour 5
+    assert 0.04 == relative_frequencies[colour_palette.index([255, 255, 255])]  # Colour 6
 
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 241, 255])]
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 226, 255])]
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 207, 255])]
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 185, 255])]
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 155, 255])]
-    assert 0.04 == relative_frequencies[colour_palette.index([255, 113, 255])]
+    assert 0.04 == relative_frequencies[colour_palette.index([244, 184, 162])]  # Colour 7
+    assert 0.04 == relative_frequencies[colour_palette.index([180, 208, 121])]  # Colour 8
+    assert 0.04 == relative_frequencies[colour_palette.index([135, 218, 119])]  # Colour 9
+    assert 0.04 == relative_frequencies[colour_palette.index([0, 240, 196])]  # Colour 10
+    assert 0.04 == relative_frequencies[colour_palette.index([0, 238, 255])]  # Colour 11
+    assert 0.04 == relative_frequencies[colour_palette.index([136, 154, 0])]  # Colour 12
 
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 118, 255])]
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 123, 255])]
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 129, 255])]
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 135, 255])]
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 142, 255])]
-    # assert 0.04 == relative_frequencies[colour_palette.index([255, 150, 255])]
+    assert 0.04 == relative_frequencies[colour_palette.index([103, 155, 144])]  # Colour 13
+    assert 0.04 == relative_frequencies[colour_palette.index([255, 72, 0])]  # Colour 14
+    assert 0.04 == relative_frequencies[colour_palette.index([19, 163, 144])]  # Colour 15
+    assert 0.04 == relative_frequencies[colour_palette.index([0, 69, 0] )]  # Colour 16
+    assert 0.04 == relative_frequencies[colour_palette.index([0, 71, 107])]  # Colour 17
+    assert 0.04 == relative_frequencies[colour_palette.index([0, 79, 205])]  # Colour 18
 
-    assert 0.04 == relative_frequencies[colour_palette.index([75, 36, 49])]
-    assert 0.04 == relative_frequencies[colour_palette.index([81, 35, 20])]
-    assert 0.04 == relative_frequencies[colour_palette.index([134, 81, 63])]
-    assert 0.04 == relative_frequencies[colour_palette.index([159, 63, 65])]
-    assert 0.04 == relative_frequencies[colour_palette.index([162, 62, 29])]
-    assert 0.04 == relative_frequencies[colour_palette.index([223, 113, 76])]
-    assert 0.04 == relative_frequencies[colour_palette.index([249, 90, 78])]
+    assert 0.04 == relative_frequencies[colour_palette.index([75, 36, 49])]  # Colour 19
+    assert 0.04 == relative_frequencies[colour_palette.index([81, 35, 20])]  # Colour 20
+    assert 0.04 == relative_frequencies[colour_palette.index([134, 81, 63])]  # Colour 21
+    assert 0.04 == relative_frequencies[colour_palette.index([159, 63, 65])]  # Colour 22
+    assert 0.04 == relative_frequencies[colour_palette.index([162, 62, 29])]  # Colour 23
+    assert 0.04 == relative_frequencies[colour_palette.index([223, 113, 76])]  # Colour 24
+    assert 0.04 == relative_frequencies[colour_palette.index([249, 90, 78])]  # Colour 25
 
-    # assert len(colour_palette) == 25
+    assert len(colour_palette) == 25
