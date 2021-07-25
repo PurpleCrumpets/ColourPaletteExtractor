@@ -261,9 +261,6 @@ def test_primary_requirements_3():
     # Convert colour_palette to list
     colour_palette = [list(colour) for colour in colour_palette]
 
-    for colour in colour_palette:
-        print(colour)
-
     # Check values found
     assert [0, 0, 0] in colour_palette  # Colour 1
     assert [48, 48, 48] in colour_palette  # Colour 2
@@ -325,3 +322,40 @@ def test_primary_requirements_3():
     assert 0.04 == relative_frequencies[colour_palette.index([249, 90, 78])]  # Colour 25
 
     assert len(colour_palette) == 25
+
+def test_closest_relevant_colour_used_to_recolour_pixel():
+    image = helperfunctions.get_image("./colourpaletteextractor/tests/testImages/2-beige-10-sand-88-blue.png")
+    # Colour 1:  2%  sRGB[186, 130, 110] -> LAB[60, 20, 20]
+    # Colour 2:  10% sRGB[209, 198, 161] -> LAB[80, 0, 20]
+    # Colour 3:  88% sRGB[0, 67, 139]    -> LAB[20, -60, -60]
+    # Colour 1 is not relevant
+    # Colour 2 is relevant according to the primary requirements
+    # Colour 3 is relevant according to the primary requirements
+    # Colour 1 will be replaced with the closest colour - Colour 2
+
+    algorithm = nieves2020.Nieves2020CentredCubes()
+    recoloured_image, colour_palette, relative_frequencies = algorithm.generate_colour_palette(image)
+
+    # Convert colour_palette to list
+    colour_palette = [list(colour) for colour in colour_palette]
+
+    assert len(colour_palette) == 2
+
+    # Check values found
+    assert [209, 198, 161] in colour_palette  # Colour 2
+    assert [0, 67, 139] in colour_palette  # Colour 3
+
+    # Check relative frequencies
+    assert 0.12 == relative_frequencies[colour_palette.index([209, 198, 161])]  # Colour 2
+    assert 0.88 == relative_frequencies[colour_palette.index([0, 67, 139])]  # Colour 3
+
+    # Check recoloured image has been recoloured correctly
+    assert (recoloured_image[3][19][:] == [209, 198, 161]).all  # row then column
+    assert (recoloured_image[2][19][:] == [209, 198, 161]).all
+
+    assert (recoloured_image[0][0][:] == [209, 198, 161]).all
+    assert (recoloured_image[0][1][:] == [209, 198, 161]).all
+    assert (recoloured_image[0][2][:] == [209, 198, 161]).all
+    assert (recoloured_image[0][3][:] == [209, 198, 161]).all
+    assert (recoloured_image[0][4][:] == [0, 67, 139]).all
+
