@@ -116,7 +116,7 @@ class PaletteAlgorithm(ABC):
         return self._url
 
     @abstractmethod
-    def generate_colour_palette(self, image: np.array) -> tuple[Optional[np.array], list, list]:
+    def generate_colour_palette(self, image: np.array) -> tuple[np.array, list[np.array], list[float]]:
         """Generate the colour palette for the given image.
 
         Analyses the given image to obtain its colour palette. Returns the recoloured image using only the colours

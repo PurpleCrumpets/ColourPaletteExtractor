@@ -93,36 +93,45 @@ colour palette itself, and the relative frequencies of these colours in the reco
 activate your new Python virtual environment, navigate to the ```ColourPaletteExtractor``` folder and use the following
 command to run the script:
 
-         python3 -m colourpaletteextractor.examples.generatecolourpaletteexample
+      python3 -m colourpaletteextractor.examples.generatecolourpaletteexample
 
 
 ## 4) Compiling Instructions
 
 To build the ```ColourPaletteExtractor``` application from the source code, it is highly recommended that a new
 Python virtual environment is set-up. This will allow for the minimum number of Python packages to be installed, 
-reducing the size of the resultant application. PLease install the Python packages listed in the ```requirements.txt```
-[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt). Please
-note that ```Sphinx```, ```sphinx-rtd-theme``` and ```pytest``` are only required if you wish to rebuild the
+reducing the size of the resultant application. Please install the Python packages listed in the ```requirements.txt```
+[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt). Also 
+note that the ```Sphinx```, ```sphinx-rtd-theme``` and ```pytest``` packages are only required if you wish to rebuild the
 documentation (the two Sphinx packages) or run the test suite for the implemented algorithms (the latter package).
 
 
+The ```create_executables.sh``` and ```create_executables.bat``` files are used to build the application for macOS
+and Windows 10, respectively. These need to be modified to contain the path to your new Python virtual environment.
+For the ```create_executables.sh``` bash script, please update ```Line 7``` to reflect this new path. ```Line 10```
+also needs to be updated to specify the output directory you wish to use for the compiled application.
 
-### Set-up a New Virtual Python Environment
+      Line 7  --> source /path/to/my/Python/virtual/environment/bin/activate
 
+      Line 10 --> OUTPUT_DIR=/path/to/my/output/directory/for/the/ColourPaletteExtractor-Executables
 
-create a new virtual python environment
-install the package requirements using the
+For the ```create_executables.bat``` batch script, please update ```Line 11``` and ```Line 14``` to the path to the
+Python virtual environment (**not** the *activate.bat* file) and the output directory, respectively.
 
-### MacOS
+      Line 11 --> set \path\to\my\Python\virtual\environment
 
-Using
+      Line 14 --> set OUTPUT_DIR=\path\to\my\output\directory\for\the\ColourPaletteExtractor-Executables
 
-### Windows
+Once updated, please make sure that the relevant permissions have been set to allow for these script to be run. Navigate
+to them using the terminal on macOS, or the command prompt on Windows 10 and run these files. If all goes well, you
+should find the compiled applications inside the ```dist``` folder of ```ColourPaletteExtractor-Executables```. 
+
 
 
 ## 5) Implementing a New Algorithm
 
-Implementing a new algorithm is relatively straight-forward, with most of the infrastructure already in place.
+Implementing a new algorithm is relatively straight-forward, with most of the infrastructure already in place. Please
+follow the instructions below to add a new algorithm to the application.
 
 1) Create a new subclass of ```PaletteAlgorithm``` in a new module ```mymodule.py``` of the ```algorithms``` package 
    using the following template:
@@ -136,17 +145,43 @@ Implementing a new algorithm is relatively straight-forward, with most of the in
             """Constructor."""
                 super().__init__(MyNewAlgorithm.name, MyNewAlgorithm.url)
 
-                # Add further code here...
+                # Add any further code here that you require...
 
-            def generate_colour_palette(self, image) -> tuple[ , list[]]:
+            def generate_colour_palette(self, image: np.array) -> tuple[Optional[np.array], list, list]:
+   
+               # Generate the colour palette for the image here
+   
+               # Set the initial progress
+               self._set_progress(0)  # Initial progress = 0%
+               if not self._continue_thread:
+                  return None, [], []
+   
+               
+               # Increment the progress by a fixed amount
+               self._increment_progress(increment_percent)
+                if not self._continue_thread:
+                    return None, [], []
                 
-                # Generate the colour palette here
-                # You can make frequent call-backs to ... TODO
+
+               # Set the final progress   
+               self._set_progress(100)  # Final progress = 100%
+               if not self._continue_thread:
+                  return None, [], []
                 
-                return recoloured_image, colour_palette
+                return recoloured_image, colour_palette, relative_frequencies
 
 
-Explain what the input and output variables are/should be
+Please specify a ```name``` for the algorithm and a ```url``` to a valid website or file to allow for users to learn more
+about how your algorithm works. The ```MyNewAlgorithm``` class inherits the abstract method ```generate_colour_palette```
+from the abstract ```PaletteAlgorithm``` class. The ```image``` object is an ```np.array``` representing the image
+to be analysed. It is either an [x, y, 3] or [x, y, 4] matrix, with the third dimension representing the red, 
+green and blue colour channels of the 8-bit sRGB colour space. The fourth channel may sometimes occur if the image
+has a transparency layer (e.g., some PNG images) and may need to be removed depending on your approach to generating the
+colour palette.
+
+The output from the method should be an ```np.array``` representing the recoloured image using only colours in the
+colour palette, the list of RGB triplets, each represented by an ``np.array``, and the list of relative frequencies 
+of each colour in the colour palette as found in the recoloured image stored as a ```float```. 
 
 2) Add the following import statement for the new module ```mymodule.py``` to the top of the ```model.py``` module so
    the new algorithm can be picked up by the GUI and added as a new algorithm in the settings panel.
@@ -156,20 +191,32 @@ Explain what the input and output variables are/should be
 
 ### 5.1) Adding Progress Bar Updates
 
-It may be desirable to provide progress updates for the user while the colour palette is generated. There are two
-   functions that can be used for this purpose:
+While not technically necessary, it may be desirable to provide progress updates for the user while the colour palette
+is being generated. The ```PaletteAlgorithm``` class provides two methods that can be used for this purpose, 
+```_set_progress``` and ```_increment_progress``` (see the above example). The former method can be used to set the percentage progress
+to a fixed amount (no more than 100%). The latter can be used to increase the progress bar by a certain
+number of percentage points. This may be useful in a loop scenario, where a set progress percentage for a particular
+loop can be divided up over the loop. 
 
-This also allows for the generation of the colour palette to be gracefully cancelled by the user at this point
+By updating the progress bar, the execution status set by the user is also checked. By adding the following two
+lines of code underneath any progress bar update (see the example above for how it could be used), the 
+generation of the colour palette to be gracefully cancelled by the user.
+
+      if not self._continue_thread:
+        return None, [], []
 
 
-### Changing the Default Algorithm
-To change the default algorithm used by the application, edit the ```DEFAULT_ALGORITHM``` static variable of the
-   ```PaletteAlgorithm``` class to read the new algorithm sub-class class:
-   
+
+
+
+### 5.2) Changing the Default Algorithm
+Changing the default algorithm used by ```ColourPaletteExtractor``` is very straightforward, requiring two
+small changes to the ```ColourPaletteExtractorModel``` class (found in the ```model``` module). To set the default
+to your new algorithm, edit the ```DEFAULT_ALGORITHM``` static variable of the ```ColourPaletteExtractorModel``` class to your new 
+algorithm:
+
       class ColourPaletteExtractorModel:
          DEFAULT_ALGORITHM = mymodule.MyNewAlgorithm
 
 
-Note: This is the name of the class, *not* an instance of the class! 
-
-
+Note: This is the name of the class, *not* an instance of the class!

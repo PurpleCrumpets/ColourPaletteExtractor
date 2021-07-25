@@ -45,7 +45,7 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         self._secondary_threshold = Nieves2020.SECONDARY_THRESHOLD
         self._min_l_star = Nieves2020.MIN_L_STAR
 
-    def generate_colour_palette(self, image):
+    def generate_colour_palette(self, image) -> tuple[np.array, list[np.array], list[float]]:
         print("Generating colour palette...")
 
         self._set_progress(0)  # Initial progress = 0%

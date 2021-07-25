@@ -7,11 +7,11 @@ REM ############################
 REM ## User-defined variables ##
 REM ############################
 
-REM PyInstaller output directory
-set OUTPUT_DIR=%MAIN_DIR%\ColourPaletteExtractor-Executables
-
 REM Python Virtual Environment directory
 set VENV_DIR=%MAIN_DIR%\venv
+
+REM PyInstaller output directory
+set OUTPUT_DIR=%MAIN_DIR%\ColourPaletteExtractor-Executables
 
 REM ############################
 REM ############################
