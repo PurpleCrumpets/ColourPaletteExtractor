@@ -1,5 +1,7 @@
 from __future__ import annotations
 from functools import partial  # Import partial to connect signals with methods that need to take extra arguments
+
+from PySide2 import QtCore
 from PySide2.QtCore import QFileInfo, QRunnable, QThreadPool
 
 
@@ -92,7 +94,6 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.close_action.triggered.connect(self._close_application)
 
         # Tab events
-        self._view.tabs.tabBarDoubleClicked.connect(self._view.tab_open_doubleclick)
         self._view.tabs.currentChanged.connect(self.current_tab_changed)
         self._view.tabs.tabCloseRequested.connect(self._close_current_tab)
 
@@ -318,7 +319,7 @@ class ColourPaletteExtractorController(QRunnable):
             self._view.generate_all_palette_action.setEnabled(True)
             self._view.preferences_action.setEnabled(True)
 
-    def _generate_report(self, tab, progress_callback):
+    def _generate_report(self, tab, progress_callback: QtCore.SignalInstance):
         print("Generating report...")
 
         if tab is None:
@@ -343,7 +344,7 @@ class ColourPaletteExtractorController(QRunnable):
         tab.status_bar_state = 2  # Tab status to colour palette generated
         progress_callback.emit(tab, 100)
 
-    def _generate_colour_palette(self, tab, progress_callback):
+    def _generate_colour_palette(self, tab, progress_callback: QtCore.SignalInstance):
         """Generate colour palette for current open image."""
 
         if tab is None:

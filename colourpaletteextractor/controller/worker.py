@@ -5,18 +5,30 @@ from PySide2.QtCore import QRunnable, Slot, QObject, Signal
 
 
 class Worker(QRunnable):
-    """
-    Worker thread
-    Adapted from: https://www.mfitzp.com/tutorials/multithreading-pyqt-applications-qthreadpool/
-    Accessed: 01/08/21
+    """Worker thread used to generate the colour palette or report for an image.
+
 
     Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
+
+    Adapted from: `ref`_
+
+    Accessed: 01/08/21
+
+    Args:
+        fn:
+        image_data:
+        function_type:
+        *args: Arguments to pass to the callback function
+        *kwargs: Keywords to pass to the callback function
+
 
     :param callback: The function callback to run on this worker thread. Supplied args and
                      kwargs will be passed through to the runner.
     :type callback: function
-    :param args: Arguments to pass to the callback function
-    :param kwargs: Keywords to pass to the callback function
+
+
+    .. _ref:
+       https://www.mfitzp.com/tutorials/multithreading-pyqt-applications-qthreadpool/
 
     """
 
@@ -24,7 +36,6 @@ class Worker(QRunnable):
         super(Worker, self).__init__()
 
         # Store constructor arguments (re-used for processing)
-        # self._image_data = image_data
         self.fn = fn
         self.image_data = image_data
         self.function_type = function_type
@@ -62,19 +73,30 @@ class Worker(QRunnable):
 
 
 class WorkerSignals(QObject):
-    """
-    Defines the signals available from a running worker thread.
+    """Specify the signals available from a running :class:`Worker` thread.
+
+    Adapted from: `ref`_
+
+    Accessed: 01/08/21
 
     Supported signals are:
 
     finished
-        to add more details
+        Integer emitted upon finishing. When generating a colour palette, the value is -2.
+        When generating a report, the value is -3. THis is ues to reload the tab displaying
+        the image with the correct settings and colour palette.
+
+    progress
+        NewTab object for which the GUI is to be updated for and the percentage complete
+        for the current task (generating the colour palette or generating the report).
 
     error
-        tuple (exctype, value, traceback.format_exc() )
+        tuple (exctype, value, traceback.format_exc() ) - Not in use
 
     result
         object data returned from processing, anything
+
+
 
     """
     # Data types for each signal

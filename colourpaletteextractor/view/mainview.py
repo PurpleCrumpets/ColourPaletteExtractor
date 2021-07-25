@@ -10,20 +10,80 @@ from PySide2.QtGui import QIcon, QKeySequence, QPixmap
 from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, \
     QSizePolicy, QMessageBox, QApplication
 
-from colourpaletteextractor.model.model import get_settings
-
 import colourpaletteextractor.view.otherviews as otherviews
 import colourpaletteextractor.view.tabview as tabview
+
+from colourpaletteextractor import _version
+from colourpaletteextractor.model.model import get_settings
 
 
 class MainView(QMainWindow):
     """The main window of the ColourPaletteExtractor application.
 
+    Args:
+        parent: Parent object of the MainWindow. Defaults to None.
+
+
+    Attributes:
+
+        tabs (QTabWidget): tabbed widget for displaying and managing imported images.
+
+        colour_palette_dock (tabview.ColourPaletteDock)
+
+        _close_request_action (QAction): Action for closing the application
+
+        open_action (QAction): Action for opening a new image
+
+        generate_report_action (QAction): Action for generating a report for an image
+
+        generate_all_report_action (QAction): Action for generating a report for all images with a colour palette
+
+        generate_palette_action (QAction): Action for generating the colour palette for an image
+
+        generate_all_palette_action (QAction): Action for generating the colour palette for all images
+
+        stop_action (QAction): Action for stopping the report or colour palette being generated for an image
+
+        preferences_menu_action (QAction): Action for opening the preferences menu
+
+        show_help_action (QAction): Action for showing the quick start guide
+
+        toggle_recoloured_image_action (QAction): Action for toggling between the original and the recoloured image
+
+        zoom_in_action (QAction): Action for zooming into an image
+
+        zoom_out_action (QAction): Action for zooming out of an image
+
+        about_menu_action (QAction): Action for showing the about information widget
+
+        show_palette_dock_action (QAction): Action for showing the colour palette dock
+
+        show_toolbar_action (QAction): Action for showing the toolbar
+
+        tools: (QToolBar): Toolbar for holding QToolButtons used in the GUI
+
+        status (otherviews.StatusBar): Status bar for holding hints, the progress bar and the current version of the
+            application
+
     """
+
+    app_icon = "app_icon"
+    """str: The name of the file used as the application's icon."""
+
+    RESOURCES_DIR = "resources"
+    """str: The name of the directory containing the icons and images used for the GUI."""
+
+    resources_path = ""
+    """str: The path to the resources used for the GUI. 
+    
+    This will vary depending on whether the code has been compiled into an application or is been run from the command 
+    line."""
+
+    default_new_tab_image = ""
+    """str: The name of the file used as the default new tab (the quick start guide)."""
 
     # Set the correct path to resources depending on whether the application is been run from a Python script or as
     # a dedicated application/bundle.
-    RESOURCES_DIR = "resources"
     if getattr(sys, "frozen", False):  # Running as a bundle
         resources_path = os.path.join(sys._MEIPASS, RESOURCES_DIR, )
     else:
@@ -34,8 +94,6 @@ class MainView(QMainWindow):
         default_new_tab_image = "images:how-to-dark-mode.png"
     else:
         default_new_tab_image = "images:how-to-light-mode.png"
-
-    app_icon = "app_icon"
 
     def __init__(self, parent=None):
 
@@ -68,6 +126,61 @@ class MainView(QMainWindow):
         self._create_gui()  # Generate main GUI components
         self._set_size_and_shape()  # Set size/shape of GUI
 
+    def show_file_dialog_box(self, supported_file_types: set[str]) -> tuple[list[str], str]:
+        """Show the dialog box for importing images.
+
+        Args:
+            supported_file_types (set[str]): The supported file types (e.g., '.png')
+
+        Returns:
+            list(str): The list of the absolute paths to the images to be loaded into the application
+
+            str: The filter used when selecting the images to import
+
+        """
+
+        # Create string of support file types from provided list of file types
+        string = "Images ("
+        count = 0
+        for file_type in supported_file_types:
+            if count != 0:
+                string = string + " "
+            string = string + "*." + file_type
+            count += 1
+        string = string + ")"
+
+        return QFileDialog.getOpenFileNames(self, "Open Image", "", string)
+
+    def close_current_tab(self, tab_index: int) -> int:
+        """Close the tab with the given index.
+
+        Args:
+            tab_index (int): The index of the tab to close
+
+        Returns:
+            (int): The index of the tab that is now visible after closing the selected tab
+
+        """
+
+        self.tabs.removeTab(tab_index)
+
+        return self.tabs.currentIndex()
+
+    def create_new_tab(self, image_id, image_data) -> None:
+        """Create a new image tab for the main window.
+
+        Args:
+            image_id (str): ID of the image to be used for the new tab (e.g., 'Tab_1')
+            image_data (model.imagedata.ImageData): Object containing tab and image properties and state
+
+        """
+        label = image_data.name
+
+        # Create and add new tab to GUI
+        new_tab = tabview.NewTab(image_id=image_id, image_data=image_data)
+        new_tab_index = self.tabs.addTab(new_tab, label)
+        self.tabs.setCurrentIndex(new_tab_index)
+
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         """Intercept GUI close event to check if the user wishes to close the GUI.
 
@@ -85,7 +198,7 @@ class MainView(QMainWindow):
         close_box.setStandardButtons(QMessageBox.Close | QMessageBox.Cancel)
         close_box.setDefaultButton(QMessageBox.Cancel)
 
-        reply = close_box.exec_()
+        reply = close_box.exec_()  # Create the permission box
 
         # Analyse user's response
         if reply == QMessageBox.Close:
@@ -95,9 +208,11 @@ class MainView(QMainWindow):
             self._write_settings()
             event.accept()
         else:
+            # Ignore the close event
             event.ignore()
 
     def _set_size_and_shape(self) -> None:
+        """Set the size and shape of the main window of the GUI."""
         settings = get_settings()
 
         settings.beginGroup("main window")
@@ -113,7 +228,9 @@ class MainView(QMainWindow):
             self.move(position)
         else:
             # Centre screen based on its current size
-            # # Adapted from: https://stackoverflow.com/questions/9357944/how-to-make-a-widget-in-the-center-of-the-screen-in-pyside-pyqt
+            # Adapted from:
+            # https://stackoverflow.com/questions/9357944/how-to-make-a-widget-in-the-center-of-the-screen-in-pyside-pyqt
+            # Accessed 25/07/21
             center_point = QtGui.QScreen.availableGeometry(QApplication.primaryScreen()).center()
             fg = self.frameGeometry()
             fg.moveCenter(center_point)
@@ -122,8 +239,16 @@ class MainView(QMainWindow):
         settings.endGroup()
 
     def _create_gui(self) -> None:
-        """Assemble the GUI components."""
-        # Adapted from: https://realpython.com/python-pyqt-gui-calculator/
+        """Assemble the GUI components.
+
+        Adapted from: `ref1`_
+
+        Accessed: 25/07/21
+
+        .. _ref1:
+           https://realpython.com/python-pyqt-gui-calculator/
+
+        """
 
         # Create instance of application's GUI
         self._set_main_window_properties()
@@ -138,10 +263,12 @@ class MainView(QMainWindow):
         self._create_status_bar()
         self._create_colour_palette_dock()
 
-        self._create_preferences_dialog_box()  # Create preferences panel
-        self.batch_progress_widget = otherviews.BatchGenerationProgressWidget()
+        self.preferences = otherviews.PreferencesWidget()  # Create preferences panel
+        self.batch_progress_widget = otherviews.BatchGenerationProgressWidget()  # Create batch generation progress box
 
     def _write_settings(self) -> None:
+        """Write the main window's size and shape to the settings file."""
+
         settings = get_settings()
 
         settings.beginGroup("main window")
@@ -153,7 +280,8 @@ class MainView(QMainWindow):
 
     def _set_main_window_properties(self):
         """Set the properties of the main window of the GUI."""
-        self.setWindowTitle("ColourPaletteExtractor")
+
+        self.setWindowTitle(_version.__application_name__)
 
     def _create_central_widget(self):
         """Create the central widget and add it to the main window."""
@@ -166,6 +294,8 @@ class MainView(QMainWindow):
         self.setCentralWidget(self.tabs)
 
     def _create_colour_palette_dock(self):
+        """Create the colour palette dock for displaying the colours in the colour palette."""
+
         self.colour_palette_dock = tabview.ColourPaletteDock(self)
         self.addDockWidget(Qt.RightDockWidgetArea, self.colour_palette_dock)
 
@@ -185,13 +315,9 @@ class MainView(QMainWindow):
         self._close_request_action.triggered.connect(self.close)
         self.close_action = QAction(self)
 
-        # self.exit_action = QAction(QIcon("icons:exit-outline.svg"), "Quit ColourPaletteExtractor", self)
-
-
-        # Open
+        # Open image
         self.open_action = QAction(QIcon("icons:folder-open-outline.svg"), "&Open Image(s)...", self)
         self.open_action.setShortcut("Ctrl+O")
-        # self.open_action.setStatusTip("Open new image(s)...")
 
         # Generate report
         self.generate_report_action = QAction(QIcon("icons:document-text-outline.svg"), "Generate &Report...", self)
@@ -202,7 +328,8 @@ class MainView(QMainWindow):
         self.generate_all_report_action.setShortcut("Ctrl+" + meta_key + "+R")
 
         # Generate Colour Palette
-        self.generate_palette_action = QAction(QIcon("icons:color-palette-outline.svg"), "&Generate Colour Palette", self)
+        self.generate_palette_action = QAction(QIcon("icons:color-palette-outline.svg"),
+                                               "&Generate Colour Palette", self)
         self.generate_palette_action.setShortcut("Ctrl+G")
         # self.generate_palette_action.setStatusTip("Generate the colour palette...")
 
@@ -228,13 +355,6 @@ class MainView(QMainWindow):
         self.show_help_action = QAction(QIcon("icons:help-circle-outline.svg"), "&Help", self)
         self.show_help_menu_action = QAction(QIcon("icons:help.svg"), "&Help", self)
 
-
-        # # View Saliency Map
-        # self._view_map_action = QAction(QIcon("icons:layers-outline.svg"), "&Saliency Map...", self, checkable=True)
-        # self._view_map_action.setChecked(False)
-        # self._view_map_action.setDisabled(True)
-        # self._view_map_action.setShortcut("Ctrl+" + meta_key + "+M")
-
         # Toggle original-recoloured image
         self.toggle_recoloured_image_action = QAction(QIcon("icons:eye-outline.svg"),
                                                       "Toggle &Recoloured Image", self, checkable=True)
@@ -247,9 +367,6 @@ class MainView(QMainWindow):
         self.zoom_in_action.setShortcut(QKeySequence.ZoomIn)
         self.zoom_out_action = QAction(QIcon("icons:remove-circle-outline.svg"), "Zoom &Out", self)
         self.zoom_out_action.setShortcut(QKeySequence.ZoomOut)
-
-        # TODO: Add button for fit to view and reset?
-        #  from: https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html
 
         # About ColourPaletteExtractor
         if sys.platform == "darwin":
@@ -267,53 +384,52 @@ class MainView(QMainWindow):
         self.show_toolbar_action = QAction("Show &Toolbar", self)
 
     def _create_menu(self):
-        """Add menu bar to the main window."""
+        """Create and add the menu bar to the main window."""
 
         # Main Menu
-        self.menu = self.menuBar().addMenu("&File")
+        self._menu = self.menuBar().addMenu("&File")
         if sys.platform == "darwin":
-            self.menu.addAction(self.about_menu_action)
-            self.menu.addSeparator()
-        self.menu.addAction(self.preferences_menu_action)
-        self.menu.addSeparator()
-        self.menu.addAction(self.open_action)
+            self._menu.addAction(self.about_menu_action)
+            self._menu.addSeparator()
+        self._menu.addAction(self.preferences_menu_action)
+        self._menu.addSeparator()
+        self._menu.addAction(self.open_action)
 
         if sys.platform != "darwin":
-            self.menu.addSeparator()
-            self.menu.addAction(self._close_request_action)
+            self._menu.addSeparator()
+            self._menu.addAction(self._close_request_action)
 
         # Edit Menu
-        self.menu = self.menuBar().addMenu("&Edit")
-        self.menu.addAction(self.generate_palette_action)
-        self.menu.addAction(self.generate_all_palette_action)
-        self.menu.addSeparator()
-        self.menu.addAction(self.generate_report_action)
-        self.menu.addAction(self.generate_all_report_action)
-        self.menu.addSeparator()
-        self.menu.addAction(self.stop_action)
+        self._menu = self.menuBar().addMenu("&Edit")
+        self._menu.addAction(self.generate_palette_action)
+        self._menu.addAction(self.generate_all_palette_action)
+        self._menu.addSeparator()
+        self._menu.addAction(self.generate_report_action)
+        self._menu.addAction(self.generate_all_report_action)
+        self._menu.addSeparator()
+        self._menu.addAction(self.stop_action)
 
         # View Menu
-        self.menu = self.menuBar().addMenu("&View")
-        self.menu.addAction(self.zoom_in_action)
-        self.menu.addAction(self.zoom_out_action)
-        self.menu.addSeparator()
-        self.menu.addAction(self.toggle_recoloured_image_action)
-        self.menu.addSeparator()
-        self.menu.addAction(self.show_toolbar_action)
-        self.menu.addAction(self.show_palette_dock_action)
-        self.menu.addSeparator()
+        self._menu = self.menuBar().addMenu("&View")
+        self._menu.addAction(self.zoom_in_action)
+        self._menu.addAction(self.zoom_out_action)
+        self._menu.addSeparator()
+        self._menu.addAction(self.toggle_recoloured_image_action)
+        self._menu.addSeparator()
+        self._menu.addAction(self.show_toolbar_action)
+        self._menu.addAction(self.show_palette_dock_action)
+        self._menu.addSeparator()
 
         # Help Menu
-        self.menu = self.menuBar().addMenu("&Help")
-        self.menu.addAction(self.show_help_menu_action)
+        self._menu = self.menuBar().addMenu("&Help")
+        self._menu.addAction(self.show_help_menu_action)
 
         if sys.platform != "darwin":
-            self.menu.addSeparator()
-            self.menu.addAction(self.about_menu_action)
-
+            self._menu.addSeparator()
+            self._menu.addAction(self.about_menu_action)
 
     def _create_toolbar(self):
-        """Add toolbar to the main window."""
+        """Create and add the toolbar to the main window."""
         self.tools = QToolBar("Toolbar")
         self.tools.setToolButtonStyle(Qt.ToolButtonIconOnly)
         self.tools.setMovable(False)
@@ -393,41 +509,7 @@ class MainView(QMainWindow):
         self.tools.addSeparator()
 
     def _create_status_bar(self):
-        """Add status bar to the main window."""
+        """Create and add the status bar to the main window."""
+
         self.status = otherviews.StatusBar()
         self.setStatusBar(self.status)
-
-    def _create_preferences_dialog_box(self):
-        self.preferences = otherviews.PreferencesWidget()
-
-    def show_file_dialog_box(self, supported_file_types):
-        """Show dialog box for importing images."""
-
-        # Creating string of support file types from provided list of file types
-        string = "Images ("
-        count = 0
-        for file_type in supported_file_types:
-            if count != 0:
-                string = string + " "
-            string = string + "*." + file_type
-            count += 1
-        string = string + ")"
-
-        return QFileDialog.getOpenFileNames(self, "Open Image", "", string)
-
-    def tab_open_doubleclick(self, i):
-        print("Double click")
-        # Not in use!
-
-    def close_current_tab(self, tab_index):
-        self.tabs.removeTab(tab_index)
-
-        return self.tabs.currentIndex()
-
-    def create_new_tab(self, image_id, image_data):
-        label = image_data.name
-
-        # Create and add new tab to GUI
-        new_tab = tabview.NewTab(image_id=image_id, image_data=image_data)
-        new_tab_index = self.tabs.addTab(new_tab, label)
-        self.tabs.setCurrentIndex(new_tab_index)
