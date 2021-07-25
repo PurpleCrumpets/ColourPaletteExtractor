@@ -20,10 +20,10 @@ def get_implemented_algorithms():
 
         Adapted from: `ref`_
 
-        Accessed: 15/07/2020
+        Accessed: 15/07/2021
 
         Returns:
-            [object]: List of all subclasses of :class:`.PaletteAlgorithm`
+            [object]: List of all non-abstract subclasses of :class:`.PaletteAlgorithm`
 
     .. _ref:
        https://www.programcreek.com/python/?CodeExample=get+subclasses

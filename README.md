@@ -5,11 +5,13 @@ on a computer running either Windows 10, or a Mac running macOS Mojave (10.14) o
 run on a computer running a Linux operating system, there is no guarantee that it will work; it is recommended that the
 is compiled from the source code.
 
+
 ## 1) Licencing
     ColourPaletteExtractor Copyright (C) 2020  Tim Churchfield
     This program comes with ABSOLUTELY NO WARRANTY; for details see LICENCE.md.
     This is free software, and you are welcome to redistribute it
     under certain conditions; see LICENCE.md for details.
+
 
 ## 2) Download Instructions
 
@@ -30,6 +32,7 @@ hurdle.
 To allow for the application to be run, open ```System Preferences > Security & Privacy > General```. Make sure
 that the setting for ```Allow apps downloaded from:``` is set to ```App Store and identified developers``` and click 
 ```Open Anyway``` for ```ColourPaletteExtractor```. 
+
 
 ### 2.2) Windows 10 Specifics
 
@@ -56,6 +59,7 @@ On Windows 10, the same settings file can be found at:
 
       C:\Users\YOUR_USERNAME\AppData\Roaming\The University of St Andrews\ColourPaletteExtractor.ini
 
+
 ## 3) Operating Instructions
 
 Upon opening the application, you will be greeted with a simple quick start guide. This explains how to
@@ -69,6 +73,12 @@ the pixel's colour in the CIELAB colour space (the shortest Euclidean distance).
 frequency of the colours in the colour palette when used to recolour the original image. On the X-axis, each label
 refers to the colour's sRGB triplet.
 
+The time required to generate the colour palette of an image is directly proportional to the dimensions of the image.
+It can take upwards of several minutes to obtain the colour palette of high resolution images. If multiple images are to be
+anaylsed, it may be beneficial to reduce the resolution of the images to reduce the time required to process them. 
+However, this may affect the make-up of the colour palette, as well as the relative frequency of each colour
+in the recoloured image.
+
 ![Quick Start Guide](./colourpaletteextractor/view/resources/images/how-to-dark-mode.png)
 
 ### 3.1) Using with Python
@@ -79,7 +89,6 @@ function, ```generate_colour_palette_from_image```, that can be used for this pu
 file path to the image to be analysed (compulsory), and the name of the algorithm's Python class (optional). By default,
 the ```Nieves2020CentredCubes``` algorithm is used (see the [source paper](https://doi.org/10.1364/AO.378659) 
 for more information). Alternative algorithms can be found in the ```colourpaletteextractor.model.algorithms``` package.
-
 
 If you wish to use this function, please make sure
 that you have installed Python 3.9 or later, as well as the Python packages listed in the ```requirements.txt```
@@ -125,7 +134,6 @@ Python virtual environment (**not** the *activate.bat* file) and the output dire
 Once updated, please make sure that the relevant permissions have been set to allow for these script to be run. Navigate
 to them using the terminal on macOS, or the command prompt on Windows 10 and run these files. If all goes well, you
 should find the compiled applications inside the ```dist``` folder of ```ColourPaletteExtractor-Executables```. 
-
 
 
 ## 5) Implementing a New Algorithm
@@ -204,9 +212,6 @@ generation of the colour palette to be gracefully cancelled by the user.
 
       if not self._continue_thread:
         return None, [], []
-
-
-
 
 
 ### 5.2) Changing the Default Algorithm
