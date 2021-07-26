@@ -21,7 +21,7 @@ sphinx-apidoc -f -o $OUTPUT_PATH $MODULE_PATH
 # Build documentation
 echo "Building html documentation for $NAME..."
 
-cd ./docs
+cd ./docs || exit
 make html
 
 echo "Finished!"

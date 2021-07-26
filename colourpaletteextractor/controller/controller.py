@@ -67,9 +67,10 @@ class ColourPaletteExtractorController(QRunnable):
         current_path = self._view.preferences.user_path_selector.text()
         new_path = self._view.preferences.show_output_directory_dialog_box(current_path=current_path)
 
-        # Set new path
-        self._view.preferences.user_path_selector.setText(new_path)
-        self._model.change_output_directory(use_user_dir=True, new_user_directory=new_path)
+        if new_path != "":
+            # Set new path
+            self._view.preferences.user_path_selector.setText(new_path)
+            self._model.change_output_directory(use_user_dir=True, new_user_directory=new_path)
 
     def _set_output_path(self, use_user_dir: bool) -> None:
         # if use_user_dir:
