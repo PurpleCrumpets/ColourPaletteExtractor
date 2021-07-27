@@ -7,7 +7,7 @@ is compiled from the source code.
 
 
 ## 1) Licencing
-    ColourPaletteExtractor Copyright (C) 2020  Tim Churchfield
+    ColourPaletteExtractor Copyright (C) 2021  Tim Churchfield
     This program comes with ABSOLUTELY NO WARRANTY; for details see LICENCE.md.
     This is free software, and you are welcome to redistribute it
     under certain conditions; see LICENCE.md for details.
