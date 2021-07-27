@@ -22,7 +22,7 @@ folder. For macOS, simply double-click the ```ColourPaletteExtractor``` applicat
 the ```ColourPaletteExtractor``` folder and double-click the ```ColourPaletteExtractor.exe``` executable file.
 
 
-### 2.1) MacOS Specifics
+### 2.1) macOS Specifics
 
 On opening the application for the first time on macOS, you may be met with a pop-up stating: 
 ```“ColourPaletteExtractor” can’t be opened because Apple cannot check it for malicious software.``` This is because the
@@ -105,6 +105,14 @@ command to run the script:
       python3 -m colourpaletteextractor.examples.generatecolourpaletteexample
 
 
+### 3.2) Source Code Documentation
+
+A set of [HTML files](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/html)
+have been produced to support the future develop and maintenance of ```ColourPaletteExtractor```. These can be found in
+the ```ColourPaletteExtractor/docs/build/html``` directory. The ```index.html``` contains the documentation homepage.
+
+
+
 ## 4) Compiling Instructions
 
 To build the ```ColourPaletteExtractor``` application from the source code, it is highly recommended that a new
@@ -139,15 +147,16 @@ should find the compiled applications inside the ```dist``` folder of ```ColourP
 
 ### 4.1) Compiling Code Documentation
 
-Additional documentation for the source code is available as a set of HTML files. On macOS, the 
-```create_documentation.sh``` script can be used to recompile the documentation. As with the
-application build scripts discussed in Section 4, ```Line 7``` of the documentation build script needs to be updated to
+Additional documentation for the source code is available as a set of 
+[HTML files](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/html). 
+On macOS, the ```create_documentation.sh``` script can be used to recompile the documentation. As with the
+application build scripts discussed in Section 4, ```Line 7``` of the ```create_documentation.sh``` script needs to be updated to
 reflect the path to your Python virtual environment:
 
       Line 7  --> source /path/to/my/Python/virtual/environment/bin/activate
 
 Navigate to the ```ColourPaletteExtractor``` directory and run the script, making sure that the script has
-the appropriate execution permissions as before.
+the appropriate execution permissions as discussed before in relation to the application build scripts.
 
 ## 5) Implementing a New Algorithm
 
