@@ -131,10 +131,23 @@ Python virtual environment (**not** the *activate.bat* file) and the output dire
 
       Line 14 --> set OUTPUT_DIR=\path\to\my\output\directory\for\the\ColourPaletteExtractor-Executables
 
-Once updated, please make sure that the relevant permissions have been set to allow for these script to be run. Navigate
+Once updated, please make sure that the relevant permissions have been set to allow for these script to be run (i.e.,
+```chmod 755 create_executables.sh```). Navigate
 to them using the terminal on macOS, or the command prompt on Windows 10 and run these files. If all goes well, you
 should find the compiled applications inside the ```dist``` folder of ```ColourPaletteExtractor-Executables```. 
 
+
+### 4.1) Compiling Code Documentation
+
+Additional documentation for the source code is available as a set of HTML files. On macOS, the 
+```create_documentation.sh``` script can be used to recompile the documentation. As with the
+application build scripts discussed in Section 4, ```Line 7``` of the documentation build script needs to be updated to
+reflect the path to your Python virtual environment:
+
+      Line 7  --> source /path/to/my/Python/virtual/environment/bin/activate
+
+Navigate to the ```ColourPaletteExtractor``` directory and run the script, making sure that the script has
+the appropriate execution permissions as before.
 
 ## 5) Implementing a New Algorithm
 

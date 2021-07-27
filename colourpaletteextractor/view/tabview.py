@@ -16,11 +16,7 @@ class NewTab(QScrollArea):
         super(NewTab, self).__init__(parent)
 
         self._image_id = image_id
-        # self._generalLayout = QVBoxLayout(self)
         self._zoom_level = 1
-
-        # self._create_image_display(image_data)  # Display Image
-        # self._create_palette_display()  # Display colour palette
 
         self.image_display = ImageDisplay(image_data, self)
         self.setWidget(self.image_display)

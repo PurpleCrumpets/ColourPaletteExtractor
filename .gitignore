@@ -1,10 +1,5 @@
 /.idea/
-/colourpaletteextractor/build/__main__/
-/colourpaletteextractor/dist/__main__/
-/colourpaletteextractor/dist/__main__
-/colourpaletteextractor/__main__.spec
 /venv/
 /ColourPaletteExtractor-Executables/
 /colourpaletteextractor/model/dummyimagescript.py
 /colourpaletteextractor/view/resources/icons/light_mode copy/
-/docs/build/

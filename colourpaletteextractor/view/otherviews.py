@@ -385,7 +385,7 @@ class PreferencesWidget(QDialog):
         layout.addWidget(QLabel("Select a colour palette algorithm:"), 0, 0, 1, 2)
 
         line = self._create_horizontal_line()
-        layout.addWidget(line, 1, 0, 1, 3)  # Horizontal line spacer
+        layout.addWidget(line, 1, 0, 1, 2)  # Horizontal line spacer
 
         # Dynamically add algorithm options
         self._algorithms = list(palettealgorithm.get_implemented_algorithms())
