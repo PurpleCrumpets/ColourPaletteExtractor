@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>colourpaletteextractor.model package &mdash; ColourPaletteExtractor 0.5.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="colourpaletteextractor.model.algorithms package" href="colourpaletteextractor.model.algorithms.html" />
+    <link rel="prev" title="colourpaletteextractor.examples package" href="colourpaletteextractor.examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ColourPaletteExtractor
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">colourpaletteextractor</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="colourpaletteextractor.html">colourpaletteextractor package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="colourpaletteextractor.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="colourpaletteextractor.controller.html">colourpaletteextractor.controller package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="colourpaletteextractor.examples.html">colourpaletteextractor.examples package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">colourpaletteextractor.model package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="colourpaletteextractor.tests.html">colourpaletteextractor.tests package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="colourpaletteextractor.view.html">colourpaletteextractor.view package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="colourpaletteextractor.html#module-colourpaletteextractor">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ColourPaletteExtractor</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">colourpaletteextractor</a> &raquo;</li>
+        
+          <li><a href="colourpaletteextractor.html">colourpaletteextractor package</a> &raquo;</li>
+        
+      <li>colourpaletteextractor.model package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/colourpaletteextractor.model.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="colourpaletteextractor-model-package">
+<h1>colourpaletteextractor.model package<a class="headerlink" href="#colourpaletteextractor-model-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="colourpaletteextractor.model.algorithms.html">colourpaletteextractor.model.algorithms package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="colourpaletteextractor.model.algorithms.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colourpaletteextractor.model.algorithms.html#module-colourpaletteextractor.model.algorithms.cielabcube">colourpaletteextractor.model.algorithms.cielabcube module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colourpaletteextractor.model.algorithms.html#module-colourpaletteextractor.model.algorithms.dummyalgorithm">colourpaletteextractor.model.algorithms.dummyalgorithm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colourpaletteextractor.model.algorithms.html#module-colourpaletteextractor.model.algorithms.grogan2018">colourpaletteextractor.model.algorithms.grogan2018 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colourpaletteextractor.model.algorithms.html#module-colourpaletteextractor.model.algorithms.nieves2020">colourpaletteextractor.model.algorithms.nieves2020 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colourpaletteextractor.model.algorithms.html#colourpaletteextractor-model-algorithms-nieves2020cython-module">colourpaletteextractor.model.algorithms.nieves2020cython module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colourpaletteextractor.model.algorithms.html#module-colourpaletteextractor.model.algorithms.palettealgorithm">colourpaletteextractor.model.algorithms.palettealgorithm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colourpaletteextractor.model.algorithms.html#module-colourpaletteextractor.model.algorithms">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-colourpaletteextractor.model.dummyimagescript">
+<span id="colourpaletteextractor-model-dummyimagescript-module"></span><h2>colourpaletteextractor.model.dummyimagescript module<a class="headerlink" href="#module-colourpaletteextractor.model.dummyimagescript" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue Jun 22 17:32:51 2021</p>
+<p>&#64;author: tim</p>
+</div>
+<div class="section" id="module-colourpaletteextractor.model.generatereport">
+<span id="colourpaletteextractor-model-generatereport-module"></span><h2>colourpaletteextractor.model.generatereport module<a class="headerlink" href="#module-colourpaletteextractor.model.generatereport" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ColourPaletteReport">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.generatereport.</span></span><span class="sig-name descname"><span class="pre">ColourPaletteReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#colourpaletteextractor.model.imagedata.ImageData" title="colourpaletteextractor.model.imagedata.ImageData"><span class="pre">colourpaletteextractor.model.imagedata.ImageData</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ColourPaletteReport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">fpdf.fpdf.FPDF</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">fpdf.html.HTMLMixin</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ColourPaletteReport.A4_HEIGHT">
+<span class="sig-name descname"><span class="pre">A4_HEIGHT</span></span><em class="property"> <span class="pre">=</span> <span class="pre">297</span></em><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ColourPaletteReport.A4_HEIGHT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ColourPaletteReport.A4_WIDTH">
+<span class="sig-name descname"><span class="pre">A4_WIDTH</span></span><em class="property"> <span class="pre">=</span> <span class="pre">210</span></em><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ColourPaletteReport.A4_WIDTH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ColourPaletteReport.IMAGE_START_POSITION">
+<span class="sig-name descname"><span class="pre">IMAGE_START_POSITION</span></span><em class="property"> <span class="pre">=</span> <span class="pre">30</span></em><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ColourPaletteReport.IMAGE_START_POSITION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ColourPaletteReport.IMAGE_WIDTH">
+<span class="sig-name descname"><span class="pre">IMAGE_WIDTH</span></span><em class="property"> <span class="pre">=</span> <span class="pre">150</span></em><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ColourPaletteReport.IMAGE_WIDTH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ColourPaletteReport.MARGIN">
+<span class="sig-name descname"><span class="pre">MARGIN</span></span><em class="property"> <span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ColourPaletteReport.MARGIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ColourPaletteReport.MAX_IMAGE_HEIGHT">
+<span class="sig-name descname"><span class="pre">MAX_IMAGE_HEIGHT</span></span><em class="property"> <span class="pre">=</span> <span class="pre">257</span></em><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ColourPaletteReport.MAX_IMAGE_HEIGHT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ColourPaletteReport.footer">
+<span class="sig-name descname"><span class="pre">footer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ColourPaletteReport.footer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Footer to be implemented in your own inherited class.</p>
+<p>This is automatically called by <cite>add_page()</cite> and <cite>close()</cite>
+and should not be called directly by the user application.
+The default implementation performs nothing: you have to override this method
+in a subclass to implement your own rendering logic.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ColourPaletteReport.header">
+<span class="sig-name descname"><span class="pre">header</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ColourPaletteReport.header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Header to be implemented in your own inherited class</p>
+<p>This is automatically called by <cite>add_page()</cite>
+and should not be called directly by the user application.
+The default implementation performs nothing: you have to override this method
+in a subclass to implement your own rendering logic.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ReportGenerator">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.generatereport.</span></span><span class="sig-name descname"><span class="pre">ReportGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tab</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="colourpaletteextractor.view.html#colourpaletteextractor.view.tabview.NewTab" title="colourpaletteextractor.view.tabview.NewTab"><span class="pre">colourpaletteextractor.view.tabview.NewTab</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#colourpaletteextractor.model.imagedata.ImageData" title="colourpaletteextractor.model.imagedata.ImageData"><span class="pre">colourpaletteextractor.model.imagedata.ImageData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PySide2.QtCore.SignalInstance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ReportGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ReportGenerator.create_report">
+<span class="sig-name descname"><span class="pre">create_report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#colourpaletteextractor.model.generatereport.ColourPaletteReport" title="colourpaletteextractor.model.generatereport.ColourPaletteReport"><span class="pre">colourpaletteextractor.model.generatereport.ColourPaletteReport</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ReportGenerator.create_report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.ReportGenerator.save_report">
+<span class="sig-name descname"><span class="pre">save_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdf</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#colourpaletteextractor.model.generatereport.ColourPaletteReport" title="colourpaletteextractor.model.generatereport.ColourPaletteReport"><span class="pre">colourpaletteextractor.model.generatereport.ColourPaletteReport</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.generatereport.ReportGenerator.save_report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.generatereport.generate_report">
+<span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.generatereport.</span></span><span class="sig-name descname"><span class="pre">generate_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tab</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="colourpaletteextractor.view.html#colourpaletteextractor.view.tabview.NewTab" title="colourpaletteextractor.view.tabview.NewTab"><span class="pre">colourpaletteextractor.view.tabview.NewTab</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#colourpaletteextractor.model.imagedata.ImageData" title="colourpaletteextractor.model.imagedata.ImageData"><span class="pre">colourpaletteextractor.model.imagedata.ImageData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PySide2.QtCore.SignalInstance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.generatereport.generate_report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-colourpaletteextractor.model.imagedata">
+<span id="colourpaletteextractor-model-imagedata-module"></span><h2>colourpaletteextractor.model.imagedata module<a class="headerlink" href="#module-colourpaletteextractor.model.imagedata" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.imagedata.</span></span><span class="sig-name descname"><span class="pre">ImageData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name_and_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.algorithm_used">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">algorithm_used</span></span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.algorithm_used" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.colour_palette">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">colour_palette</span></span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.colour_palette" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.colour_palette_relative_frequency">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">colour_palette_relative_frequency</span></span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.colour_palette_relative_frequency" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.continue_thread">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">continue_thread</span></span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.continue_thread" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.extension">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">extension</span></span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.extension" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.file_name_and_path">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">file_name_and_path</span></span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.file_name_and_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.get_image_as_q_image">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_image_as_q_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.get_image_as_q_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.image">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">image</span></span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.name">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.recoloured_image">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">recoloured_image</span></span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.recoloured_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.sort_colour_palette">
+<span class="sig-name descname"><span class="pre">sort_colour_palette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.sort_colour_palette" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-colourpaletteextractor.model.model">
+<span id="colourpaletteextractor-model-model-module"></span><h2>colourpaletteextractor.model.model module<a class="headerlink" href="#module-colourpaletteextractor.model.model" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.model.</span></span><span class="sig-name descname"><span class="pre">ColourPaletteExtractorModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm_class_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.DEFAULT_ALGORITHM">
+<span class="sig-name descname"><span class="pre">DEFAULT_ALGORITHM</span></span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.DEFAULT_ALGORITHM" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="colourpaletteextractor.model.algorithms.html#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes" title="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes"><code class="xref py py-class docutils literal notranslate"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.DEFAULT_HEIGHT">
+<span class="sig-name descname"><span class="pre">DEFAULT_HEIGHT</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><em class="property"> <span class="pre">=</span> <span class="pre">894</span></em><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.DEFAULT_HEIGHT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.DEFAULT_USER_DIRECTORY">
+<span class="sig-name descname"><span class="pre">DEFAULT_USER_DIRECTORY</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'/Users/tim/Documents/ColourPaletteExtractor/Output'</span></em><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.DEFAULT_USER_DIRECTORY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.DEFAULT_USE_USER_DIRECTORY">
+<span class="sig-name descname"><span class="pre">DEFAULT_USE_USER_DIRECTORY</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><em class="property"> <span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.DEFAULT_USE_USER_DIRECTORY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.DEFAULT_WIDTH">
+<span class="sig-name descname"><span class="pre">DEFAULT_WIDTH</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1523</span></em><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.DEFAULT_WIDTH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.ERROR_MSG">
+<span class="sig-name descname"><span class="pre">ERROR_MSG</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">&quot;Error!</span> <span class="pre">:'(&quot;</span></em><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.ERROR_MSG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.SUPPORTED_IMAGE_TYPES">
+<span class="sig-name descname"><span class="pre">SUPPORTED_IMAGE_TYPES</span></span><em class="property"><span class="pre">:</span> <span class="pre">set</span></em><em class="property"> <span class="pre">=</span> <span class="pre">{'jpeg',</span> <span class="pre">'jpg',</span> <span class="pre">'png'}</span></em><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.SUPPORTED_IMAGE_TYPES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.active_thread_counter">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">active_thread_counter</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.active_thread_counter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.add_image">
+<span class="sig-name descname"><span class="pre">add_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name_and_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.add_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>From the path to an image, create a new image_data object and add it to the
+dictionary of image_data objects with a new ID number.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.change_output_directory">
+<span class="sig-name descname"><span class="pre">change_output_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_user_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_user_directory</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.change_output_directory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.close_temporary_directory">
+<span class="sig-name descname"><span class="pre">close_temporary_directory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.close_temporary_directory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.evaluate_expression">
+<span class="sig-name descname"><span class="pre">evaluate_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.evaluate_expression" title="Permalink to this definition">¶</a></dt>
+<dd><p>slot function.
+:param expression:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.generate_palette">
+<span class="sig-name descname"><span class="pre">generate_palette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.generate_palette" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.get_image_data">
+<span class="sig-name descname"><span class="pre">get_image_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.get_image_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.image_data_id_dictionary">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">image_data_id_dictionary</span></span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.image_data_id_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.remove_image_data">
+<span class="sig-name descname"><span class="pre">remove_image_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.remove_image_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove image from list of images by its index.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.set_algorithm">
+<span class="sig-name descname"><span class="pre">set_algorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">algorithm_class_name=&lt;class</span> <span class="pre">'colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes'&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.set_algorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the algorithm use to extract the colour palette of an image.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.ColourPaletteExtractorModel.write_default_settings">
+<span class="sig-name descname"><span class="pre">write_default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.model.ColourPaletteExtractorModel.write_default_settings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.generate_colour_palette_from_image">
+<span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.model.</span></span><span class="sig-name descname"><span class="pre">generate_colour_palette_from_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.model.generate_colour_palette_from_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="colourpaletteextractor.model.model.get_settings">
+<span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.model.</span></span><span class="sig-name descname"><span class="pre">get_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">PySide2.QtCore.QSettings</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.model.get_settings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-colourpaletteextractor.model">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-colourpaletteextractor.model" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="colourpaletteextractor.model.algorithms.html" class="btn btn-neutral float-right" title="colourpaletteextractor.model.algorithms package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="colourpaletteextractor.examples.html" class="btn btn-neutral float-left" title="colourpaletteextractor.examples package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Tim Churchfield.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
