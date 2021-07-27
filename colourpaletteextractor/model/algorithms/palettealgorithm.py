@@ -88,10 +88,10 @@ class PaletteAlgorithm(ABC):
 
     @continue_thread.setter
     def continue_thread(self, value: bool):
-        """Set the execution status of the algorithm
+        """Set the execution status of the algorithm.
 
         Args:
-            value (bool): New execution status of the algorithm
+            value (bool): The new execution status of the algorithm.
 
         """
         self._continue_thread = value

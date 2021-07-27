@@ -879,15 +879,37 @@ is currently processing.</p>
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ColourBox">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.view.tabview.</span></span><span class="sig-name descname"><span class="pre">ColourBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ColourBox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PySide2.QtWidgets.QLabel</span></code></p>
+<p>Modified QLabel to hold an individual colour in the colour palette.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parent</strong> – The parent object of the ColourBox. The default is None.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ColourBox.enterEvent">
-<span class="sig-name descname"><span class="pre">enterEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PySide2.QtCore.QEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ColourBox.enterEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">enterEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PySide2.QtCore.QEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ColourBox.enterEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intercept an enter event.</p>
+<p>In the future, this could be used to trigger the highlighting regions of the image that use this
+colour in the recoloured image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QEvent</em>) – Enter event.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ColourBox.leaveEvent">
-<span class="sig-name descname"><span class="pre">leaveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PySide2.QtCore.QEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ColourBox.leaveEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">leaveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PySide2.QtCore.QEvent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ColourBox.leaveEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intercept a leave event.</p>
+<p>In the future, this could be used to cancel the highlighting of regions of the image that use this
+colour in the recoloured image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QEvent</em>) – Leave event.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ColourBox.staticMetaObject">
@@ -900,15 +922,35 @@ is currently processing.</p>
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ColourPaletteDock">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.view.tabview.</span></span><span class="sig-name descname"><span class="pre">ColourPaletteDock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ColourPaletteDock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PySide2.QtWidgets.QDockWidget</span></code></p>
+<p>A modified QDockWidget to hold small images of each colour in an image’s colour palette.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parent</strong> – Parent object of the ColourPaletteDock. Defaults to None.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ColourPaletteDock.add_colour_palette">
-<span class="sig-name descname"><span class="pre">add_colour_palette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">colour_palette</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_frequencies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ColourPaletteDock.add_colour_palette" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">add_colour_palette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">colour_palette</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_frequencies</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ColourPaletteDock.add_colour_palette" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the colour palette dock and add a new image’s colour palette to the dock.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>colour_palette</strong> (<em>list</em><em>[</em><em>np.array</em><em>]</em>) – List of colours in the colour palette.</p></li>
+<li><p><strong>image_id</strong> (<em>str</em>) – The ID (‘Tab_xx’) associated with a tab and image.</p></li>
+<li><p><strong>relative_frequencies</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – The relative frequencies of each colour in the colour palette in the
+recoloured image.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ColourPaletteDock.remove_colour_palette">
-<span class="sig-name descname"><span class="pre">remove_colour_palette</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ColourPaletteDock.remove_colour_palette" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">remove_colour_palette</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ColourPaletteDock.remove_colour_palette" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all of the <a class="reference internal" href="#colourpaletteextractor.view.tabview.ColourBox" title="colourpaletteextractor.view.tabview.ColourBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ColourBox</span></code></a> labels from the colour palette dock.</p>
+<p>Adapted from: <a class="reference external" href="https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt">ref</a></p>
+<p>Accessed: 27/07/2021</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ColourPaletteDock.staticMetaObject">
@@ -919,17 +961,45 @@ is currently processing.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ImageDisplay">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.view.tabview.</span></span><span class="sig-name descname"><span class="pre">ImageDisplay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.view.tabview.</span></span><span class="sig-name descname"><span class="pre">ImageDisplay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="colourpaletteextractor.model.html#colourpaletteextractor.model.imagedata.ImageData" title="colourpaletteextractor.model.imagedata.ImageData"><span class="pre">colourpaletteextractor.model.imagedata.ImageData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PySide2.QtWidgets.QLabel</span></code></p>
+<p>A modified QLabel to display and manipulate the current image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_data</strong> (<a class="reference internal" href="colourpaletteextractor.model.html#colourpaletteextractor.model.imagedata.ImageData" title="colourpaletteextractor.model.imagedata.ImageData"><em>imagedata.ImageData</em></a>) – The ImageData object that hold the information associated with an image.</p></li>
+<li><p><strong>parent</strong> – Parent object of the ImageDisplay. Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ImageDisplay.event">
-<span class="sig-name descname"><span class="pre">event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PySide2.QtCore.QEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay.event" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PySide2.QtCore.QEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intercept the QLabel’s event if it is a gesture to allow for zooming into and out of the current image.</p>
+<p>Also calls the super class’ event handler at the end.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QEvent</em>) – An event.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>(bool)</strong> – The result from the super class’ event handler.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ImageDisplay.image_zoom">
-<span class="sig-name descname"><span class="pre">image_zoom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouse_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay.image_zoom" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">image_zoom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouse_pos</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PySide2.QtCore.QPoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay.image_zoom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoom into or out of an image at the mouse pointer’s current location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mouse_pos</strong> (<em>QtCore.QPoint</em>) – Current position of the mouse cursor.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – The degree of magnification of the image.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ImageDisplay.staticMetaObject">
@@ -938,69 +1008,150 @@ is currently processing.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ImageDisplay.update_image">
-<span class="sig-name descname"><span class="pre">update_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay.update_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">update_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay.update_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the image shown by the ImageDisplay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>np.array</em>) – Numpy array representing an image.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ImageDisplay.zoom_factor">
 <span class="sig-name descname"><span class="pre">zoom_factor</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1.25</span></em><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay.zoom_factor" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The zoom-in factor used when the user zoom’s into the image via the zoom-in button.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ImageDisplay.zoom_in">
 <span class="sig-name descname"><span class="pre">zoom_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zoom_factor</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1.25</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay.zoom_in" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Zoom into the current image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>zoom_factor</strong> (<em>float</em>) – The new magnification factor for the image.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ImageDisplay.zoom_out">
 <span class="sig-name descname"><span class="pre">zoom_out</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zoom_factor</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.8</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay.zoom_out" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Zoom out of the current image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>zoom_factor</strong> (<em>float</em>) – The new magnification factor for the image.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.ImageDisplay.zoom_out_factor">
 <span class="sig-name descname"><span class="pre">zoom_out_factor</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0.8</span></em><a class="headerlink" href="#colourpaletteextractor.view.tabview.ImageDisplay.zoom_out_factor" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The zoom-out factor used when the user zoom’s out of the image via the zoom-out button.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.view.tabview.</span></span><span class="sig-name descname"><span class="pre">NewTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.view.tabview.</span></span><span class="sig-name descname"><span class="pre">NewTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="colourpaletteextractor.model.html#colourpaletteextractor.model.imagedata.ImageData" title="colourpaletteextractor.model.imagedata.ImageData"><span class="pre">colourpaletteextractor.model.imagedata.ImageData</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PySide2.QtWidgets.QScrollArea</span></code></p>
+<p>Modified QScrollArea to display and manipulate an image (via the <a class="reference internal" href="#colourpaletteextractor.view.tabview.ImageDisplay" title="colourpaletteextractor.view.tabview.ImageDisplay"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageDisplay</span></code></a> class).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_id</strong> (<em>str</em>) – The ID (‘Tab_xx’) associated with a tab and image.</p></li>
+<li><p><strong>image_data</strong> (<a class="reference internal" href="colourpaletteextractor.model.html#colourpaletteextractor.model.imagedata.ImageData" title="colourpaletteextractor.model.imagedata.ImageData"><em>imagedata.ImageData</em></a>) – The ImageData object that hold the information associated with an image.</p></li>
+<li><p><strong>parent</strong> – Parent object of the NewTab Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.image_display">
+<span class="sig-name descname"><span class="pre">image_display</span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.image_display" title="Permalink to this definition">¶</a></dt>
+<dd><p>ImageDisplay used to show the QPixmap representation of the current image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#colourpaletteextractor.view.tabview.ImageDisplay" title="colourpaletteextractor.view.tabview.ImageDisplay">ImageDisplay</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.change_toggle_recoloured_image_pressed">
-<span class="sig-name descname"><span class="pre">change_toggle_recoloured_image_pressed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.change_toggle_recoloured_image_pressed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">change_toggle_recoloured_image_pressed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.change_toggle_recoloured_image_pressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggle the _toggle_recoloured_image_pressed attribute between true and false (its opposite).</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.generate_palette_available">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">generate_palette_available</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.generate_palette_available" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The ability to generate the colour palette for the current NewTab object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(bool)</strong> – Returns true if the colour palette can be generated. Otherwise false.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.generate_report_available">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">generate_report_available</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.generate_report_available" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The ability to generate the colour palette report for the current NewTab object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(bool)</strong> – Returns true if the colour palette report can be generated. Otherwise false.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.get_slider_positions">
-<span class="sig-name descname"><span class="pre">get_slider_positions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.get_slider_positions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_slider_positions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">PySide2.QtCore.QPointF</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.get_slider_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the grip positions of the horizontal and vertical scrollbars.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(QPointF)</strong> – The position of the grip for the horizontal and veritcal scrollbars.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.image_id">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">image_id</span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.image_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">image_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.image_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The image ID of the images and its data that is linked to the current NewTab object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(str)</strong> – The ID (‘Tab_xx’) associated with a tab and image.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.progress_bar_value">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">progress_bar_value</span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.progress_bar_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">progress_bar_value</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.progress_bar_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current level of progress shown by the status bar for the associated NewTab object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(float)</strong> – The current level of progress shown by thr status bar.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.set_slider_positions">
-<span class="sig-name descname"><span class="pre">set_slider_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.set_slider_positions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">set_slider_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_position</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_position</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.set_slider_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the position of the horizontal and vertical scrollbar’s grip.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_position</strong> (<em>float</em>) – Position of the grip for the horizontal scrollbar.</p></li>
+<li><p><strong>y_position</strong> (<em>float</em>) – Position of the grip for the vertical scrollbar.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.staticMetaObject">
@@ -1009,28 +1160,60 @@ is currently processing.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.status_bar_state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">status_bar_state</span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.status_bar_state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">status_bar_state</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.status_bar_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current status bar state, represented by an integer.</p>
+<p>See the <code class="xref py py-meth docutils literal notranslate"><span class="pre">otherviews.StatusBar.set_status_bar()</span></code> method for more information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(int)</strong> – The current status bar state.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.toggle_recoloured_image_available">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">toggle_recoloured_image_available</span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.toggle_recoloured_image_available" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">toggle_recoloured_image_available</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.toggle_recoloured_image_available" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores the availability of the recoloured image (if it available to be displayed or not).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(bool)</strong> – True if the recoloured image is available. Otherwise false.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.toggle_recoloured_image_pressed">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">toggle_recoloured_image_pressed</span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.toggle_recoloured_image_pressed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">toggle_recoloured_image_pressed</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.toggle_recoloured_image_pressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>The status of the toggle button used to switch between the original image and the recoloured image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(bool)</strong> – True if the recoloured image is displayed by the GUI. Otherwise false.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.wheelEvent">
-<span class="sig-name descname"><span class="pre">wheelEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg__1</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PySide2.QtGui.QWheelEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.wheelEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">wheelEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PySide2.QtGui.QWheelEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.wheelEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intercepts the super class’ wheelEvent to allow zooming into and out of an image using the mousewheel.</p>
+<p>Also calls the super class’ wheelEvent handler at the end.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QWheelEvent</em>) – Mousewheel event</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.view.tabview.NewTab.zoom_level">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">zoom_level</span></span><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.zoom_level" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">zoom_level</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#colourpaletteextractor.view.tabview.NewTab.zoom_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>The degree of magnification for the currently displayed image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(float)</strong> – The degree of magnification for the current image.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 

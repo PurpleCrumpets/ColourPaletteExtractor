@@ -229,8 +229,8 @@ class MainView(QMainWindow):
         else:
             # Centre screen based on its current size
             # Adapted from:
-            # https://stackoverflow.com/questions/9357944/how-to-make-a-widget-in-the-center-of-the-screen-in-pyside-pyqt
-            # Accessed 25/07/21
+            # https: //stackoverflow.com/questions/9357944/how-to-make-a-widget-in-the-center-of-the-screen-in-pyside-pyqt
+            # Accessed: 25/07/21
             center_point = QtGui.QScreen.availableGeometry(QApplication.primaryScreen()).center()
             fg = self.frameGeometry()
             fg.moveCenter(center_point)
