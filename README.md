@@ -125,19 +125,19 @@ documentation (the two Sphinx packages) or run the test suite for the implemente
 
 The ```create_executables.sh``` and ```create_executables.bat``` files are used to build the application for macOS
 and Windows 10, respectively. These need to be modified to contain the path to your new Python virtual environment.
-For the ```create_executables.sh``` bash script, please update ```Line 7``` to reflect this new path. ```Line 10```
+For the ```create_executables.sh``` bash script, please update ```Line 24``` to reflect this new path. ```Line 27```
 also needs to be updated to specify the output directory you wish to use for the compiled application.
 
-      Line 7  --> source /path/to/my/Python/virtual/environment/bin/activate
+      Line 24  --> source /path/to/my/Python/virtual/environment/bin/activate
 
-      Line 10 --> OUTPUT_DIR=/path/to/my/output/directory/for/the/ColourPaletteExtractor-Executables
+      Line 27 --> OUTPUT_DIR=/path/to/my/output/directory/for/the/ColourPaletteExtractor-Executables
 
-For the ```create_executables.bat``` batch script, please update ```Line 11``` and ```Line 14``` to the path to the
+For the ```create_executables.bat``` batch script, please update ```Line 27``` and ```Line 30``` to the path to the
 Python virtual environment (**not** the *activate.bat* file) and the output directory, respectively.
 
-      Line 11 --> set \path\to\my\Python\virtual\environment
+      Line 27 --> set \path\to\my\Python\virtual\environment
 
-      Line 14 --> set OUTPUT_DIR=\path\to\my\output\directory\for\the\ColourPaletteExtractor-Executables
+      Line 30 --> set OUTPUT_DIR=\path\to\my\output\directory\for\the\ColourPaletteExtractor-Executables
 
 Once updated, please make sure that the relevant permissions have been set to allow for these script to be run (i.e.,
 ```chmod 755 create_executables.sh```). Navigate
@@ -150,10 +150,10 @@ should find the compiled applications inside the ```dist``` folder of ```ColourP
 Additional documentation for the source code is available as a set of 
 [HTML files](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/html). 
 On macOS, the ```create_documentation.sh``` script can be used to recompile the documentation. As with the
-application build scripts discussed in Section 4, ```Line 7``` of the ```create_documentation.sh``` script needs to be updated to
+application build scripts discussed in Section 4, ```Line 24``` of the ```create_documentation.sh``` script needs to be updated to
 reflect the path to your Python virtual environment:
 
-      Line 7  --> source /path/to/my/Python/virtual/environment/bin/activate
+      Line 24  --> source /path/to/my/Python/virtual/environment/bin/activate
 
 Navigate to the ```ColourPaletteExtractor``` directory and run the script, making sure that the script has
 the appropriate execution permissions as discussed before in relation to the application build scripts.

@@ -1,3 +1,20 @@
+# ColourPaletteExtractor is a simple tool to generate the colour palette of an image.
+# Copyright (C) 2021  Tim Churchfield
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
 from __future__ import annotations
 
 import inspect
@@ -146,9 +163,9 @@ class PaletteAlgorithm(ABC):
         """Set the signal function called by the algorithm at regular intervals to update the GUI thread.
 
         Args:
-            progress_callback (QtCore.SignalInstance):
-            tab (NewTab): The tab associated with the image being analysed (see :meth:`.generate_colour_palette`
-            image_data (ImageData): `ImageData` object that holds the image being analysed
+            progress_callback (QtCore.SignalInstance): Signal that when emitted, is used to update the GUI.
+            tab (NewTab): The tab associated with the image being analysed (see :meth:`.generate_colour_palette`.
+            image_data (ImageData): `ImageData` object that holds the image being analysed.
 
         """
 
@@ -182,14 +199,14 @@ class PaletteAlgorithm(ABC):
         """Calculates and returns the percentage increment to reach the`final_percent` in a certain number of `steps`.
 
         Args:
-            final_percent (int): New final percentage
-            steps (int): The number of steps to reach the final percentage
+            final_percent (int): New final percentage.
+            steps (int): The number of steps to reach the final percentage.
 
         Returns:
-            float: The value of the necessary incremental size
+            float: The value of the necessary incremental size.
 
         Raises:
-            ValueError: If `final_percent' is greater than 100 or is greater than the current percentage
+            ValueError: If `final_percent' is greater than 100 or is greater than the current percentage.
 
         """
 
@@ -204,10 +221,10 @@ class PaletteAlgorithm(ABC):
         """Set the algorithm progress to a new value and possibly notify the GUI of the change.
 
         Args:
-            new_progress (float):
+            new_progress (float): New value of the progress bar.
 
         Raises:
-            ValueError: If the new progress is greater than 100%
+            ValueError: If the new progress value is greater than 100%.
 
         """
 

@@ -1,5 +1,19 @@
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+# ColourPaletteExtractor is a simple tool to generate the colour palette of an image.
+# Copyright (C) 2021  Tim Churchfield
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 
 import sys
 from pathlib import Path
@@ -16,15 +30,11 @@ from controller import controller
 from model import model
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
 if __name__ == '__main__':
+    """Run an instance of the ColourPaletteExtractor application."""
+
     print("Opening ColourPaletteExtractor application...")
     print("Multithreading with maximum %d threads..." % QThreadPool.globalInstance().maxThreadCount())
-
 
     # Setting path to style sheet
     root = Path()
@@ -38,7 +48,6 @@ if __name__ == '__main__':
     # Create instance of QApplication
     app = QApplication(sys.argv)
     app.setAttribute(Qt.AA_DisableWindowContextHelpButton)  # Disable QDialog's question mark button
-    # app.setStyle('Macintosh')
 
     view = mainview.MainView()  # View
     controller = controller.ColourPaletteExtractorController(model=model, view=view)  # Controller
@@ -57,12 +66,3 @@ if __name__ == '__main__':
 
     # Run application's event loop (or main loop)
     sys.exit(app.exec_())
-
-# class ModifiedModernWindow(qtmodern.windows.ModernWindow):
-#
-#     def __init__(self, w):
-#
-#         super(ModifiedModernWindow, self).__init__(w)
-#
-#         icon_name = MainView.app_icon + ".ico"
-#         self.setWindowIcon(QIcon(icon_name))
