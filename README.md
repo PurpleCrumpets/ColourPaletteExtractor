@@ -153,12 +153,27 @@ On macOS, the ```create_documentation.sh``` script can be used to recompile the 
 application build scripts discussed in Section 4, ```Line 24``` of the ```create_documentation.sh``` script needs to be updated to
 reflect the path to your Python virtual environment:
 
-      Line 24  --> source /path/to/my/Python/virtual/environment/bin/activate
+      Line 24 --> source /path/to/my/Python/virtual/environment/bin/activate
 
 Navigate to the ```ColourPaletteExtractor``` directory and run the script, making sure that the script has
 the appropriate execution permissions as discussed before in relation to the application build scripts.
 
-## 5) Implementing a New Algorithm
+## 5) Running the Algorithm Unit Test Suite
+
+A set of unit tests were developed to help confirm that the implemented colour palette extraction algorithm was working
+as intended. These can be found in ```tests/nieves2020_test.py``` module. The ```test_suite_runner.sh``` script can
+be used to run these tests. As with the build scripts,
+this script needs to be updated to reflect the path to your virtual Python environment. Please change 
+```Line 7``` accordingly:
+
+      Line 7 --> source /path/to/my/Python/virtual/environment/bin/activate
+
+Once updated, please make sure that the relevant permissions have been set to allow the script to be executed 
+(```chmod 755 test_suite_runner.sh```). using the terminal, navigate to the ```ColourPaletteExtractor``` directory
+and run the bash script. The results from the test suite are printed to the terminal.
+
+
+## 6) Implementing a New Algorithm
 
 Implementing a new algorithm is relatively straight-forward, with most of the infrastructure already in place. Please
 follow the instructions below to add a new algorithm to the application.
@@ -167,6 +182,10 @@ follow the instructions below to add a new algorithm to the application.
    using the following template:
    
 ```python
+import numpy as np
+
+import colourpaletteextractor.model.algorithms.palettealgorithm as palettealgorithm
+
 class MyNewAlgorithm(palettealgorithm.PaletteAlgorithm):
 
     name = "Boggis, Bunce and Bean (1970)"
@@ -178,7 +197,7 @@ class MyNewAlgorithm(palettealgorithm.PaletteAlgorithm):
 
     # Add any further code here that you require...
 
-    def generate_colour_palette(self, image: np.array) -> tuple[Optional[np.array], list, list]:
+    def generate_colour_palette(self, image: np.array) -> tuple[np.array, list[np.array], list[float]]:
 
         # Generate the colour palette for the image here
       
@@ -222,7 +241,7 @@ of each colour in the colour palette as found in the recoloured image stored as 
         from colourpaletteextractor.model.algorithms import mymodule
 
 
-### 5.1) Adding Progress Bar Updates
+### 6.1) Adding Progress Bar Updates
 
 While not technically necessary, it may be desirable to provide progress updates for the user while the colour palette
 is being generated. The ```PaletteAlgorithm``` class provides two methods that can be used for this purpose, 
@@ -239,7 +258,7 @@ generation of the colour palette to be gracefully cancelled by the user.
         return None, [], []
 
 
-### 5.2) Changing the Default Algorithm
+### 6.2) Changing the Default Algorithm
 Changing the default algorithm used by ```ColourPaletteExtractor``` is very straightforward, requiring two
 small changes to the ```ColourPaletteExtractorModel``` class (found in the ```model``` module). To set the default
 to your new algorithm, edit the ```DEFAULT_ALGORITHM``` static variable of the ```ColourPaletteExtractorModel``` class to your new 

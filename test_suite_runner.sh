@@ -9,7 +9,6 @@ source /Users/tim/PythonVirtualEnvironments/ColourPaletteExtraction/bin/activate
 ############################
 ############################
 
-
 echo "Running test suite..."
 pytest colourpaletteextractor/tests
 
