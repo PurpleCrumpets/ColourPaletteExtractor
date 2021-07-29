@@ -223,6 +223,7 @@ class MainView(QMainWindow):
 
             # Save main window size and position to settings
             self._write_settings()
+            print("Closing " + _version.__application_name__ + "...")
             event.accept()
         else:
             # Ignore the close event

@@ -21,7 +21,6 @@ from functools import partial  # Import partial to connect signals with methods 
 from PySide2 import QtCore
 from PySide2.QtCore import QFileInfo, QRunnable, QThreadPool
 
-
 from colourpaletteextractor.controller.worker import Worker
 from colourpaletteextractor.model import generatereport
 from colourpaletteextractor.model.imagedata import ImageData
@@ -32,88 +31,80 @@ from colourpaletteextractor.view.tabview import NewTab
 
 
 class ColourPaletteExtractorController(QRunnable):
-    """Colour Palette Extractor Controller Class."""
+    """ColourPaletteExtractor Controller.
+
+    Used to connect the ColourPaletteExtractor GUI signals with the appropriate slot to be able to manipulate the
+    associated model.
+
+    Args:
+        model (ColourPaletteExtractorModel): The main model of ColourPaletteExtractor.
+        view (MainView): The main window of ColourPaletteExtractor.
+
+    """
 
     def __init__(self, model: ColourPaletteExtractorModel, view: MainView) -> None:
-        """Constructor."""
+
         super().__init__()
 
-        # Assigning model and view
+        # Assign model and view
         self._view = view
         self._model = model
 
         # Connect signals and slots
         self._connect_main_window_signals()
+        self._connect_tab_signals()
         self._connect_preferences_signals()
         self._connect_batch_progress_signals()
 
         # Signal creation of instructions tab
         self._create_default_tab()
 
-    def _connect_preferences_signals(self):
-        self._view.preferences.reset_preferences_button.clicked.connect(self._reset_preferences)
-        self._connect_algorithm_selector_signals()
-        self._connect_output_directory_selector_signals()
+    def current_tab_changed(self, i: int):
+        """Update the current tab index and update the view with the tab's properties.
 
-    def _connect_batch_progress_signals(self):
-        self._view.batch_progress_widget.cancel_batch_button.clicked.connect(self._send_stop_signals_to_batch_threads)
+        In most cases, i >= 0, however a value of i = -3 or -3 is also valid for performing a 'dummy' tab change to
+        update the current view shown to the user. A value of -1 will lead to the creation of the default tab
+        (the quick start guide).
 
-    def _send_stop_signals_to_batch_threads(self):
-        self._view.batch_progress_widget.set_cancel_text()
+        Args:
+            i (int): Index of the current tab.
 
-        for image_data_id, image_data in self._model.image_data_id_dictionary.items():
-            image_data.continue_thread = False
+        Raises:
+            ValueError: If the value of i is less than -3.
 
-    def _reset_preferences(self):
-        self._model.write_default_settings()  # Update settings file
-        self._view.preferences.update_preferences()  # Update preferences panel
+        """
 
-    def _connect_algorithm_selector_signals(self) -> None:
-        algorithms, algorithm_buttons = self._view.preferences.get_algorithms_and_buttons()
+        if i < -3:
+            raise ValueError("The current tab index should be equal to or greater than -3 (value of "
+                             + str(i) + " provided)!")
 
-        # Connecting each radio button to the correct command
-        for algorithm, algorithm_button in zip(algorithms, algorithm_buttons):
-            algorithm_button.clicked.connect(partial(self._set_algorithm, algorithm))
+        # Create new default tab if all have been removed
+        if i == -1:
+            self._create_default_tab()
 
-    def _connect_output_directory_selector_signals(self) -> None:
-        self._view.preferences.default_path_button.clicked.connect(partial(self._set_output_path, use_user_dir=False))
-        self._view.preferences.user_path_button.clicked.connect(partial(self._set_output_path, use_user_dir=True))
-        self._view.preferences.browse_button.clicked.connect(self._get_output_path)
+        # Enable/disable toggle button for displaying recoloured image
+        tab = self._view.tabs.currentWidget()
+        image_id = tab.image_id
+        self._update_state_of_tab_buttons(tab=tab)
 
-    def _get_output_path(self):
-        current_path = self._view.preferences.user_path_selector.text()
-        new_path = self._view.preferences.show_output_directory_dialog_box(current_path=current_path)
+        # Reload colour palette
+        if i != -3:  # This prevents the GUI from flickering that occurs when needlessly updating the colour palette
+            colour_palette = self._get_colour_palette(tab)
+            relative_frequencies = self._get_relative_frequencies(tab)
 
-        if new_path != "":
-            # Set new path
-            self._view.preferences.user_path_selector.setText(new_path)
-            self._model.change_output_directory(use_user_dir=True, new_user_directory=new_path)
+            if len(colour_palette) == 0:
+                self._view.colour_palette_dock.remove_colour_palette()  # Reset colour palette dock
+            else:
+                self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id, relative_frequencies)
 
-    def _set_output_path(self, use_user_dir: bool) -> None:
-        # if use_user_dir:
-        new_user_directory = self._view.preferences.user_path_selector.text()
-        print(new_user_directory)
-        self._model.change_output_directory(use_user_dir=use_user_dir, new_user_directory=new_user_directory)
-
-        # Update GUI
-        self._view.preferences.user_path_selector.setEnabled(use_user_dir)
-        self._view.preferences.browse_button.setEnabled(use_user_dir)
-
-    def _set_algorithm(self, algorithm) -> None:
-        self._model.set_algorithm(algorithm)
+        # Update status bar
+        self._update_status_bar(tab)
 
     def _connect_main_window_signals(self) -> None:
-        """
-
-        :return:
-        """
+        """Connect the main window signals to the appropriate slots."""
 
         # Close event
         self._view.close_action.triggered.connect(self._close_application)
-
-        # Tab events
-        self._view.tabs.currentChanged.connect(self.current_tab_changed)
-        self._view.tabs.tabCloseRequested.connect(self._close_current_tab)
 
         # About event
         self._view.about_menu_action.triggered.connect(otherviews.AboutBox)
@@ -152,6 +143,180 @@ class ColourPaletteExtractorController(QRunnable):
         # Stop event
         self._view.stop_action.triggered.connect(self._stop_current_thread)
 
+    def _connect_tab_signals(self) -> None:
+        """Connect the :class:`tabview.NewTab` signals to the appropriate slots."""
+
+        # Tab events
+        self._view.tabs.currentChanged.connect(self.current_tab_changed)
+        self._view.tabs.tabCloseRequested.connect(self._close_current_tab)
+
+    def _connect_preferences_signals(self) -> None:
+        """Connect the preferences dialog box signals to the appropriate slots."""
+
+        self._view.preferences.reset_preferences_button.clicked.connect(self._reset_preferences)
+        self._connect_algorithm_selector_signals()
+        self._connect_output_directory_selector_signals()
+
+    def _connect_batch_progress_signals(self) -> None:
+        """Connect the batch progress dialog box signals to the appropriate slot."""
+
+        self._view.batch_progress_widget.cancel_batch_button.clicked.connect(self._send_stop_signals_to_batch_threads)
+
+    def _close_application(self) -> None:
+        """Remove the application's temporary directory and its contents."""
+
+        print("Removing temporary directory and its contents...")
+        self._model.close_temporary_directory()
+
+    def _open_file(self) -> None:
+        """Open the file dialog box and create a :class:`tabview.NewTab` object for each newly imported image."""
+
+        supported_files = self._model.SUPPORTED_IMAGE_TYPES
+        file_names, _ = self._view.show_file_dialog_box(supported_files)
+
+        for file_name in file_names:
+            new_image_data_id = None
+            new_image_data = None
+
+            if file_name != "":
+                new_image_data_id, new_image_data = self._model.add_image(file_name)
+            else:
+                print("No image selected...")
+
+            if new_image_data is not None:
+                # Create new tab linked to the image
+                self._create_new_tab(new_image_data_id, new_image_data)
+
+    def _generate_all(self, batch_type: str) -> None:
+        """
+
+        Args:
+            batch_type (str): The action to be run as a batch. This can either be 'colour palette' or 'report'.
+
+        Raises:
+            ValueError: For an invalid batch_type.
+
+        """
+
+        # Disable batch actions
+        self._view.generate_all_report_action.setDisabled(True)
+        self._view.generate_all_palette_action.setDisabled(True)
+        self._view.preferences_action.setDisabled(True)
+
+        num_tabs = self._view.tabs.count()  # Number of tabs to process
+
+        # Update model thread counter
+        self._model.active_thread_counter = num_tabs
+
+        thread_count = 0  # Used for keeping track of the number of reports being generated
+
+        # Generate worker for each tab
+        for i in range(num_tabs):
+            tab = self._view.tabs.widget(i)
+
+            # Generate the colour palette for the given tab
+            if batch_type == "colour palette":
+                self._generate_worker(main_function="colour palette", tab=tab, batch_generation=True)
+                thread_count += 1
+
+            # Generate the colour palette report for the given tab
+            elif batch_type == "report":
+
+                # Check if tab has the necessary details to create a report
+                if tab.generate_report_available:
+                    thread_count += 1
+                    self._generate_worker(main_function="report", tab=tab, batch_generation=True)
+                else:
+                    self._model.active_thread_counter -= 1
+                    # Need to update
+
+            else:
+                raise ValueError("The batch_type should either be 'colour palette' or 'report'. "
+                                 + "The provided string was: " + batch_type + "...")
+
+        if batch_type == "report" and thread_count == 0:
+            # Letting the user know that they must generate colour palettes first before generating a report
+            message = "You need to generate the colour palette for at least one image " \
+                      + "before you can generate a report!"
+            msg_box = otherviews.ErrorBox(box_type="information")
+            msg_box.setInformativeText(message)
+            msg_box.exec_()
+
+            # Re-enable batch actions
+            self._view.generate_all_report_action.setEnabled(True)
+            self._view.generate_all_palette_action.setEnabled(True)
+            self._view.preferences_action.setEnabled(True)
+            return
+
+        # Show overall progress widget
+        self._view.batch_progress_widget.show_widget(total_count=thread_count, batch_type=batch_type)
+
+    def _generate_worker(self, main_function: str, tab: NewTab = None, batch_generation: bool = False) -> None:
+
+        # Get image data
+        if tab is None:
+            tab = self._view.tabs.currentWidget()
+        image_id = tab.image_id
+        image_data = self._model.get_image_data(image_id)
+
+
+        # Select primary function
+        worker = None
+        if main_function == "colour palette":
+            worker = Worker(self._generate_colour_palette, image_data=image_data, function_type=main_function, tab=tab)
+
+        elif main_function == "report":
+            worker = Worker(self._generate_report, image_data=image_data, function_type=main_function, tab=tab)
+        else:
+            pass
+            # TODO: throw exception
+
+        self._connect_worker_signals(worker=worker, batch_generation=batch_generation)
+        QThreadPool.globalInstance().start(worker)
+
+    def _send_stop_signals_to_batch_threads(self) -> None:
+        self._view.batch_progress_widget.set_cancel_text()
+
+        for image_data_id, image_data in self._model.image_data_id_dictionary.items():
+            image_data.continue_thread = False
+
+    def _reset_preferences(self) -> None:
+        self._model.write_default_settings()  # Update settings file
+        self._view.preferences.update_preferences()  # Update preferences panel
+
+    def _connect_algorithm_selector_signals(self) -> None:
+        algorithms, algorithm_buttons = self._view.preferences.get_algorithms_and_buttons()
+
+        # Connecting each radio button to the correct slot
+        for algorithm, algorithm_button in zip(algorithms, algorithm_buttons):
+            algorithm_button.clicked.connect(partial(self._set_algorithm, algorithm))
+
+    def _connect_output_directory_selector_signals(self) -> None:
+        self._view.preferences.default_path_button.clicked.connect(partial(self._set_output_path, use_user_dir=False))
+        self._view.preferences.user_path_button.clicked.connect(partial(self._set_output_path, use_user_dir=True))
+        self._view.preferences.browse_button.clicked.connect(self._get_output_path)
+
+    def _get_output_path(self) -> None:
+        current_path = self._view.preferences.user_path_selector.text()
+        new_path = self._view.preferences.show_output_directory_dialog_box(current_path=current_path)
+
+        if new_path != "":
+            # Set new path
+            self._view.preferences.user_path_selector.setText(new_path)
+            self._model.change_output_directory(use_user_dir=True, new_user_directory=new_path)
+
+    def _set_output_path(self, use_user_dir: bool) -> None:
+        new_user_directory = self._view.preferences.user_path_selector.text()
+        print(new_user_directory)
+        self._model.change_output_directory(use_user_dir=use_user_dir, new_user_directory=new_user_directory)
+
+        # Update GUI
+        self._view.preferences.user_path_selector.setEnabled(use_user_dir)
+        self._view.preferences.browse_button.setEnabled(use_user_dir)
+
+    def _set_algorithm(self, algorithm) -> None:
+        self._model.set_algorithm(algorithm)
+
     def _stop_current_thread(self):
         tab = self._view.tabs.currentWidget()
 
@@ -159,9 +324,7 @@ class ColourPaletteExtractorController(QRunnable):
         image_data = self._model.get_image_data(image_id)
         image_data.continue_thread = False
 
-    def _close_application(self):
-        print("Removing temporary directory and its contents before closing application...")
-        self._model.close_temporary_directory()
+
 
     def _zoom_in(self) -> None:
         tab = self._view.tabs.currentWidget()
@@ -207,25 +370,7 @@ class ColourPaletteExtractorController(QRunnable):
         # Close currently selected tab in GUI
         self._view.close_current_tab(tab_index)
 
-    def _open_file(self) -> None:
-        """Add new image."""
 
-        supported_files = self._model.SUPPORTED_IMAGE_TYPES
-        file_names, _ = self._view.show_file_dialog_box(supported_files)
-
-        for file_name in file_names:
-
-            new_image_data_id = None
-            new_image_data = None
-
-            if file_name != "":
-                new_image_data_id, new_image_data = self._model.add_image(file_name)
-            else:
-                print("No image selected")
-
-            if new_image_data is not None:
-                # Create new tab linked to the image
-                self._create_new_tab(new_image_data_id, new_image_data)
 
     def _update_progress_bar(self, tab: NewTab, percent: int):
         # Update progress status value
@@ -245,70 +390,7 @@ class ColourPaletteExtractorController(QRunnable):
 
 
 
-    def _generate_all(self, batch_type: str):
 
-        # Disable batch actions
-        self._view.generate_all_report_action.setDisabled(True)
-        self._view.generate_all_palette_action.setDisabled(True)
-        self._view.preferences_action.setDisabled(True)  # TODO: this does not disable preferences in the main menu for mac
-
-        num_tabs = self._view.tabs.count()
-
-        # Update model thread counter
-        self._model.active_thread_counter = num_tabs
-
-        # Generate worker for each tab
-        for i in range(num_tabs):
-            tab = self._view.tabs.widget(i)
-
-            if batch_type == "colour palette":
-                self._generate_worker(main_function="colour palette", tab=tab, batch_generation=True)
-
-            elif batch_type == "report":
-
-                # Check if tab has the necessary details to create a report
-                count = 0
-                if tab.generate_report_available:
-                    count += 1
-                    self._generate_worker(main_function="report", tab=tab, batch_generation=True)
-
-                if count == 0:
-                    # Letting the user know that they must generate colour palettes first before generating a report
-                    message = "You need to generate the colour palette for at least one image " \
-                              + "before you can generate a report!"
-                    msg_box = otherviews.ErrorBox(box_type="information")
-                    msg_box.setInformativeText(message)
-                    msg_box.exec_()
-                    return
-            else:
-                pass
-                # TODO: throw exception
-
-        # Show overall progress widget
-        self._view.batch_progress_widget.show_widget(total_count=num_tabs, batch_type=batch_type)
-
-    def _generate_worker(self, main_function: str, tab: NewTab = None, batch_generation: bool = False) -> None:
-
-        # Get image data
-        if tab is None:
-            tab = self._view.tabs.currentWidget()
-        image_id = tab.image_id
-        image_data = self._model.get_image_data(image_id)
-
-
-        # Select primary function
-        worker = None
-        if main_function == "colour palette":
-            worker = Worker(self._generate_colour_palette, image_data=image_data, function_type=main_function, tab=tab)
-
-        elif main_function == "report":
-            worker = Worker(self._generate_report, image_data=image_data, function_type=main_function, tab=tab)
-        else:
-            pass
-            # TODO: throw exception
-
-        self._connect_worker_signals(worker=worker, batch_generation=batch_generation)
-        QThreadPool.globalInstance().start(worker)
 
     def _connect_worker_signals(self, worker: Worker, batch_generation: bool):
         # Connect signals
@@ -464,34 +546,14 @@ class ColourPaletteExtractorController(QRunnable):
         image_data_id = tab.image_id
         image_data = self._model.get_image_data(image_data_id)
 
-        return image_data.colour_palette_relative_frequency
+        # TODO can occasionally get an error here - not sure why
+        if image_data is None:
+            return []
 
-    def current_tab_changed(self, i):
-        """Update current tab index."""
-        print("Tab changed to:", i)
+        else:
+            return image_data.colour_palette_relative_frequency
 
-        # if i is -2 - dummy change
-        # Create new default tab if all have been removed
-        if i == -1:
-            self._create_default_tab()
 
-        # Enable/disable toggle button for displaying recoloured image
-        tab = self._view.tabs.currentWidget()
-        image_id = tab.image_id
-        self._update_state_of_tab_buttons(tab=tab)
-
-        # Reload colour palette
-        if i != -3:  # This prevents the GUI from flickering when updating the colour palette needlessly
-            colour_palette = self._get_colour_palette(tab)
-            relative_frequencies = self._get_relative_frequencies(tab)
-
-            if len(colour_palette) == 0:
-                self._view.colour_palette_dock.remove_colour_palette()  # Reset colour palette dock
-            else:
-                self._view.colour_palette_dock.add_colour_palette(colour_palette, image_id, relative_frequencies)
-
-        # Update status bar
-        self._update_status_bar(tab)
 
     def _update_state_of_tab_buttons(self, tab: NewTab):
         if tab.toggle_recoloured_image_available:

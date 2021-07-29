@@ -122,11 +122,10 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         # Get colour palette as a list of rgb colours
         colour_palette = []
         for cube in relevant_cubes:
-            # print("New colour")
-            # print(cube.mean_colour)
+            lab_mean_colour = cube.mean_colour.copy()
             colour = convert_lab_2_rgb(cube.mean_colour)  # Scale to 8-bit
             colour_palette.append(colour)
-            # print(colour)
+            # print("Cube mean CIELAB colour:", lab_mean_colour, "Cube mean sRGB colour:", colour)
         self._set_progress(97)  # Progress = 97%
         if not self._continue_thread:
             return None, [], []
