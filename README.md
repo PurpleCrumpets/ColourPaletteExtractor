@@ -166,40 +166,43 @@ follow the instructions below to add a new algorithm to the application.
 1) Create a new subclass of ```PaletteAlgorithm``` in a new module ```mymodule.py``` of the ```algorithms``` package 
    using the following template:
    
-        class MyNewAlgorithm(palettealgorithm.PaletteAlgorithm)
-   
-            name = "Boggis, Bunce and Bean (1970)"
-            url = "www.a-lovely-link-to-my-algorithm.com"
-   
-            def __init__(self):
-            """Constructor."""
-                super().__init__(MyNewAlgorithm.name, MyNewAlgorithm.url)
+```python
+class MyNewAlgorithm(palettealgorithm.PaletteAlgorithm):
 
-                # Add any further code here that you require...
+    name = "Boggis, Bunce and Bean (1970)"
+    url = "www.a-lovely-link-to-my-algorithm.com"
 
-            def generate_colour_palette(self, image: np.array) -> tuple[Optional[np.array], list, list]:
-   
-               # Generate the colour palette for the image here
-   
-               # Set the initial progress
-               self._set_progress(0)  # Initial progress = 0%
-               if not self._continue_thread:
-                  return None, [], []
-   
-               
-               # Increment the progress by a fixed amount
-               self._increment_progress(increment_percent)
-                if not self._continue_thread:
-                    return None, [], []
-                
+    def __init__(self):
+        """Constructor."""
+        super().__init__(MyNewAlgorithm.name, MyNewAlgorithm.url)
 
-               # Set the final progress   
-               self._set_progress(100)  # Final progress = 100%
-               if not self._continue_thread:
-                  return None, [], []
-                
-                return recoloured_image, colour_palette, relative_frequencies
+    # Add any further code here that you require...
 
+    def generate_colour_palette(self, image: np.array) -> tuple[Optional[np.array], list, list]:
+
+        # Generate the colour palette for the image here
+      
+        # Set the initial progress
+        self._set_progress(0)  # Initial progress = 0%
+        if not self._continue_thread:
+            return None, [], []
+      
+      
+        # Increment the progress by a fixed amount
+        self._increment_progress(increment_percent)
+        if not self._continue_thread:
+            return None, [], []
+      
+      
+        # Set the final progress   
+        self._set_progress(100)  # Final progress = 100%
+        if not self._continue_thread:
+            return None, [], []
+      
+        return recoloured_image, colour_palette, relative_frequencies
+
+```
+      
 
 Please specify a ```name``` for the algorithm and a ```url``` to a valid website or file to allow for users to learn more
 about how your algorithm works. The ```MyNewAlgorithm``` class inherits the abstract method ```generate_colour_palette```

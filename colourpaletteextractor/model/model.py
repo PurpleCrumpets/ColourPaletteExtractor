@@ -130,7 +130,7 @@ class ColourPaletteExtractorModel:
     def active_thread_counter(self, value: int) -> None:
         self._active_thread_counter = value
 
-    def change_output_directory(self, use_user_dir: bool, new_user_directory):
+    def change_output_directory(self, use_user_dir: bool, new_user_directory: str):
         print("Updating output directory...")
 
         # Update settings file

@@ -186,11 +186,32 @@
 <dt class="sig sig-object py" id="colourpaletteextractor.controller.controller.ColourPaletteExtractorController">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.controller.controller.</span></span><span class="sig-name descname"><span class="pre">ColourPaletteExtractorController</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="colourpaletteextractor.model.html#colourpaletteextractor.model.model.ColourPaletteExtractorModel" title="colourpaletteextractor.model.model.ColourPaletteExtractorModel"><span class="pre">colourpaletteextractor.model.model.ColourPaletteExtractorModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="colourpaletteextractor.view.html#colourpaletteextractor.view.mainview.MainView" title="colourpaletteextractor.view.mainview.MainView"><span class="pre">colourpaletteextractor.view.mainview.MainView</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.controller.controller.ColourPaletteExtractorController" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PySide2.QtCore.QRunnable</span></code></p>
-<p>Colour Palette Extractor Controller Class.</p>
+<p>ColourPaletteExtractor Controller.</p>
+<p>Used to connect the ColourPaletteExtractor GUI signals with the appropriate slot to be able to manipulate the
+associated model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<a class="reference internal" href="colourpaletteextractor.model.html#colourpaletteextractor.model.model.ColourPaletteExtractorModel" title="colourpaletteextractor.model.model.ColourPaletteExtractorModel"><em>ColourPaletteExtractorModel</em></a>) – The main model of ColourPaletteExtractor.</p></li>
+<li><p><strong>view</strong> (<a class="reference internal" href="colourpaletteextractor.view.html#colourpaletteextractor.view.mainview.MainView" title="colourpaletteextractor.view.mainview.MainView"><em>MainView</em></a>) – The main window of ColourPaletteExtractor.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.controller.controller.ColourPaletteExtractorController.current_tab_changed">
-<span class="sig-name descname"><span class="pre">current_tab_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.controller.controller.ColourPaletteExtractorController.current_tab_changed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update current tab index.</p>
+<span class="sig-name descname"><span class="pre">current_tab_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.controller.controller.ColourPaletteExtractorController.current_tab_changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the current tab index and update the view with the tab’s properties.</p>
+<p>In most cases, i &gt;= 0, however a value of i = -3 or -3 is also valid for performing a ‘dummy’ tab change to
+update the current view shown to the user. A value of -1 will lead to the creation of the default tab
+(the quick start guide).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – Index of the current tab.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the value of i is less than -3.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
