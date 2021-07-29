@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""Contains an example script demonstrating how to generate the colour palette of a sample image."""
 
 import os
 
