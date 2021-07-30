@@ -15,7 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-__version__ = "0.5.3"
+__version__ = "0.5.4"
 __author__ = "Tim Churchfield"
 __organisation__ = "The University of St Andrews"
 __application_name__ = "ColourPaletteExtractor"

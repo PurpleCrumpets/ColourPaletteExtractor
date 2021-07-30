@@ -64,7 +64,7 @@ class ColourPaletteExtractorController(QRunnable):
     def current_tab_changed(self, i: int):
         """Update the current tab index and update the view with the tab's properties.
 
-        In most cases, i >= 0, however a value of i = -3 or -3 is also valid for performing a 'dummy' tab change to
+        In most cases, i >= 0, however a value of i = -2 or -3 is also valid for performing a 'dummy' tab change to
         update the current view shown to the user. A value of -1 will lead to the creation of the default tab
         (the quick start guide).
 
@@ -249,7 +249,6 @@ class ColourPaletteExtractorController(QRunnable):
                     self._generate_worker(main_function=batch_type, tab=tab, batch_generation=True)
                 else:
                     self._model.active_thread_counter -= 1
-                    # Need to update
 
             else:
                 raise ValueError("The batch_type should either be 'colour palette' or 'report'. "
@@ -285,18 +284,15 @@ class ColourPaletteExtractorController(QRunnable):
 
         """
 
-        # Get image data
+        # Get tab
         if tab is None:
             tab = self._view.tabs.currentWidget()
-        image_id = tab.image_id
-        image_data = self._model.get_image_data(image_id)
 
         # Select primary function
         if main_function == "colour palette":
-            worker = Worker(self._generate_colour_palette, image_data=image_data, function_type=main_function, tab=tab)
-
+            worker = Worker(self._generate_colour_palette, function_type=main_function, tab=tab)
         elif main_function == "report":
-            worker = Worker(self._generate_report, image_data=image_data, function_type=main_function, tab=tab)
+            worker = Worker(self._generate_report, function_type=main_function, tab=tab)
         else:
             raise ValueError("The main_function should either be 'colour palette' or 'report'. "
                              + "The provided string was: " + main_function + "...")
@@ -321,7 +317,54 @@ class ColourPaletteExtractorController(QRunnable):
             worker.signals.finished.connect(self.current_tab_changed)  # Function called at the very end
 
         worker.signals.progress.connect(self._update_progress_bar)  # Intermediate Progress
+        worker.signals.error.connect(self._show_error_generation_dialog_box)
         # worker.signals.result.connect(self._update_tab)  # Uses the result of the main function (NOT IN USE)
+
+    def _show_error_generation_dialog_box(self, tab: NewTab, error_type: int,
+                                          error_info: tuple[type[Exception], Exception, str]) -> None:
+        """Display a message box for the given exception.
+
+        Used when a thread fails for some reason. Resets the GUI components for the :class:`tabview.NewTab` object
+        associated with the thread.
+
+        Args:
+            tab (NewTab): The tab for which the error occurred.
+            error_type (int): Specify if no error occurred during generation (0), an error occurred during the
+                colour palette generation (1) or an error occurred during the colour palette report generation (2).
+            error_info(tuple[type[Exception], Exception, str]): THe exception type, the exception and the stack trace
+                associated with the error.
+
+        Raises:
+            ValueError: If the provided error_type is invalid.
+
+        """
+
+        # exc_type = error_info[0]  # Not used
+        value = error_info[1]
+        traceback = error_info[2]
+
+        error_msg_box = otherviews.ErrorBox(box_type="error")
+        error_msg_box.append_title(value)
+        error_msg_box.setInformativeText(traceback)
+        error_msg_box.exec_()
+
+        # Re-enable correct buttons for the given tab upon an error and update the status bar
+        if error_type == 0:  # Palette generation error
+            self._toggle_tab_button_states(tab=tab, activate=True, palette_generated=False)
+            tab.status_bar_state = 0  # Tab status to generate colour palette
+
+        elif error_type == 1:  # Report generation error
+            self._toggle_tab_button_states(tab=tab, activate=True)
+            tab.status_bar_state = 2  # Tab status to colour palette generated
+
+        else:
+            raise ValueError("The error_occurred value must be either "
+                             + "0 (colour palette generation error), "
+                             + "or 1 (colour palette report generation error. The value provided was: "
+                             + str(error_type) + "...")
+
+        # Update GUI and progress bar
+        self._update_progress_bar(tab, 0)
 
     def _send_stop_signals_to_batch_threads(self) -> None:
         """Send stop signals to all threads being run as part of a batch."""
@@ -445,6 +488,8 @@ class ColourPaletteExtractorController(QRunnable):
             tab (NewTab): Tab to update the progress bar for.
             percent (int): New percentage progress for the given tab.
 
+        Raises:
+            ValueError: If an invalid error_occurred value is provided
         """
 
         # Update progress status value

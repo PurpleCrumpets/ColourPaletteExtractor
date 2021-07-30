@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>colourpaletteextractor.controller package &mdash; ColourPaletteExtractor 0.5.3 documentation</title>
+  <title>colourpaletteextractor.controller package &mdash; ColourPaletteExtractor 0.5.4 documentation</title>
   
 
   
@@ -201,7 +201,7 @@ associated model.</p>
 <dt class="sig sig-object py" id="colourpaletteextractor.controller.controller.ColourPaletteExtractorController.current_tab_changed">
 <span class="sig-name descname"><span class="pre">current_tab_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.controller.controller.ColourPaletteExtractorController.current_tab_changed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the current tab index and update the view with the tab’s properties.</p>
-<p>In most cases, i &gt;= 0, however a value of i = -3 or -3 is also valid for performing a ‘dummy’ tab change to
+<p>In most cases, i &gt;= 0, however a value of i = -2 or -3 is also valid for performing a ‘dummy’ tab change to
 update the current view shown to the user. A value of -1 will lead to the creation of the default tab
 (the quick start guide).</p>
 <dl class="field-list simple">
@@ -221,7 +221,7 @@ update the current view shown to the user. A value of -1 will lead to the creati
 <span id="colourpaletteextractor-controller-worker-module"></span><h2>colourpaletteextractor.controller.worker module<a class="headerlink" href="#module-colourpaletteextractor.controller.worker" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="colourpaletteextractor.controller.worker.Worker">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.controller.worker.</span></span><span class="sig-name descname"><span class="pre">Worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.controller.worker.Worker" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.controller.worker.</span></span><span class="sig-name descname"><span class="pre">Worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="colourpaletteextractor.view.html#colourpaletteextractor.view.tabview.NewTab" title="colourpaletteextractor.view.tabview.NewTab"><span class="pre">colourpaletteextractor.view.tabview.NewTab</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.controller.worker.Worker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PySide2.QtCore.QRunnable</span></code></p>
 <p>Worker thread used to generate the colour palette or report for an image.</p>
 <p>Inherits from QRunnable to handler worker thread setup, signals and wrap-up.</p>
@@ -230,14 +230,23 @@ update the current view shown to the user. A value of -1 will lead to the creati
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fn</strong> – </p></li>
-<li><p><strong>image_data</strong> – </p></li>
-<li><p><strong>function_type</strong> – </p></li>
+<li><p><strong>fn</strong> – The function or method to be run as a new thread (generating an image’s colour palette or its colour palette
+report.</p></li>
+<li><p><strong>tab</strong> (<a class="reference internal" href="colourpaletteextractor.view.html#colourpaletteextractor.view.tabview.NewTab" title="colourpaletteextractor.view.tabview.NewTab"><em>NewTab</em></a>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">tabview.NewTab</span></code> object associated with the image to be processed.</p></li>
+<li><p><strong>function_type</strong> (<em>str</em>) – The action to be run. This can either be ‘colour palette’ or ‘report’.</p></li>
 <li><p><strong>*args</strong> – Arguments to pass to the callback function</p></li>
 <li><p><strong>*kwargs</strong> – Keywords to pass to the callback function</p></li>
-<li><p><strong>callback</strong> (<em>function</em>) – The function callback to run on this worker thread. Supplied args and
-kwargs will be passed through to the runner.</p></li>
 </ul>
+</dd>
+</dl>
+<p>Attributes:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>progress_callback</strong> – The function callback to run on this worker thread. Supplied args and
+kwargs will be passed through to the runner.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the provided function_type is invalid.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -256,38 +265,33 @@ kwargs will be passed through to the runner.</p></li>
 <p>Adapted from: <a class="reference external" href="https://www.mfitzp.com/tutorials/multithreading-pyqt-applications-qthreadpool/">ref</a></p>
 <p>Accessed: 01/08/21</p>
 <p>Supported signals are:</p>
-<dl class="simple">
-<dt>finished</dt><dd><p>Integer emitted upon finishing. When generating a colour palette, the value is -2.
-When generating a report, the value is -3. THis is ues to reload the tab displaying
-the image with the correct settings and colour palette.</p>
-</dd>
-<dt>progress</dt><dd><p>NewTab object for which the GUI is to be updated for and the percentage complete
-for the current task (generating the colour palette or generating the report).</p>
-</dd>
-<dt>error</dt><dd><p>tuple (exctype, value, traceback.format_exc() ) - Not in use</p>
-</dd>
-<dt>result</dt><dd><p>object data returned from processing, anything</p>
-</dd>
-</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.controller.worker.WorkerSignals.error">
 <span class="sig-name descname"><span class="pre">error</span></span><a class="headerlink" href="#colourpaletteextractor.controller.worker.WorkerSignals.error" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Tuple (exc_type, value, traceback.format_exc()).</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.controller.worker.WorkerSignals.finished">
 <span class="sig-name descname"><span class="pre">finished</span></span><a class="headerlink" href="#colourpaletteextractor.controller.worker.WorkerSignals.finished" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Integer emitted upon finishing.</p>
+<p>When generating a colour palette, the value is -2. When generating a report, the value is -3.
+This is used to reload the tab displaying the image with the correct settings and colour palette.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.controller.worker.WorkerSignals.progress">
 <span class="sig-name descname"><span class="pre">progress</span></span><a class="headerlink" href="#colourpaletteextractor.controller.worker.WorkerSignals.progress" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>NewTab object for which the GUI is to be updated for and the percentage complete for the current task.</p>
+<p>The current task is either generating the colour palette for an image or generating the colour palette report for
+the image.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.controller.worker.WorkerSignals.result">
 <span class="sig-name descname"><span class="pre">result</span></span><a class="headerlink" href="#colourpaletteextractor.controller.worker.WorkerSignals.result" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Object data returned from processing, anything - NOT IN USE.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.controller.worker.WorkerSignals.staticMetaObject">

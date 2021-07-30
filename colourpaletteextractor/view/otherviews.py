@@ -627,29 +627,46 @@ class ErrorBox(QMessageBox):
         box_type (str): The error box type. Used to customise the icon and main text show.
 
         parent: Parent object of the ErrorBox. Defaults to None.
+
+    Attributes:
+        header (str): The heading of the ErrorBox.
+
     """
 
     def __init__(self, box_type: str = None, parent=None):
 
         super(ErrorBox, self).__init__(parent)
 
-        header = None
+        self.header = None
 
         # Set icon
         self.setWindowIcon(QIcon("icons:about-medium.png"))  # Window icon
 
         if box_type == "warning":
             self.setIcon(QMessageBox.Warning)  # Icon
-            header = "Warning!"
+            self.header = "Warning!"
         elif box_type == "information":
             self.setIcon(QMessageBox.Information)  # Icon
-            header = "Heads-Up!"
-
+            self.header = "Heads-Up!"
+        elif box_type == "error":
+            self.setIcon(QMessageBox.Critical)  # Icon
+            self.header = "Error!"
         else:
             self.setIconPixmap(QPixmap("icons:about-medium.png"))
 
-        self.setWindowTitle(header)  # Window title
-        self.setText(header)  # Main text
+        self.setWindowTitle(self.header)  # Window title
+        self.setText(self.header)  # Main text
+
+    def append_title(self, error: Exception) -> None:
+        """Append the title with additional information from an exception.
+
+        Args:
+            error (Exception): Exception whose error summary message is appended to the title text.
+
+        """
+
+        self.header = self.header + "\n\n        " + str(error) + "\n"
+        self.setText(self.header)  # Main text
 
 
 class BatchGenerationProgressWidget(QDialog):

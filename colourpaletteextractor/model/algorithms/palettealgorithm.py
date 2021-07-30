@@ -56,7 +56,7 @@ def get_implemented_algorithms():
                 path.append(child)
                 continue
 
-            if not '.' in str(child):
+            if '.' not in str(child):
                 # In a multi inheritance scenario, __subclasses__()
                 # also returns interim-classes that don't have all the
                 # methods. With this hack, we skip them.
