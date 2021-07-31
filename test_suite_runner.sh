@@ -1,13 +1,14 @@
 #!/bin/bash
 
-############################
-## User-defined variables ##
-############################
-# Connect to virtual Python environment (provide absolute path to the 'activate' file)
-source /Users/tim/PythonVirtualEnvironments/ColourPaletteExtraction/bin/activate
+########################################################
+# Run the ColourPaletteExtractor Python Test Suite
+########################################################
 
-############################
-############################
+echo "Loading settings from macOS.config..."
+source macOS.config || exit
+
+# Connect to virtual Python environment (provide absolute path to the 'activate' file)
+source $python_virtual_environment_path
 
 echo "Running test suite..."
 pytest colourpaletteextractor/tests

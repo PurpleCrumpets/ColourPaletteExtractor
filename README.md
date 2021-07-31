@@ -36,9 +36,11 @@ that the setting for ```Allow apps downloaded from:``` is set to ```App Store an
 
 ### 2.2) Windows 10 Specifics
 
-On Windows 10, you anti-virus software may decide to quarantine the ```ColourPaletteExtractor.exe``` file to check that
-it is safe to use. This may take a while and prevent the application from running. Either add the folder containing the
-application to your anti-virus' whitelist or disable your anti-virus whilst using the application. **Please** remember 
+On Windows 10, you anti-virus software may decide to quarantine the ```ColourPaletteExtractor.exe``` file or other 
+components of the application while it checks that they are not harmful.
+This may take a while and prevent the application from running. It may be necessary to either add the folder containing the
+application to your anti-virus' whitelist (preferable) or disable your anti-virus whilst using the application (not
+recommended, do so at your own risk). If disabling your anti-virus, **please** remember 
 to turn it back on once you have finished! You may also need to run the application as an administrator.
 
 
@@ -65,7 +67,7 @@ On Windows 10, the same settings file can be found at:
 Upon opening the application, you will be greeted with a simple quick start guide. This explains how to
 obtain the colour palette of an image, as well as how to generate a report that summarises this information. 
 It is also possible to analyse multiple images simultaneously; options to generate the colour palette for all open
-images and their summary reports can be found under the *view* menu of the application.
+images, and their summary reports can be found under the *view* menu of the application.
 
 The recoloured image is created by reassigning each pixel's colour to the most representative colour found in the colour
 palette. For the algorithm proposed by Nieves et al. (2020), this is the colour in the colour palette that is closest to
@@ -118,42 +120,53 @@ the ```ColourPaletteExtractor/docs/build/html``` directory. The ```index.html```
 To build the ```ColourPaletteExtractor``` application from the source code, it is highly recommended that a new
 Python virtual environment is set-up. This will allow for the minimum number of Python packages to be installed, 
 reducing the size of the resultant application. Please install the Python packages listed in the ```requirements.txt```
-[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt). Also 
+[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt)*. On macOS,
+navigate to the directory containing the ```requirements.txt``` file and use the
+following commands can be used to install the required packages for your new Python virtual environment:
+
+      source /path/to/my/Python/virtual/environment/bin/activate
+
+      python3 -m pip install -r requirements.txt
+
+
+On Windows, the following commands perform the same task:
+
+      .\path\to\my\Python\virtua\environment\Scripts\activate
+
+      py -m pip install -r requirements.txt
+
+
+*Please 
 note that the ```Sphinx```, ```sphinx-rtd-theme``` and ```pytest``` packages are only required if you wish to rebuild the
 documentation (the two Sphinx packages) or run the test suite for the implemented algorithms (the latter package).
 
+### 4.1) Configuration File
+
+The ```macOS.config``` and ```windows.config``` files (for macOS and Windows 10, respectively) are used to specify the
+path to your Python virtual environment, as well as the output directory for the executables created by PyInstaller 
+(see Section 4.2 below). Please update these files with the correct paths. 
+
+
+
+### 4.2) Compiling the Executables
 
 The ```create_executables.sh``` and ```create_executables.bat``` files are used to build the application for macOS
-and Windows 10, respectively. These need to be modified to contain the path to your new Python virtual environment.
-For the ```create_executables.sh``` bash script, please update ```Line 24``` to reflect this new path. ```Line 27```
-also needs to be updated to specify the output directory you wish to use for the compiled application.
+and Windows 10, respectively. Please make sure that the configuration files (see Section 4.1) have been updated with
+the path to your Python virtual environment, as well as the output directory you wish to use for the compiled application.
 
-      Line 24  --> source /path/to/my/Python/virtual/environment/bin/activate
-
-      Line 27 --> OUTPUT_DIR=/path/to/my/output/directory/for/the/ColourPaletteExtractor-Executables
-
-For the ```create_executables.bat``` batch script, please update ```Line 27``` and ```Line 30``` to the path to the
-Python virtual environment (**not** the *activate.bat* file) and the output directory, respectively.
-
-      Line 27 --> set \path\to\my\Python\virtual\environment
-
-      Line 30 --> set OUTPUT_DIR=\path\to\my\output\directory\for\the\ColourPaletteExtractor-Executables
-
-Once updated, please make sure that the relevant permissions have been set to allow for these script to be run (i.e.,
+Please make sure that the relevant permissions have been set to allow for these script to be run (i.e.,
 ```chmod 755 create_executables.sh```). Navigate
 to them using the terminal on macOS, or the command prompt on Windows 10 and run these files. If all goes well, you
 should find the compiled applications inside the ```dist``` folder of ```ColourPaletteExtractor-Executables```. 
 
 
-### 4.1) Compiling Code Documentation
+### 4.3) Compiling Code Documentation
 
 Additional documentation for the source code is available as a set of 
 [HTML files](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/html). 
 On macOS, the ```create_documentation.sh``` script can be used to recompile the documentation. As with the
-application build scripts discussed in Section 4, ```Line 24``` of the ```create_documentation.sh``` script needs to be updated to
-reflect the path to your Python virtual environment:
-
-      Line 24 --> source /path/to/my/Python/virtual/environment/bin/activate
+application build scripts discussed in Section 4.2, please make sure the configuration files have been updated to reflect
+the path to your Python virtual environment.
 
 Navigate to the ```ColourPaletteExtractor``` directory and run the script, making sure that the script has
 the appropriate execution permissions as discussed before in relation to the application build scripts.
@@ -162,14 +175,11 @@ the appropriate execution permissions as discussed before in relation to the app
 
 A set of unit tests were developed to help confirm that the implemented colour palette extraction algorithm was working
 as intended. These can be found in ```tests/nieves2020_test.py``` module. The ```test_suite_runner.sh``` script can
-be used to run these tests. As with the build scripts,
-this script needs to be updated to reflect the path to your virtual Python environment. Please change 
-```Line 7``` accordingly:
+be used to run these tests. As with the build scripts, please make sure the configuration files have been updated to 
+reflect the path to your Python virtual environment.
 
-      Line 7 --> source /path/to/my/Python/virtual/environment/bin/activate
-
-Once updated, please make sure that the relevant permissions have been set to allow the script to be executed 
-(```chmod 755 test_suite_runner.sh```). using the terminal, navigate to the ```ColourPaletteExtractor``` directory
+Please also make sure that the relevant permissions have been set to allow the script to be executed 
+(```chmod 755 test_suite_runner.sh```). Using the terminal, navigate to the ```ColourPaletteExtractor``` directory
 and run the bash script. The results from the test suite are printed to the terminal.
 
 

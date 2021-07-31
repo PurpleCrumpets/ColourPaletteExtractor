@@ -17,14 +17,15 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-############################
-## User-defined variables ##
-############################
-# Connect to virtual Python environment (provide absolute path to the 'activate' file)
-source /Users/tim/PythonVirtualEnvironments/ColourPaletteExtraction/bin/activate
+########################################################
+# Create the Documentation for ColourPaletteExtractor
+########################################################
 
-############################
-############################
+echo "Loading settings from macOS.config..."
+source macOS.config || exit
+
+# Connect to virtual Python environment (provide absolute path to the 'activate' file)
+source $python_virtual_environment_path
 
 # Properties
 NAME="ColourPaletteExtractor"  # Name of the executable
