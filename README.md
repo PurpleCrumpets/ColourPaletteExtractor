@@ -165,7 +165,7 @@ should find the compiled applications inside the ```dist``` folder of ```ColourP
 
 Additional documentation for the source code is available as a set of 
 [HTML files](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/html) or 
-as a [PDF document](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/pdf/colourpaletteextractor.pdf). 
+as a [PDF document](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/pdf). 
 On macOS, the ```create_documentation.sh``` script can be used to recompile the documentation. As with the
 application build scripts discussed in Section 4.2, please make sure the configuration files have been updated to reflect
 the path to your Python virtual environment.
