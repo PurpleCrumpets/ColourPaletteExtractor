@@ -154,7 +154,7 @@ path to your Python virtual environment, as well as the output directory for the
 
 ### 4.2) Compiling the Executables
 
-The ```create_executables.sh``` and ```create_executables.bat``` files are used to build the application for macOS
+The ```macOS_create_executables.sh``` and ```windows_create_executables.bat``` scripts are used to build the application for macOS
 and Windows 10, respectively. Please make sure that the configuration files (see Section 4.1) have been updated with
 the path to your Python virtual environment, as well as the output directory you wish to use for the compiled application.
 
@@ -169,7 +169,8 @@ should find the compiled applications inside the ```dist``` folder of ```ColourP
 Additional documentation for the source code is available as a set of 
 [HTML files](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/html) or 
 as a [PDF document](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/pdf). 
-On macOS, the ```create_documentation.sh``` script can be used to recompile the documentation. As with the
+On macOS and Windows 10, the ```macOS_create_documentation.sh``` and ```windows_create_documentation.bat``` scripts,
+respectively, can be used to recompile the documentation. As with the
 application build scripts discussed in Section 4.2, please make sure the configuration files have been updated to reflect
 the path to your Python virtual environment.
 
@@ -179,8 +180,9 @@ the appropriate execution permissions as discussed before in relation to the app
 ## 5) Running the Algorithm Unit Test Suite
 
 A set of unit tests were developed to help confirm that the implemented colour palette extraction algorithm was working
-as intended. These can be found in ```tests/nieves2020_test.py``` module. The ```test_suite_runner.sh``` script can
-be used to run these tests. As with the build scripts, please make sure the configuration files have been updated to 
+as intended. These can be found in ```tests/nieves2020_test.py``` module. The ```macOS_test_suite_runner.sh``` and 
+```windows_test_suite_runner.bat``` scripts be used to run these tests on macOS and Windows 10, respectively. 
+As with the build scripts, please make sure the configuration files have been updated to 
 reflect the path to your Python virtual environment.
 
 Please also make sure that the relevant permissions have been set to allow the script to be executed 
