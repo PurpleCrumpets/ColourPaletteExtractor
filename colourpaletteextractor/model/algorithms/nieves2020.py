@@ -144,7 +144,6 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         and return the coordinates of the cube that each pixel is to be assigned to."""
         pass
 
-
     def _assign_pixels_to_cube(self, lab, cubes, cube_assignments, c_stars, final_percent):
         """Add each pixel to their assigned CIELAB cube."""
 

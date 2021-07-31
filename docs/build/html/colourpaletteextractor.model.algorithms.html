@@ -35,6 +35,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -192,117 +193,174 @@
 <p>The cube is used to hold pixels in an image that exist within the cube’s region of the CIELAB colour space. The
 input parameters do not refer to the actual L*, a* and b* values, but depend on the <cite>CUBE_SIZE</cite> specified by the
 colour palette algorithm (in particular, any variant on the <a class="reference external" href="https://doi.org/10.1364/AO.378659">Nieves 2020</a> algorithm).</p>
+<p>In the case of the <code class="xref py py-class docutils literal notranslate"><span class="pre">nieves2020.Nieves2020CentredCubes</span></code> algorithm, the coordinates refer to the centre of the
+cube. For the <code class="xref py py-class docutils literal notranslate"><span class="pre">nieves2020.Nieves2020OffsetCubes</span></code> algorithm, the coordinates refer to the corner of the cube
+closest to the origin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>l_star_coord</strong> – Perceptual lightness cube coordinate</p></li>
-<li><p><strong>a_star_coord</strong> – Green-red cube coordinate</p></li>
-<li><p><strong>b_star_coord</strong> – Blue-yellow cube coordinate</p></li>
+<li><p><strong>l_star_coord</strong> (<em>int</em>) – Perceptual lightness cube coordinate</p></li>
+<li><p><strong>a_star_coord</strong> (<em>int</em>) – Green-red cube coordinate</p></li>
+<li><p><strong>b_star_coord</strong> (<em>int</em>) – Blue-yellow cube coordinate</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.add_pixel_to_cube">
-<span class="sig-name descname"><span class="pre">add_pixel_to_cube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_star</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.add_pixel_to_cube" title="Permalink to this definition">¶</a></dt>
-<dd><p>Assign pixel to the cube</p>
+<span class="sig-name descname"><span class="pre">add_pixel_to_cube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixel</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_star</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.float64</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.add_pixel_to_cube" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign a pixel to the cube.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pixel</strong> (<em>np.array</em>) – The pixel as a [L*,a*,b*] triplet.</p></li>
+<li><p><strong>c_star</strong> (<em>np.float64</em>) – The C* (chroma, relative saturation) value for the pixel.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.c_stars">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">c_stars</span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.c_stars" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.calculate_mean_c_star">
-<span class="sig-name descname"><span class="pre">calculate_mean_c_star</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.calculate_mean_c_star" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">c_stars</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.c_stars" title="Permalink to this definition">¶</a></dt>
+<dd><p>The C* (chroma, relative saturation) values for all of the pixels in the cube.</p>
+<div class="math notranslate nohighlight">
+\[C^{*} = \sqrt{{a^{*}}^{2} + {b^{*}}^{2}}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(list[np.float64])</strong> – The list of C* values for all pixels in the cube.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.calculate_mean_colour">
-<span class="sig-name descname"><span class="pre">calculate_mean_colour</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.calculate_mean_colour" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">calculate_mean_colour</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.calculate_mean_colour" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the mean colour of the pixels in the cube.</p>
+<p>Nothing is calculated if the number of pixels in the cube is equal to 0.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.coordinates">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">coordinates</span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.coordinates" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">coordinates</span></span><em class="property"><span class="pre">:</span> <span class="pre">numpy.array</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>The coordinates of the cube ([L*, a*, b*]).</p>
+<p>In the case of the <code class="xref py py-class docutils literal notranslate"><span class="pre">nieves2020.Nieves2020CentredCubes</span></code> algorithm, the coordinates refer to the centre of
+the cube. For the <code class="xref py py-class docutils literal notranslate"><span class="pre">nieves2020.Nieves2020OffsetCubes</span></code> algorithm, the coordinates refer to the corner of
+the cube closest to the origin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(np.array)</strong> – The cube’s coordinates.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.get_c_star_percentile_value">
-<span class="sig-name descname"><span class="pre">get_c_star_percentile_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">percentile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.get_c_star_percentile_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.get_cube_coordinates">
-<span class="sig-name descname"><span class="pre">get_cube_coordinates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.get_cube_coordinates" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_c_star_percentile_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">numpy.percentile</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.get_c_star_percentile_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the C* value for the given percentile based on the pixels in the cube.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>percentile</strong> (<em>float</em>) – The percentile to calculate the C* value for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>(Union[int, np.percentile])</strong> – The C* value for the chosen percentile. If no pixels are found, the return
+value is 0.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.get_l_star_percentile_value">
-<span class="sig-name descname"><span class="pre">get_l_star_percentile_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">percentile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.get_l_star_percentile_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_l_star_percentile_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">numpy.percentile</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.get_l_star_percentile_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the L* value for the given percentile based on the pixels in the cube.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>percentile</strong> (<em>float</em>) – The percentile to calculate the L* value for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>(Union[int, np.percentile])</strong> – The L* value for the chosen percentile. If no pixels are found, the return
+value is 0.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.increment_pixel_count_after_reassignment">
-<span class="sig-name descname"><span class="pre">increment_pixel_count_after_reassignment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.increment_pixel_count_after_reassignment" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">increment_pixel_count_after_reassignment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.increment_pixel_count_after_reassignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Increase the number of pixels with this cube’s mean colour by one.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.l_stars">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">l_stars</span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.l_stars" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">l_stars</span></span><em class="property"><span class="pre">:</span> <span class="pre">numpy.array</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.l_stars" title="Permalink to this definition">¶</a></dt>
+<dd><p>The L* values for all pixels in the cube.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(np.array)</strong> – Array of L* values for all pixels in the cube.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.mean_colour">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">mean_colour</span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.mean_colour" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">mean_colour</span></span><em class="property"><span class="pre">:</span> <span class="pre">numpy.array</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.mean_colour" title="Permalink to this definition">¶</a></dt>
+<dd><p>The mean colour of the pixels in the cube.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(np.array)</strong> – The mean colour of the cube as a [L*,a*,b*] triplet.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.pixel_count_after_reassignment">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">pixel_count_after_reassignment</span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.pixel_count_after_reassignment" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">pixel_count_after_reassignment</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.pixel_count_after_reassignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of pixels in the recoloured image with this cube’s mean colour.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(int)</strong> – The number of pixels with the cube’s mean colour.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.pixels">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">pixels</span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.pixels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the list of pixels in the cube.</p>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">pixels</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.pixels" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of pixels ([L*, a*, b*] triplets) in the cube.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(list[np.array])</strong> – The list of pixels in the cube.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.CielabCube.relevant">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">relevant</span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.relevant" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.get_cielab_cube">
-<span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.cielabcube.</span></span><span class="sig-name descname"><span class="pre">get_cielab_cube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cubes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_coordinates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.get_cielab_cube" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the cube with the same simplified coordinates as the given pixel.</p>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">relevant</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube.relevant" title="Permalink to this definition">¶</a></dt>
+<dd><p>The relevancy status of the cube.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cubes</strong> – </p></li>
-<li><p><strong>pixel_coordinates</strong> – </p></li>
-</ul>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(bool)</strong> – True if the cube is a relevant cube. Otherwise False.</p>
 </dd>
 </dl>
-<p>Returns:</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.cielabcube.get_relative_frequencies">
 <span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.cielabcube.</span></span><span class="sig-name descname"><span class="pre">get_relative_frequencies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relevant_cubes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_pixels</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.cielabcube.get_relative_frequencies" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the relative frequency of</p>
+<dd><p>Calculate the relative frequency of each colour (relevant colour) in the recoloured image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>relevant_cubes</strong> – </p></li>
-<li><p><strong>total_pixels</strong> – </p></li>
+<li><p><strong>relevant_cubes</strong> (<em>list</em><em>[</em><a class="reference internal" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube" title="colourpaletteextractor.model.algorithms.cielabcube.CielabCube"><em>CielabCube</em></a><em>]</em>) – List of relevant <a class="reference internal" href="#colourpaletteextractor.model.algorithms.cielabcube.CielabCube" title="colourpaletteextractor.model.algorithms.cielabcube.CielabCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">CielabCube</span></code></a> objects.</p></li>
+<li><p><strong>total_pixels</strong> (<em>int</em>) – The total number of pixels in the image.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>(list[float])</strong> – The list of relative frequencies for each relevant cube.</p>
+</dd>
 </dl>
-<p>Returns:</p>
 </dd></dl>
 
 </div>

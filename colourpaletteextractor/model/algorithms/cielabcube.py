@@ -13,9 +13,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
+from typing import Union
 
 import numpy as np
+
 
 class CielabCube:
     """A cube representing a fixed region in the CIELAB colour space.
@@ -24,10 +25,14 @@ class CielabCube:
     input parameters do not refer to the actual L*, a* and b* values, but depend on the `CUBE_SIZE` specified by the
     colour palette algorithm (in particular, any variant on the `Nieves 2020`_ algorithm).
 
+    In the case of the :class:`nieves2020.Nieves2020CentredCubes` algorithm, the coordinates refer to the centre of the
+    cube. For the :class:`nieves2020.Nieves2020OffsetCubes` algorithm, the coordinates refer to the corner of the cube
+    closest to the origin.
+
     Args:
-        l_star_coord: Perceptual lightness cube coordinate
-        a_star_coord: Green-red cube coordinate
-        b_star_coord: Blue-yellow cube coordinate
+        l_star_coord (int): Perceptual lightness cube coordinate
+        a_star_coord (int): Green-red cube coordinate
+        b_star_coord (int): Blue-yellow cube coordinate
 
     .. _Nieves 2020:
        https://doi.org/10.1364/AO.378659
@@ -41,71 +46,123 @@ class CielabCube:
 
         self._coordinates = np.array([self._l_star_coord, self._a_star_coord, self._b_star_coord])
 
-        self._pixels = []
+        self._pixels = []  # List of pixels
 
-        self._pixel_count_after_reassignment = 0
+        self._pixel_count_after_reassignment = 0  #
 
-        self._mean_colour = np.empty([3])
-        self._c_stars = []
+        self._mean_colour = np.empty([3])  # Mean colour of cube
+        self._c_stars = []  # List of C* values for pixels in the cube
 
         self._relevant = False  # Cube is initially not considered to be a relevant colour
 
     @property
-    def pixel_count_after_reassignment(self):
+    def pixel_count_after_reassignment(self) -> int:
+        """The number of pixels in the recoloured image with this cube's mean colour.
+
+        Returns:
+            (int): The number of pixels with the cube's mean colour.
+        """
+
         return self._pixel_count_after_reassignment
 
-    def increment_pixel_count_after_reassignment(self):
+    def increment_pixel_count_after_reassignment(self) -> None:
+        """Increase the number of pixels with this cube's mean colour by one."""
+
         self._pixel_count_after_reassignment += 1
 
     @property
-    def pixels(self):
-        """Returns the list of pixels in the cube."""
+    def pixels(self) -> list[np.array]:
+        """The list of pixels ([L*, a*, b*] triplets) in the cube.
+
+        Returns:
+            (list[np.array]): The list of pixels in the cube.
+        """
+
         return self._pixels
 
     @property
-    def coordinates(self):
+    def coordinates(self) -> np.array:
+        """The coordinates of the cube ([L*, a*, b*]).
+
+        In the case of the :class:`nieves2020.Nieves2020CentredCubes` algorithm, the coordinates refer to the centre of
+        the cube. For the :class:`nieves2020.Nieves2020OffsetCubes` algorithm, the coordinates refer to the corner of
+        the cube closest to the origin.
+
+        Returns:
+            (np.array): The cube's coordinates.
+        """
+
         return self._coordinates
 
     @property
-    def mean_colour(self):
+    def mean_colour(self) -> np.array:
+        """The mean colour of the pixels in the cube.
+
+        Returns:
+            (np.array): The mean colour of the cube as a [L*,a*,b*] triplet.
+        """
+
         return self._mean_colour
 
-    def calculate_mean_colour(self):
-        pixel_array = np.array(self._pixels)
-        # print(pixel_array)
-        # TODO: Add checks
+    def calculate_mean_colour(self) -> None:
+        """Calculate the mean colour of the pixels in the cube.
+
+        Nothing is calculated if the number of pixels in the cube is equal to 0.
+        """
+
+        pixel_array = np.array(self._pixels)  # Convert from a list to a Numpy array
         if pixel_array.size != 0:
-            # return pixel_array.mean(axis=0)
             self._mean_colour = pixel_array.mean(axis=0)
-            # print("Mean colour: ", self._mean_colour)
 
     @property
-    def relevant(self):
+    def relevant(self) -> bool:
+        """The relevancy status of the cube.
+
+        Returns:
+            (bool): True if the cube is a relevant cube. Otherwise False.
+        """
+
         return self._relevant
 
     @relevant.setter
-    def relevant(self, value):
+    def relevant(self, value: bool) -> None:
         self._relevant = value
-        # TODO: Add check to make sure boolean
 
     @property
-    def l_stars(self):
+    def l_stars(self) -> np.array:
+        """The L* values for all pixels in the cube.
+
+        Returns:
+            (np.array): Array of L* values for all pixels in the cube.
+        """
+
         pixel_array = np.array(self._pixels)
         return pixel_array[:, 0]  # First column of each row representing a pixel
 
-
     @property
-    def c_stars(self):
+    def c_stars(self) -> list[np.float64]:
+        """The C* (chroma, relative saturation) values for all of the pixels in the cube.
+
+        .. math::
+            C^{*} = \sqrt{{a^{*}}^{2} + {b^{*}}^{2}}
+
+        Returns:
+            (list[np.float64]): The list of C* values for all pixels in the cube.
+        """
+
         return self._c_stars
 
-    def calculate_mean_c_star(self):
-        c_stars_array = np.array(self._c_stars)
+    def get_l_star_percentile_value(self, percentile: float) -> Union[int, np.percentile]:
+        """Returns the L* value for the given percentile based on the pixels in the cube.
 
-        if c_stars_array.size != 0:
-            return c_stars_array.mean()
-        # TODO: add checks
+        Args:
+            percentile (float): The percentile to calculate the L* value for.
 
-    def get_l_star_percentile_value(self, percentile):
+        Returns:
+            (Union[int, np.percentile]): The L* value for the chosen percentile. If no pixels are found, the return
+                value is 0.
+        """
+
         pixel_array = np.array(self._pixels)
         l_stars_array = pixel_array[:, 0]  # First column of each row representing a pixel
 
@@ -114,7 +171,17 @@ class CielabCube:
         else:
             return 0
 
-    def get_c_star_percentile_value(self, percentile):
+    def get_c_star_percentile_value(self, percentile: float) -> Union[int, np.percentile]:
+        """Returns the C* value for the given percentile based on the pixels in the cube.
+
+        Args:
+            percentile (float): The percentile to calculate the C* value for.
+
+        Returns:
+            (Union[int, np.percentile]): The C* value for the chosen percentile. If no pixels are found, the return
+                value is 0.
+        """
+
         c_stars_array = np.array(self._c_stars)
 
         if c_stars_array.size != 0:
@@ -122,27 +189,42 @@ class CielabCube:
         else:
             return 0
 
-    def get_cube_coordinates(self):
-        return [self._l_star_coord, self._a_star_coord, self._b_star_coord]
+    def add_pixel_to_cube(self, pixel: np.array, c_star: np.float64) -> None:
+        """Assign a pixel to the cube.
 
-    def add_pixel_to_cube(self, pixel, c_star):
-        """Assign pixel to the cube"""
+        Args:
+            pixel (np.array): The pixel as a [L*,a*,b*] triplet.
+            c_star (np.float64): The C* (chroma, relative saturation) value for the pixel.
+        """
+
         self._pixels.append(pixel)
         self._c_stars.append(c_star)
-        # TODO: possbly convert to numpy array and append that way to save converting it later?
-    # Alternatively, create a new 2d matrix and give each pixel a number corresponding to the given cube
-    # Therefore, you would not need to create a bunch of object?
+
+    # def calculate_mean_c_star(self):
+    #     """Calculate the mean C* value for the pixels in the cube.
+    #
+    #     Returns:
+    #
+    #     """
+    #     c_stars_array = np.array(self._c_stars)
+    #
+    #     if c_stars_array.size != 0:
+    #         x = c_stars_array.mean()
+    #         print(x.type())
+    #         print(self._c_stars.type())
+    #         return c_stars_array.mean()
+    #     # TODO: add checks
 
 
 def get_relative_frequencies(relevant_cubes: list[CielabCube], total_pixels: int) -> list[float]:
-    """Calculate the relative frequency of
+    """Calculate the relative frequency of each colour (relevant colour) in the recoloured image.
 
     Args:
-        relevant_cubes:
-        total_pixels:
+        relevant_cubes (list[CielabCube]): List of relevant :class:`CielabCube` objects.
+        total_pixels (int): The total number of pixels in the image.
 
     Returns:
-
+        (list[float]): The list of relative frequencies for each relevant cube.
     """
 
     frequencies = []
@@ -153,29 +235,29 @@ def get_relative_frequencies(relevant_cubes: list[CielabCube], total_pixels: int
     return frequencies
 
 
-def get_cielab_cube(cubes, pixel_coordinates):
-    """Return the cube with the same simplified coordinates as the given pixel.
-
-    Args:
-        cubes:
-        pixel_coordinates:
-
-    Returns:
-
-    """
-
-    # pixel_coordinates = np.ndarray.tolist(pixel_coordinates)
-    cube_found = False
-    for cube in cubes:
-        cube_coordinates = cube.get_cube_coordinates()
-        # print(pixel_coordinates.type)
-        if pixel_coordinates[0] == cube_coordinates[0]:
-            # if pixel_coordinates == cube_coordinates:
-            cube_found = True
-            return cube
-        # print(pixel_coordinates)
-        # print(cube_coordinates)
-        # print(cube_coordinates.type)
-    print("Cube not found for pixel with coordinates: ", pixel_coordinates)
-
-
+# def get_cielab_cube(cubes, pixel_coordinates):
+#     """Return the cube with the same simplified coordinates as the given pixel.
+#
+#     Args:
+#         cubes:
+#         pixel_coordinates:
+#
+#     Returns:
+#
+#     """
+#
+#     print(cubes.type())
+#
+#     # pixel_coordinates = np.ndarray.tolist(pixel_coordinates)
+#     cube_found = False
+#     for cube in cubes:
+#         cube_coordinates = cube.get_cube_coordinates()
+#         # print(pixel_coordinates.type)
+#         if pixel_coordinates[0] == cube_coordinates[0]:
+#             # if pixel_coordinates == cube_coordinates:
+#             cube_found = True
+#             return cube
+#         # print(pixel_coordinates)
+#         # print(cube_coordinates)
+#         # print(cube_coordinates.type)
+#     print("Cube not found for pixel with coordinates: ", pixel_coordinates)
