@@ -38,8 +38,10 @@ sphinx-apidoc -f -o $OUTPUT_PATH $MODULE_PATH
 
 # Build documentation
 echo "Building html documentation for $NAME..."
-
 cd ./docs || exit
-make html
+#make html
+
+echo "Building PDF documentation for $NAME..."
+sphinx-build -b rinoh source build/pdf
 
 echo "Finished!"
