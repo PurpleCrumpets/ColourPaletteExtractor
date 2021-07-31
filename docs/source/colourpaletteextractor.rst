@@ -13,6 +13,17 @@ Subpackages
    colourpaletteextractor.tests
    colourpaletteextractor.view
 
+Submodules
+----------
+
+colourpaletteextractor.test\_script module
+------------------------------------------
+
+.. automodule:: colourpaletteextractor.test_script
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
