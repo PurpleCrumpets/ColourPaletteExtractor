@@ -23,10 +23,24 @@ from skimage import io, color
 
 import colourpaletteextractor.model.algorithms.palettealgorithm as palettealgorithm
 
-class ImageData:
 
-    def __init__(self, file_name_and_path=None):
-        """Constructor."""
+class ImageData:
+    """Object to hold the data associated with an image to be analysed.
+
+    Stores the original image, its colour palette, the recoloured image, the relative frequency of each colour in the
+    recoloured image, the algorithm used to generate the colour palette and the execution status of the thread used
+    to generate the colour palette.
+
+    Args:
+        file_name_and_path (str): Path to the image to be added.
+
+
+    Raises:
+        ValueError: If the file_name_and_path argument is None.
+
+    """
+
+    def __init__(self, file_name_and_path: str):
 
         self._recoloured_image = None
         self._colour_palette = []
@@ -41,8 +55,8 @@ class ImageData:
         # Convert from greyscale to rgb as well
 
         if file_name_and_path is None:
-            # self._image =
-            print("None")
+            raise ValueError("The path to an image cannot be None!")
+
         else:
             self._file_name_and_path = file_name_and_path
             self._image = io.imread(file_name_and_path)
@@ -117,9 +131,16 @@ class ImageData:
 
     @staticmethod
     def get_image_as_q_image(image):
-        height, width, channel = image.shape
-        bytes_per_line = 3 * width
-        return QImage(image.data, width, height, bytes_per_line, QImage.Format_RGB888)
+        if image.ndim == 3:
+            height, width, channel = image.shape
+            bytes_per_line = 3 * width
+            return QImage(image.data, width, height, bytes_per_line, QImage.Format_RGB888)
+        elif image.ndim == 2:
+            height, width = image.shape
+            bytes_per_line = 1 * width
+            return QImage(image.data, width, height, bytes_per_line, QImage.Format_Indexed8)
+        else:
+            raise ValueError("The provided image should be a greyscale image, RGB image or ARGB image!")
 
     def _remove_alpha_channel(self):
         self._image = color.rgba2rgb(self._image)

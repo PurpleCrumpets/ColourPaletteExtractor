@@ -24,6 +24,7 @@ import numpy as np
 from skimage import color
 from skimage import img_as_ubyte
 import time
+import multiprocessing
 
 import colourpaletteextractor.model.algorithms.cielabcube as cielabcube
 import colourpaletteextractor.model.algorithms.palettealgorithm as palettealgorithm
@@ -72,6 +73,10 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         # print(image.shape)
 
         # TODO: Add checks to make sure image is originally in the sRGB colour space
+
+        # Convert greyscale image into an RGB image
+        if image.ndim == 2:
+            image = color.gray2rgb(image)
 
         # Step 1: Compute L*, a*, b* and C* of each pixel (under D65 illuminant)
         lab = convert_rgb_2_lab(image)

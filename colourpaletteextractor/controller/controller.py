@@ -17,6 +17,7 @@
 
 from __future__ import annotations
 from functools import partial  # Import partial to connect signals with methods that need to take extra arguments
+from multiprocessing import Process
 
 import numpy as np
 from PySide2 import QtCore

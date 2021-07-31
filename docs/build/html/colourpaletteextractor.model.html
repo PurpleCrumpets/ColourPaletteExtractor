@@ -329,8 +329,20 @@ and the colour palette).</p></li>
 <span id="colourpaletteextractor-model-imagedata-module"></span><h2>colourpaletteextractor.model.imagedata module<a class="headerlink" href="#module-colourpaletteextractor.model.imagedata" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.imagedata.</span></span><span class="sig-name descname"><span class="pre">ImageData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name_and_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.imagedata.</span></span><span class="sig-name descname"><span class="pre">ImageData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name_and_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Object to hold the data associated with an image to be analysed.</p>
+<p>Stores the original image, its colour palette, the recoloured image, the relative frequency of each colour in the
+recoloured image, the algorithm used to generate the colour palette and the execution status of the thread used
+to generate the colour palette.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name_and_path</strong> (<em>str</em>) – Path to the image to be added.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the file_name_and_path is None.</p>
+</dd>
+</dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.imagedata.ImageData.algorithm_used">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">algorithm_used</span></span><a class="headerlink" href="#colourpaletteextractor.model.imagedata.ImageData.algorithm_used" title="Permalink to this definition">¶</a></dt>
