@@ -16,14 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-########################################################
-# Create the ColourPaletteExtractor application for macOS
-########################################################
+#############################################################
+## Create the ColourPaletteExtractor application for macOS ##
+#############################################################
 
 echo "Loading settings from macOS.config..."
 source macOS.config || exit
 
-# Connect to virtual Python environment (provide absolute path to the 'activate' file)
+# Connect to virtual Python environment
 source $python_virtual_environment_path
 
 # PyInstaller output directory

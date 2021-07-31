@@ -38,11 +38,14 @@ that the setting for ```Allow apps downloaded from:``` is set to ```App Store an
 
 On Windows 10, you anti-virus software may decide to quarantine the ```ColourPaletteExtractor.exe``` file or other 
 components of the application while it checks that they are not harmful.
-This may take a while and prevent the application from running. It may be necessary to either add the folder containing the
-application to your anti-virus' whitelist (preferable) or disable your anti-virus whilst using the application (not
+This may take a while and prevent the application from running. It may be necessary to either add the folder containing 
+the application to your anti-virus' whitelist (preferable) or disable your anti-virus whilst using the application (not
 recommended, do so at your own risk). If disabling your anti-virus, **please** remember 
 to turn it back on once you have finished! You may also need to run the application as an administrator.
 
+In rare cases, no default algorithm will be selected when you open the application for the first time, preventing you
+from generating a colour palette. If this occurs, please open up the Settings menu (```Ctrl+Alt+S```) and select the
+algorithm you wish to use. This will be remembered the next time you open the application.
 
 ### 2.3) Uninstalling
 
@@ -143,7 +146,7 @@ documentation (the first three packages) or run the test suite for the implement
 
 ### 4.1) Configuration File
 
-The ```macOS.config``` and ```windows.config``` files (for macOS and Windows 10, respectively) are used to specify the
+The ```macOS.config``` and ```windows_config.bat``` files (for macOS and Windows 10, respectively) are used to specify the
 path to your Python virtual environment, as well as the output directory for the executables created by PyInstaller 
 (see Section 4.2 below). Please update these files with the correct paths. 
 

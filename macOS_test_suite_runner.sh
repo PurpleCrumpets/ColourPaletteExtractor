@@ -16,12 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-####################
-## macOS Settings ##
-####################
+##############################################################
+## Run the ColourPaletteExtractor Python Test Suite - macOS ##
+##############################################################
 
-# Path to the Python virtual environment (provide absolute path to the 'activate' file)
-python_virtual_environment_path=/Users/tim/PythonVirtualEnvironments/ColourPaletteExtraction/bin/activate
+echo "Loading settings from macOS.config..."
+source macOS.config || exit
 
-# Path to PyInstaller executables output directory
-executable_output_directory=/Users/tim/Documents/ColourPaletteExtractor-Executables
+# Connect to virtual Python environment
+source $python_virtual_environment_path
+
+echo "Running test suite..."
+pytest colourpaletteextractor/tests
+
+echo "Finished!"

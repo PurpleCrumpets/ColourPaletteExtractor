@@ -17,14 +17,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-########################################################
-# Create the Documentation for ColourPaletteExtractor
-########################################################
+#################################################################
+## Create the Documentation for ColourPaletteExtractor - macOS ##
+#################################################################
 
 echo "Loading settings from macOS.config..."
 source macOS.config || exit
 
-# Connect to virtual Python environment (provide absolute path to the 'activate' file)
+# Connect to virtual Python environment
 source $python_virtual_environment_path
 
 # Properties
@@ -38,10 +38,11 @@ sphinx-apidoc -f -o $OUTPUT_PATH $MODULE_PATH
 
 # Build documentation
 echo "Building html documentation for $NAME..."
-cd ./docs || exit
-make html
+#cd ./docs || exit
+#make html
+sphinx-build -b html docs/source docs/build/html
 
 echo "Building PDF documentation for $NAME..."
-sphinx-build -b rinoh source build/pdf
+sphinx-build -b rinoh docs/source docs/build/pdf
 
 echo "Finished!"

@@ -16,22 +16,22 @@ REM
 REM You should have received a copy of the GNU General Public License
 REM along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-echo Loading settings from windows.config...
+REM ##################################################################
+REM ## Create the ColourPaletteExtractor application for Windows 10 ##
+REM ##################################################################
 
-call windows.config
+
+echo Loading settings from windows_config.bat...
+call windows_config.bat
 
 REM Primary Working Directory
 set MAIN_DIR=%cd%
 
-REM ############################
-REM ## User-defined variables ##
-REM ############################
-
 REM Python Virtual Environment directory
-set VENV_DIR=%MAIN_DIR%\venv
+set VENV_DIR=%PYTHON_VIRTUAL_ENVIRONMENT_PATH%
 
 REM PyInstaller output directory
-set OUTPUT_DIR=%MAIN_DIR%\ColourPaletteExtractor-Executables
+set OUTPUT_DIR=%EXECUTABLE_OUTPUT_DIRECTORY%
 
 REM ############################
 REM ############################
@@ -49,6 +49,7 @@ set REPLACEMENT="pathex=['%MAIN_DIR%\colourpaletteextractor']"
 set REPLACEMENT=%REPLACEMENT:\=\\%
 set FIND_AND_REPLACE="%MAIN_DIR%\find_and_replace.ps1"
 
+
 REM Build application
 echo Building %NAME% app %OUTPUT_DIR%...
 cd /d .\colourpaletteextractor
@@ -61,14 +62,12 @@ REM Spec file find and replace pathex for Windows
 PowerShell.exe -ExecutionPolicy Bypass -File %FIND_AND_REPLACE% %FILE_NAME% %PATTERN% %REPLACEMENT%
 
 REM Connect to virtual Python environment, run pyinstaller command
-call %VENV_DIR%\Scripts\activate.bat && ^
+call %VENV_DIR% && ^
 pyinstaller %SPEC_FILE_PATH% ^
 --clean ^
 --workpath %OUTPUT_DIR%\build ^
 --distpath %OUTPUT_DIR%\dist ^
 --noconfirm
-
-rem cd /d %MAIN_DIR%\colourpaletteextractor
 
 ) ELSE (
 
