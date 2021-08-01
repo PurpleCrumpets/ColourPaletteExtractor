@@ -25,6 +25,7 @@ from PySide2.QtWidgets import QApplication
 import qtmodern.styles
 import qtmodern.windows
 
+from colourpaletteextractor import _version
 from colourpaletteextractor.view import mainview
 from colourpaletteextractor.controller import controller
 from colourpaletteextractor.model import model
@@ -32,6 +33,17 @@ from colourpaletteextractor.model import model
 
 if __name__ == '__main__':
     """Run an instance of the ColourPaletteExtractor application."""
+
+    print("***************************************************************************************")
+    if _version.__VERBOSE__:
+        print("The verbose output to the terminal during the generation of the colour palette and the \n" +
+              "colour palette report can be turned off by changing the '__VERBOSE__' variable in \n"
+              + "the '_version.py' module from 'True' to 'False'...")
+    else:
+        print("Verbose output to the terminal during the generation of the colour palette and the \n" +
+              "colour palette report can be turned on by changing the '__VERBOSE__' variable in \n"
+              + "the '_version.py' module from 'False' to 'True'...")
+    print("***************************************************************************************\n")
 
     print("Opening ColourPaletteExtractor application...")
     print("Multithreading enabled with maximum %d threads..." % QThreadPool.globalInstance().maxThreadCount())

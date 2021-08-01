@@ -27,7 +27,7 @@ __organisation__ = "The University of St Andrews"
 __application_name__ = "ColourPaletteExtractor"
 """Name of the application."""
 
-__VERBOSE__ = False
+__VERBOSE__ = True
 """Turn on/off generation print statements to the terminal."""
 
 
