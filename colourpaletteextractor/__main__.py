@@ -25,16 +25,16 @@ from PySide2.QtWidgets import QApplication
 import qtmodern.styles
 import qtmodern.windows
 
-from view import mainview
-from controller import controller
-from model import model
+from colourpaletteextractor.view import mainview
+from colourpaletteextractor.controller import controller
+from colourpaletteextractor.model import model
 
 
 if __name__ == '__main__':
     """Run an instance of the ColourPaletteExtractor application."""
 
     print("Opening ColourPaletteExtractor application...")
-    print("Multithreading with maximum %d threads..." % QThreadPool.globalInstance().maxThreadCount())
+    print("Multithreading enabled with maximum %d threads..." % QThreadPool.globalInstance().maxThreadCount())
 
     # Setting path to style sheet
     root = Path()

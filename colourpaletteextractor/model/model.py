@@ -310,8 +310,6 @@ class ColourPaletteExtractorModel:
             algorithm (type[PaletteAlgorithm]): The algorithm class to be used to generate the colur palette.
         """
 
-        print("Generating colour palette for image:", image_data_id)
-
         image_data = self.get_image_data(image_data_id)
         image_data.continue_thread = True
 

@@ -16,9 +16,19 @@
 
 
 __version__ = "0.5.4"
+"""Version number of the application."""
+
 __author__ = "Tim Churchfield"
+"""Author of the application."""
+
 __organisation__ = "The University of St Andrews"
+"""Organisation associated with the application."""
+
 __application_name__ = "ColourPaletteExtractor"
+"""Name of the application."""
+
+__VERBOSE__ = False
+"""Turn on/off generation print statements to the terminal."""
 
 
 def get_header() -> str:

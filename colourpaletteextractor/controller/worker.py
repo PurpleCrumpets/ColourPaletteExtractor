@@ -60,8 +60,6 @@ class Worker(QRunnable):
     def __init__(self, fn, function_type: str, tab: NewTab, *args, **kwargs):
         super(Worker, self).__init__()
 
-        print(function_type)
-
         if function_type != "colour palette" and function_type != "report":
             raise ValueError("The batch_type should either be 'colour palette' or 'report'. "
                              + "The provided string was: " + function_type + "...")

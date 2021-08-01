@@ -86,6 +86,7 @@ in the recoloured image.
 
 ![Quick Start Guide](./colourpaletteextractor/view/resources/images/how-to-dark-mode.png)
 
+
 ### 3.1) Using with Python
 
 While the application itself can be used to process multiple image simultaneously, it may be preferable to use the 
@@ -104,10 +105,19 @@ other packages you may have installed.
 A sample script, ```colourpaletteextractor/examples/generatecolourpaletteexample.py```, is provided that shows
 how this can be achieved. It returns the recoloured image using only the colours found in the colour palette, the 
 colour palette itself, and the relative frequencies of these colours in the recoloured image. To run this script, 
-activate your new Python virtual environment, navigate to the ```ColourPaletteExtractor``` folder and use the following
-command to run the script:
+activate your new Python virtual environment (see Section 4), navigate to the ```ColourPaletteExtractor``` folder, and
+use the following command to run the script:
 
       python3 -m colourpaletteextractor.examples.generatecolourpaletteexample
+
+
+Alternatively, it may be desirable to run the ```ColourPaletteExtractor``` application from the terminal.
+In order to do so, activate your Python virtual environment, navigate to the ```ColourPaletteExtractor``` folder, and 
+use the following command to run the application from the terminal:
+
+      python3 -m colourpaletteextractor.__main__
+
+
 
 
 ### 3.2) Source Code Documentation

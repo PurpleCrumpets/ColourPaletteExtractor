@@ -24,17 +24,18 @@ import numpy as np
 from skimage import color
 from skimage import img_as_ubyte
 import time
-import multiprocessing
 
 import colourpaletteextractor.model.algorithms.cielabcube as cielabcube
 import colourpaletteextractor.model.algorithms.palettealgorithm as palettealgorithm
 
 # from colourpaletteextractor.model.algorithms import nieves2020cython
+from colourpaletteextractor import _version
 
 
 class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
 
     COLOUR_CHANNELS = 3  # (R, G, B)
+
 
     # Default algorithm primary constants
     CUBE_SIZE = 20  # Default delta-E* length of cube side (units)
@@ -64,7 +65,6 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         self._min_l_star = Nieves2020.MIN_L_STAR
 
     def generate_colour_palette(self, image) -> tuple[np.array, list[np.array], list[float]]:
-        print("Generating colour palette...")
 
         self._set_progress(0)  # Initial progress = 0%
         if not self._continue_thread:
@@ -105,7 +105,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         relevant_cubes = self._get_relevant_cubes(cubes, 50)
         if not self._continue_thread:
             return None, [], []
-        print("Number of relevant colours:", len(relevant_cubes))
+        if _version.__VERBOSE__:
+            print("Number of relevant colours:", len(relevant_cubes))
 
         # Step 14-19: Segmenting image in terms of relevant colours
         # old_lab = lab.copy()
@@ -167,7 +168,9 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         increment_percent = self._get_increment_percent(final_percent, rows)
         update_progress = 0
 
-        print("Assigning each pixel to the appropriate CIELAB cube...")
+        if _version.__VERBOSE__:
+            print("Assigning each pixel to the appropriate CIELAB cube...")
+
         for i in range(rows):  # For each row of image
             for j in range(cols):  # For each column of image
                 pixel = lab[i, j]
@@ -188,7 +191,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         # Set progress bar (prevent rounding issues)
         self._set_progress(final_percent)
 
-        print("--- %s seconds for Python cube assignment loop ---" % (time.time() - start_time))
+        if _version.__VERBOSE__:
+            print("--- %s seconds for Python cube assignment loop ---" % (time.time() - start_time))
 
         # print(len(cubes[0, 0, 0].pixels))
         # print(cubes[0, 0, 0].get_cube_coordinates())
@@ -204,7 +208,9 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         c_star_image_percentile_value = np.percentile(c_stars, self._c_star_percentile)
         # print(c_star_image_percentile_value)  # k-th percentile of C* for entire image
         secondary_threshold_pixel_count = pixel_count * self._secondary_threshold  # Secondary minimum number of pixels
-        print("Secondary pixel count threshold:", secondary_threshold_pixel_count)
+
+        if _version.__VERBOSE__:
+            print("Secondary pixel count threshold:", secondary_threshold_pixel_count)
 
         # Dimensions of matrix of cubes
         l_star_dim = cubes.shape[0]
@@ -232,7 +238,10 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
 
                     # Step 6-11: Determining if cube is relevant
                     if num_pixels > threshold_pixel_count:  # possibly >= (pseudo-code in paper uses >)
-                        print("Cube meets primary requirements with:", num_pixels, "pixels")
+
+                        if _version.__VERBOSE__:
+                            print("Cube meets primary requirements with:", num_pixels, "pixels")
+
                         cube.relevant = True
 
                     elif num_pixels == 0:  # No pixels in cube
@@ -256,21 +265,25 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
                         # Check if cube meets secondary relevancy requirements
                         if c_star_cube_count > secondary_threshold_pixel_count:
                             cube.relevant = True
-                            print("Cube below meets secondary requirements for C*...")
-                            print("----C* cube count:", c_star_cube_count,
-                                  "; L* cube count:", l_star_cube_count,
-                                  "; Threshold pixel count:", threshold_pixel_count,
-                                  "; Secondary threshold pixel count", secondary_threshold_pixel_count,
-                                  "; Number of pixels:", num_pixels)
+
+                            if _version.__VERBOSE__:
+                                print("Cube below meets secondary requirements for C*...")
+                                print("----C* cube count:", c_star_cube_count,
+                                      "; L* cube count:", l_star_cube_count,
+                                      "; Threshold pixel count:", threshold_pixel_count,
+                                      "; Secondary threshold pixel count", secondary_threshold_pixel_count,
+                                      "; Number of pixels:", num_pixels)
 
                         elif l_star_cube_count > secondary_threshold_pixel_count:
                             cube.relevant = True
-                            print("Cube below meets secondary requirements for L*...")
-                            print("----C* cube count:", c_star_cube_count,
-                                  "; L* cube count:", l_star_cube_count,
-                                  "; Threshold pixel count:", threshold_pixel_count,
-                                  "; Secondary threshold pixel count", secondary_threshold_pixel_count,
-                                  "; Number of pixels:", num_pixels)
+
+                            if _version.__VERBOSE__:
+                                print("Cube below meets secondary requirements for L*...")
+                                print("----C* cube count:", c_star_cube_count,
+                                      "; L* cube count:", l_star_cube_count,
+                                      "; Threshold pixel count:", threshold_pixel_count,
+                                      "; Secondary threshold pixel count", secondary_threshold_pixel_count,
+                                      "; Number of pixels:", num_pixels)
 
                         else:
                             cube.relevant = False
@@ -296,7 +309,9 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         self._set_progress(final_percent)
 
         if tot_pixels != pixel_count:
-            print("Dimensions don't match")
+
+            if _version.__VERBOSE__:
+                print("Dimensions don't match")
             # TODO: throw exception here
 
     def _get_relevant_cubes(self, cubes, final_percent):
@@ -370,7 +385,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         increment_percent = self._get_increment_percent(final_percent, rows)
         update_progress = 0
 
-        print("Updating pixel colours...")
+        if _version.__VERBOSE__:
+            print("Updating pixel colours...")
         for i in range(rows):  # For each row of image
             for j in range(cols):  # For each column of image
                 pixel_coordinates = cube_assignments[i, j]
@@ -459,7 +475,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
         # Set progress bar (prevent rounding issues)
         self._set_progress(final_percent)
 
-        print("--- %s seconds for Python pixel colour update loop ---" % (time.time() - start_time))
+        if _version.__VERBOSE__:
+            print("--- %s seconds for Python pixel colour update loop ---" % (time.time() - start_time))
 
 
 # (r, g, b) = lab[0, 0]
@@ -540,7 +557,8 @@ class Nieves2020OffsetCubes(Nieves2020):
         # Set progress bar (prevent rounding issues)
         self._set_progress(final_percent)
 
-        print(cubes.size, "CIELAB cubes generated...")
+        if _version.__VERBOSE__:
+            print(cubes.size, "CIELAB cubes generated...")
         return cubes, cube_assignments
 
 
@@ -622,7 +640,8 @@ class Nieves2020CentredCubes(Nieves2020):
         # Set progress bar (prevent rounding issues)
         self._set_progress(final_percent)
 
-        print(cubes.size, "CIELAB cubes generated...")
+        if _version.__VERBOSE__:
+            print(cubes.size, "CIELAB cubes generated...")
         return cubes, cube_assignments
 
 

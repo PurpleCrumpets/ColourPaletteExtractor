@@ -67,7 +67,6 @@ def generate_report(tab: NewTab, image_data: ImageData, progress_callback: QtCor
         raise ValueError("The provided ImageData object does not have any colours in the colour palette!")
 
     # Get report generator object
-    print("Generating PDF report for image...")
     generator = ReportGenerator(tab=tab, image_data=image_data,
                                 progress_callback=progress_callback)
 
@@ -166,12 +165,15 @@ class ReportGenerator:
 
         # Check if output directory exists, if not create it
         if not os.path.isdir(self._output_dir):
-            print("Output directory for colour palette reports not found, creating new output directory...")
+            if _version.__VERBOSE__:
+                print("Output directory for colour palette reports not found, creating new output directory...")
             os.makedirs(self._output_dir)
         else:
-            print("Output directory for colour palette reports found...")
+            if _version.__VERBOSE__:
+                print("Output directory for colour palette reports found...")
 
-        print("Output directory for colour palette report: ", self._output_dir)
+        if _version.__VERBOSE__:
+            print("Output directory for colour palette report: ", self._output_dir)
 
     def _set_progress(self, new_progress) -> None:
         """Set the algorithm progress to a new value and possibly notify the GUI of the change.
@@ -212,7 +214,8 @@ class ReportGenerator:
         pdf.add_page()
 
         # Add original image
-        print("Adding original image to report...")
+        if _version.__VERBOSE__:
+            print("Adding original image to report...")
         self._add_image(pdf=pdf,
                         image=self._image_data.image,
                         title="Original Image")  # Add original image
@@ -221,7 +224,8 @@ class ReportGenerator:
             return None
 
         # Add recoloured image
-        print("Adding recoloured image to report...")
+        if _version.__VERBOSE__:
+            print("Adding recoloured image to report...")
         self._add_image(pdf=pdf,
                         image=self._image_data.recoloured_image,
                         title="Recoloured Image")  # Add recoloured image
@@ -230,7 +234,8 @@ class ReportGenerator:
             return None
 
         # Create colour frequency chart
-        print("Creating and adding colour frequency chart to report...")
+        if _version.__VERBOSE__:
+            print("Creating and adding colour frequency chart to report...")
         pdf.add_page()
         self._add_chart(pdf=pdf)  # Add chart
         self._set_progress(90)  # Progress = 90%
@@ -262,7 +267,8 @@ class ReportGenerator:
         # Check if PDF already exists and iterating its name if so
         count = 1
         while os.path.isfile(pdf_path):
-            print(file_name + " already exists, trying to find a valid name...")
+            if _version.__VERBOSE__:
+                print(file_name + " already exists, trying to find a valid name...")
             file_name = name + extension + '(' + str(count) + ')' + '.pdf'
             pdf_path = os.path.join(self._output_dir, file_name)
             count += 1
@@ -283,7 +289,8 @@ class ReportGenerator:
                 pdf_path = pdf_path.replace(")", "^)")
 
         # Opening PDF by calling the system
-        print("Opening colour palette PDF report...")
+        if _version.__VERBOSE__:
+            print("Opening colour palette PDF report...")
         if sys.platform == "win32":
             subprocess.Popen(pdf_path, shell=True)
         else:

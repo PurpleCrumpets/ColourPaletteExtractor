@@ -281,7 +281,6 @@ class ColourPaletteExtractorController(QRunnable):
 
         Raises:
             ValueError: For an invalid main_function.
-
         """
 
         # Get tab
@@ -542,14 +541,14 @@ class ColourPaletteExtractorController(QRunnable):
 
         """
 
-        print("Generating report...")
-
         if tab is None:
             tab = self._view.tabs.currentWidget()  # Get image data for the current tab
 
         # Get image data
         image_id = tab.image_id
         image_data = self._model.get_image_data(image_id)
+
+        print("Generating PDF colour palette report for image: " + image_id + "...")
 
         # Update tab properties and refresh GUI
         self._toggle_tab_button_states(tab=tab, activate=False)  # Disable buttons for the given tab
@@ -565,6 +564,7 @@ class ColourPaletteExtractorController(QRunnable):
         self._toggle_tab_button_states(tab=tab, activate=True)  # Re-enable buttons for the given tab
         tab.status_bar_state = 2  # Tab status to colour palette generated
         progress_callback.emit(tab, 100)  # Update GUI
+        print("Generated PDF colour palette report for image: " + image_id + "...")
 
     def _generate_colour_palette(self, tab: NewTab, progress_callback: QtCore.SignalInstance):
         """Generate the colour palette for the image linked to the given tab.
@@ -572,10 +572,7 @@ class ColourPaletteExtractorController(QRunnable):
         Args:
             tab (NewTab): Tab linked to the image that is to have its colour palette generated.
             progress_callback (QtCore.SignalInstance): Signal that when emitted, is used to update the GUI.
-
         """
-
-        print("Generating colour palette...")
 
         if tab is None:
             tab = self._view.tabs.currentWidget()  # Get image data for the current tab
@@ -588,6 +585,7 @@ class ColourPaletteExtractorController(QRunnable):
 
         # Generate colour palette
         image_id = tab.image_id
+        print("Generating colour palette for image: " + image_id + "...")
         self._model.generate_palette(image_id, tab, progress_callback)
 
         # Update tab properties and refresh tab if it still exists
@@ -607,6 +605,7 @@ class ColourPaletteExtractorController(QRunnable):
 
             # Update GUI
             progress_callback.emit(tab, 100)
+            print("Generated colour palette for image: " + image_id + "...")
 
     @staticmethod
     def _toggle_tab_button_states(tab: NewTab, activate: bool, palette_generated: bool = True) -> None:
