@@ -1,10 +1,8 @@
 # ColourPaletteExtractor
 
 ColourPaletteExtractor is a simple tool to generate the colour palette of an image. Built using Python, it can be used
-on a computer running either Windows 10, or a Mac running macOS Mojave (10.14) or later. While the macOS version *may*
-run on a computer running a Linux operating system, there is no guarantee that it will work; it is recommended that the
-is compiled from the source code.
-
+on a computer running either Windows 10, or a Mac running macOS Mojave (10.14) or later. While the source code *may*
+run on a computer running a Linux operating system, there is no guarantee that it will work; further tweaks may be necessary.
 
 ## 1) Licencing
     ColourPaletteExtractor Copyright (C) 2021  Tim Churchfield
@@ -116,6 +114,9 @@ In order to do so, activate your Python virtual environment, navigate to the ```
 use the following command to run the application from the terminal:
 
       python3 -m colourpaletteextractor.__main__
+
+If you wish to have a verbose output to the terminal when generating a colour palette or a colour palette report, the
+variable ```__VERBOSE__```  in the ```_version.py``` module will need to be changed from ```False``` to ```True```.
 
 
 

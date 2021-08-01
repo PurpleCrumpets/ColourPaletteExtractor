@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>colourpaletteextractor.model.algorithms package &mdash; ColourPaletteExtractor 0.5.4 documentation</title>
+  <title>colourpaletteextractor.model.algorithms package &mdash; ColourPaletteExtractor 0.5.5 documentation</title>
   
 
   
@@ -365,151 +365,60 @@ value is 0.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-colourpaletteextractor.model.algorithms.dummyalgorithm">
-<span id="colourpaletteextractor-model-algorithms-dummyalgorithm-module"></span><h2>colourpaletteextractor.model.algorithms.dummyalgorithm module<a class="headerlink" href="#module-colourpaletteextractor.model.algorithms.dummyalgorithm" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.dummyalgorithm.TestAlgorithm">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.dummyalgorithm.</span></span><span class="sig-name descname"><span class="pre">TestAlgorithm</span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.dummyalgorithm.TestAlgorithm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#colourpaletteextractor.model.algorithms.palettealgorithm.PaletteAlgorithm" title="colourpaletteextractor.model.algorithms.palettealgorithm.PaletteAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">colourpaletteextractor.model.algorithms.palettealgorithm.PaletteAlgorithm</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.dummyalgorithm.TestAlgorithm.generate_colour_palette">
-<span class="sig-name descname"><span class="pre">generate_colour_palette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.dummyalgorithm.TestAlgorithm.generate_colour_palette" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate the colour palette for the given image.</p>
-<p>Analyses the given image to obtain its colour palette. Returns the recoloured image using only the colours
-found in the colour palette, the colour palette of the image and finally the relative frequencies of each of
-those colours in the recoloured image.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image</strong> (<em>np.array</em>) – A 3D array representing an image. It is assumed that the input image is</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>recoloured__image</strong> (<em>np.array</em>) – The recoloured image using only the colours found in the colour palette</p></li>
-<li><p><strong>colour_palette</strong> (<em>list</em>) – The list of colours (sRGB 8-bit values) in the colour palette</p></li>
-<li><p><strong>relative_frequencies</strong> (<em>list</em>) – The relative frequencies of each colour in the colour palette in the
-recoloured image</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>It is assumed that the input image has been encoded in the sRGB colour space.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-colourpaletteextractor.model.algorithms.grogan2018">
-<span id="colourpaletteextractor-model-algorithms-grogan2018-module"></span><h2>colourpaletteextractor.model.algorithms.grogan2018 module<a class="headerlink" href="#module-colourpaletteextractor.model.algorithms.grogan2018" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.grogan2018.Grogan2018">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.grogan2018.</span></span><span class="sig-name descname"><span class="pre">Grogan2018</span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.grogan2018.Grogan2018" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#colourpaletteextractor.model.algorithms.palettealgorithm.PaletteAlgorithm" title="colourpaletteextractor.model.algorithms.palettealgorithm.PaletteAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">colourpaletteextractor.model.algorithms.palettealgorithm.PaletteAlgorithm</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.grogan2018.Grogan2018.generate_colour_palette">
-<span class="sig-name descname"><span class="pre">generate_colour_palette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.grogan2018.Grogan2018.generate_colour_palette" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate the colour palette for the given image.</p>
-<p>Analyses the given image to obtain its colour palette. Returns the recoloured image using only the colours
-found in the colour palette, the colour palette of the image and finally the relative frequencies of each of
-those colours in the recoloured image.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image</strong> (<em>np.array</em>) – A 3D array representing an image. It is assumed that the input image is</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>recoloured__image</strong> (<em>np.array</em>) – The recoloured image using only the colours found in the colour palette</p></li>
-<li><p><strong>colour_palette</strong> (<em>list</em>) – The list of colours (sRGB 8-bit values) in the colour palette</p></li>
-<li><p><strong>relative_frequencies</strong> (<em>list</em>) – The relative frequencies of each colour in the colour palette in the
-recoloured image</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>It is assumed that the input image has been encoded in the sRGB colour space.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.grogan2018.Grogan2018.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Grogan,</span> <span class="pre">Hudon,</span> <span class="pre">McCormack</span> <span class="pre">and</span> <span class="pre">Smolic</span> <span class="pre">(2018)</span> <span class="pre">[NOT</span> <span class="pre">IMPLEMENTED!]'</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.grogan2018.Grogan2018.name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.grogan2018.Grogan2018.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'https://v-sense.scss.tcd.ie/research/vfx-animation/automatic-palette-extraction-for-image-editing/'</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.grogan2018.Grogan2018.url" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-colourpaletteextractor.model.algorithms.nieves2020">
 <span id="colourpaletteextractor-model-algorithms-nieves2020-module"></span><h2>colourpaletteextractor.model.algorithms.nieves2020 module<a class="headerlink" href="#module-colourpaletteextractor.model.algorithms.nieves2020" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.</span></span><span class="sig-name descname"><span class="pre">Nieves2020</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#colourpaletteextractor.model.algorithms.palettealgorithm.PaletteAlgorithm" title="colourpaletteextractor.model.algorithms.palettealgorithm.PaletteAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">colourpaletteextractor.model.algorithms.palettealgorithm.PaletteAlgorithm</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.COLOUR_CHANNELS">
-<span class="sig-name descname"><span class="pre">COLOUR_CHANNELS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.COLOUR_CHANNELS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>Abstract class representing an algorithm to extract the colour palette from an image.</p>
+<p>Based on the algorithm proposed by Nieves et al. (2020); see <cite>algorithm</cite> for more information.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.CUBE_SIZE">
 <span class="sig-name descname"><span class="pre">CUBE_SIZE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">20</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.CUBE_SIZE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Default delta-E* length of cube side (units).</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.C_STAR_PERCENTILE">
 <span class="sig-name descname"><span class="pre">C_STAR_PERCENTILE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">50</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.C_STAR_PERCENTILE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.L_STAR_PERCENTILE_THRESHOLD">
-<span class="sig-name descname"><span class="pre">L_STAR_PERCENTILE_THRESHOLD</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0.00375</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.L_STAR_PERCENTILE_THRESHOLD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>x-th percentile of C* (50%) for secondary relevancy requirements.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.MIN_L_STAR">
 <span class="sig-name descname"><span class="pre">MIN_L_STAR</span></span><em class="property"> <span class="pre">=</span> <span class="pre">80</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.MIN_L_STAR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Minimum L* value for secondary relevancy requirements (units).</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.SECONDARY_THRESHOLD">
 <span class="sig-name descname"><span class="pre">SECONDARY_THRESHOLD</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0.00375</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.SECONDARY_THRESHOLD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Minimum secondary pixel count (%) for secondary relevancy requirements.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.THRESHOLD">
 <span class="sig-name descname"><span class="pre">THRESHOLD</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0.03</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.THRESHOLD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Minimum threshold colour in each cube (0.03 = 3%) for primary relevancy requirements.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.generate_colour_palette">
-<span class="sig-name descname"><span class="pre">generate_colour_palette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.generate_colour_palette" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate the colour palette for the given image.</p>
-<p>Analyses the given image to obtain its colour palette. Returns the recoloured image using only the colours
-found in the colour palette, the colour palette of the image and finally the relative frequencies of each of
-those colours in the recoloured image.</p>
+<span class="sig-name descname"><span class="pre">generate_colour_palette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020.generate_colour_palette" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the colour palette and the recoloured image of the provided image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image</strong> (<em>np.array</em>) – A 3D array representing an image. It is assumed that the input image is</p>
+<dd class="field-odd"><p><strong>image</strong> (<em>np.array</em>) – The image for which the colour palette is to be generated (in sRGB colour space).</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>recoloured__image</strong> (<em>np.array</em>) – The recoloured image using only the colours found in the colour palette</p></li>
-<li><p><strong>colour_palette</strong> (<em>list</em>) – The list of colours (sRGB 8-bit values) in the colour palette</p></li>
-<li><p><strong>relative_frequencies</strong> (<em>list</em>) – The relative frequencies of each colour in the colour palette in the
-recoloured image</p></li>
+<li><p><strong>(np.array)</strong> – The recoloured image using only the colours in the colour palette.</p></li>
+<li><p><strong>(list[np.array])</strong> – The list of colours ([R,G,B] triplets) in the image’s colour palette.</p></li>
+<li><p><strong>(list[float])</strong> – The relative frequencies of the colours in the recoloured image.</p></li>
 </ul>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>It is assumed that the input image has been encoded in the sRGB colour space.</p>
-</div>
 </dd></dl>
 
 </dd></dl>
@@ -518,15 +427,22 @@ recoloured image</p></li>
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.</span></span><span class="sig-name descname"><span class="pre">Nieves2020CentredCubes</span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020" title="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020"><code class="xref py py-class docutils literal notranslate"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.Nieves2020</span></code></a></p>
+<p>Subclass of <a class="reference internal" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020" title="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020"><code class="xref py py-class docutils literal notranslate"><span class="pre">Nieves2020</span></code></a> with the cube coordinates corresponding to the centre of the cube.</p>
+<dl class="simple">
+<dt>As a result, there is only one cube that touches the origin in the CIELAB colour space (is in fact centred on the</dt><dd><p>origin).</p>
+</dd>
+</dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Nieves,</span> <span class="pre">Gomez-Robledo,</span> <span class="pre">Chen</span> <span class="pre">and</span> <span class="pre">Romero</span> <span class="pre">(2020)</span> <span class="pre">-</span> <span class="pre">Cube</span> <span class="pre">centred</span> <span class="pre">on</span> <span class="pre">CIELAB</span> <span class="pre">origin'</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes.name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes.NAME">
+<span class="sig-name descname"><span class="pre">NAME</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Nieves,</span> <span class="pre">Gomez-Robledo,</span> <span class="pre">Chen</span> <span class="pre">and</span> <span class="pre">Romero</span> <span class="pre">(2020)</span> <span class="pre">-</span> <span class="pre">Cube</span> <span class="pre">centred</span> <span class="pre">on</span> <span class="pre">CIELAB</span> <span class="pre">origin'</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes.NAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the algorithm.</p>
+</dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'https://doi.org/10.1364/AO.378659'</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes.url" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes.URL">
+<span class="sig-name descname"><span class="pre">URL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'https://doi.org/10.1364/AO.378659'</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020CentredCubes.URL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Link to more information about the algorithm.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -534,39 +450,72 @@ recoloured image</p></li>
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020OffsetCubes">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.</span></span><span class="sig-name descname"><span class="pre">Nieves2020OffsetCubes</span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020OffsetCubes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020" title="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020"><code class="xref py py-class docutils literal notranslate"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.Nieves2020</span></code></a></p>
+<p>Subclass of <a class="reference internal" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020" title="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020"><code class="xref py py-class docutils literal notranslate"><span class="pre">Nieves2020</span></code></a> with the cube coordinates corresponding to the cube’s corner closest the origin.</p>
+<p>As a result, there are eight cube that touch the origin in the CIELAB colour space.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020OffsetCubes.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Nieves,</span> <span class="pre">Gomez-Robledo,</span> <span class="pre">Chen</span> <span class="pre">and</span> <span class="pre">Romero</span> <span class="pre">(2020)</span> <span class="pre">-</span> <span class="pre">Cube</span> <span class="pre">corners</span> <span class="pre">at</span> <span class="pre">CIELAB</span> <span class="pre">origin'</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020OffsetCubes.name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020OffsetCubes.NAME">
+<span class="sig-name descname"><span class="pre">NAME</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Nieves,</span> <span class="pre">Gomez-Robledo,</span> <span class="pre">Chen</span> <span class="pre">and</span> <span class="pre">Romero</span> <span class="pre">(2020)</span> <span class="pre">-</span> <span class="pre">Cube</span> <span class="pre">corners</span> <span class="pre">at</span> <span class="pre">CIELAB</span> <span class="pre">origin'</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020OffsetCubes.NAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the algorithm.</p>
+</dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020OffsetCubes.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'https://doi.org/10.1364/AO.378659'</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020OffsetCubes.url" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.Nieves2020OffsetCubes.URL">
+<span class="sig-name descname"><span class="pre">URL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'https://doi.org/10.1364/AO.378659'</span></em><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.Nieves2020OffsetCubes.URL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Link to more information about the algorithm.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.convert_lab_2_rgb">
-<span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.</span></span><span class="sig-name descname"><span class="pre">convert_lab_2_rgb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.convert_lab_2_rgb" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert an image in the CIELAB colour space into the sRGB colour space.</p>
+<span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.</span></span><span class="sig-name descname"><span class="pre">convert_lab_2_rgb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.array</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.convert_lab_2_rgb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert an image from the CIELAB colour space to the sRGB colour space.</p>
+<p>After conversion, the image is scaled to 8-bit per colour channel (24-bit image).</p>
+<p>Illuminant = D65 (name of the illuminant)
+Observer = 2 (aperture angle of observer)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>np.array</em>) – The image in the CIELAB colour space.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>(np.array)</strong> – The image in the sRGB colour space.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.convert_rgb_2_lab">
-<span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.</span></span><span class="sig-name descname"><span class="pre">convert_rgb_2_lab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.convert_rgb_2_lab" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert an sRBG image into the CIELAB colour space.</p>
+<span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.</span></span><span class="sig-name descname"><span class="pre">convert_rgb_2_lab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.array</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.convert_rgb_2_lab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert an image from the sRGB colour space to the CIELAB colour space.</p>
+<p>The alpha channel of the image (RGBA) is removed if present.</p>
+<p>Illuminant = D65 (name of the illuminant)
+Observer = 2 (aperture angle of observer)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>np.array</em>) – The image in the sRGB colour space.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>(np.array)</strong> – The image in the CIELAB colour space.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="colourpaletteextractor.model.algorithms.nieves2020.get_c_stars">
-<span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.</span></span><span class="sig-name descname"><span class="pre">get_c_stars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lab</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.get_c_stars" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the matrix of C* (chroma) values for each pixel in the image.</p>
+<span class="sig-prename descclassname"><span class="pre">colourpaletteextractor.model.algorithms.nieves2020.</span></span><span class="sig-name descname"><span class="pre">get_c_stars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lab</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.array</span></span></span><a class="headerlink" href="#colourpaletteextractor.model.algorithms.nieves2020.get_c_stars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the matrix of C* (chroma) values for each pixel in the image.</p>
+<div class="math notranslate nohighlight">
+\[C^{*} = \sqrt{{a^{*}}^{2} + {b^{*}}^{2}}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lab</strong> (<em>np.array</em>) – The image in the CIELAB colour space.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>(np.array)</strong> – Array of C* values corresponding to each pixel in the image.</p>
+</dd>
+</dl>
 </dd></dl>
 
-</div>
-<div class="section" id="colourpaletteextractor-model-algorithms-nieves2020cython-module">
-<h2>colourpaletteextractor.model.algorithms.nieves2020cython module<a class="headerlink" href="#colourpaletteextractor-model-algorithms-nieves2020cython-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-colourpaletteextractor.model.algorithms.palettealgorithm">
 <span id="colourpaletteextractor-model-algorithms-palettealgorithm-module"></span><h2>colourpaletteextractor.model.algorithms.palettealgorithm module<a class="headerlink" href="#module-colourpaletteextractor.model.algorithms.palettealgorithm" title="Permalink to this headline">¶</a></h2>

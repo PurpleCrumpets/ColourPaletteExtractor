@@ -12,34 +12,10 @@ colourpaletteextractor.model.algorithms.cielabcube module
    :undoc-members:
    :show-inheritance:
 
-colourpaletteextractor.model.algorithms.dummyalgorithm module
--------------------------------------------------------------
-
-.. automodule:: colourpaletteextractor.model.algorithms.dummyalgorithm
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-colourpaletteextractor.model.algorithms.grogan2018 module
----------------------------------------------------------
-
-.. automodule:: colourpaletteextractor.model.algorithms.grogan2018
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 colourpaletteextractor.model.algorithms.nieves2020 module
 ---------------------------------------------------------
 
 .. automodule:: colourpaletteextractor.model.algorithms.nieves2020
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-colourpaletteextractor.model.algorithms.nieves2020cython module
----------------------------------------------------------------
-
-.. automodule:: colourpaletteextractor.model.algorithms.nieves2020cython
    :members:
    :undoc-members:
    :show-inheritance:
