@@ -15,56 +15,54 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-# TODO: add ability to run the model by itself, without the GUI using __main__
 import ctypes
 import errno
 import os
 import sys
 import tempfile
 
-from sys import argv
+import numpy as np
 
 from PySide2.QtCore import QStandardPaths, QSettings, QSize
-
-import numpy as np
 
 from colourpaletteextractor import _version
 from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.model.algorithms import nieves2020
-# from colourpaletteextractor.model.algorithms import grogan2018
-# from colourpaletteextractor.model.algorithms import dummyalgorithm
 from colourpaletteextractor.model.algorithms.palettealgorithm import PaletteAlgorithm
+from colourpaletteextractor.view.tabview import NewTab
 
 
-def generate_colour_palette_from_image(path_to_file: str, algorithm: type[PaletteAlgorithm] = None) -> tuple[
-    np.ndarray, list[np.ndarray], list[float]]:
-    # TODO: check output types
+def generate_colour_palette_from_image(path_to_file: str, algorithm: type[PaletteAlgorithm] = None) -> \
+        tuple[np.ndarray, list[np.ndarray], list[float]]:
+    """Generate the colour palette for the given images using the specified colour palette extraction algorithm.
+
+    An example algorithm would be nieves2020.Nieves2020CentredCubes
+
+    Args:
+        path_to_file (str): Path to the image to be analysed.
+        algorithm (type[PaletteAlgorithm]): The Python class of the the colour palette extraction algorithm.
+
+    Returns:
+        (np.ndarray): THe recoloured image using just the colours in the colour palette.
+        (list[np.ndarray]): The list of colours ([R,G,B] triplets) in the colour palette.
+        (list[float]): The relative frequencies of the colours in the colour palette in the recoloured image.
+    """
 
     model = ColourPaletteExtractorModel()
 
+    # Check if the provided file exists
     if os.path.isfile(path_to_file) is False:
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), path_to_file)
-        # TODO: explain why the file is invalid (ie make sure that there are no spaces in the names of folders etc)
-        # Put it in quotes
     else:
         image_data_id, image_data = model.add_image(path_to_file)
 
-    print("Added image!")
-
-    # Get colour palette of the image (image 0 in list)
-
+    # Get the colour palette of the image
     if algorithm is None:
-        model.generate_palette(image_data_id, "Tab_0", None,
-                               temp_algorithm=ColourPaletteExtractorModel.DEFAULT_ALGORITHM)
+        model.generate_palette(image_data_id, None, None,
+                               algorithm=ColourPaletteExtractorModel.DEFAULT_ALGORITHM)
     else:
-        model.generate_palette(image_data_id, "Tab_0", None, temp_algorithm=algorithm)
-
-    print("\n---------------")
-    print("Colour Palette:")
-    for colour in image_data.colour_palette:
-        print(colour)
-    print("---------------")
+        model.generate_palette(image_data_id, None, None, algorithm=algorithm)
 
     new_recoloured_image = image_data.recoloured_image
     image_colour_palette = image_data.colour_palette
@@ -74,6 +72,12 @@ def generate_colour_palette_from_image(path_to_file: str, algorithm: type[Palett
 
 
 def get_settings() -> QSettings:
+    """Get the settings file for the ColourPaletteExtraction application.
+
+    Returns:
+        (QSettings): The settings for the ColourPaletteExtraction application.
+    """
+
     settings = QSettings(QSettings.IniFormat,
                          QSettings.UserScope,
                          _version.__organisation__,
@@ -82,22 +86,43 @@ def get_settings() -> QSettings:
 
 
 class ColourPaletteExtractorModel:
-    # Default preferences for the settings file (if it doesn't yet exist)
+    """ColourPaletteExtractor Model.
+
+    Used as the model component of the ColourPaletteExtractor application.
+
+    """
+
+    # Default preferences for the settings file
     DEFAULT_ALGORITHM: type[PaletteAlgorithm] = nieves2020.Nieves2020CentredCubes
+    """The default colour palette extraction algorithm Python Class."""
+
     DEFAULT_USER_DIRECTORY: str = os.path.join(QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation),
                                                _version.__application_name__,
                                                "Output")
+    """The default user output directory for colour palette reports."""
+
     if sys.platform == "win32":
         DEFAULT_USER_DIRECTORY = DEFAULT_USER_DIRECTORY.replace("\\", "/")  # Consistent looking path
 
     DEFAULT_USE_USER_DIRECTORY: bool = False
+    """Specify by default whether a user's output directory should be used for saving the colour palette report to."""
+
     DEFAULT_HEIGHT: int = 894  # Based on size of 'how-to' image
+    """Default height of the ColourPaletteExtraction application.
+    
+        Size chosen to show the Quick Start Guide image without the need of scrollbars.
+    """
+
     DEFAULT_WIDTH: int = 1523  # Based on size of 'how-to' image
+    """Default width of the ColourPaletteExtraction application.
 
-    ERROR_MSG: str = "Error! :'("
+        Size chosen to show the Quick Start Guide image without the need of scrollbars.
+    """
+
     SUPPORTED_IMAGE_TYPES: set[str] = {"png", "jpg", "jpeg"}
+    """The set of supported image extensions."""
 
-    def __init__(self, algorithm_class_name=None):
+    def __init__(self) -> None:
 
         self._image_data_id_counter = 0
         self._image_data_id_dictionary = {}
@@ -109,28 +134,55 @@ class ColourPaletteExtractorModel:
         # Read-in settings file
         self._read_settings()
 
-        # Update selected algorithm
-        if algorithm_class_name is not None:
+    @staticmethod
+    def _check_algorithm_valid(algorithm_class: type[PaletteAlgorithm]) -> bool:
+        """Check if the provided algorithm class is a valid subclass of :class:`PaletteAlgorithm`.
 
-            # Check if provided algorithm class name is valid
-            if self._check_algorithm_valid(algorithm_class_name=algorithm_class_name):
-                # TODO: check it is an instance
-                self._settings.setValue("algorithm/selected algorithm", algorithm_class_name)
-            else:
-                pass
-                # TODO: Throw exception?
+        Args:
+            algorithm_class (type[PaletteAlgorithm]): Algorithm class.
 
-        # print(str(QStandardPaths.writableLocation(QStandardPaths.AppConfigLocation)))
+        Returns:
+            (bool): True if the provided algorithm class is a valid subclass. Otherwise False.
+        """
+
+        if issubclass(algorithm_class, PaletteAlgorithm):
+            return True
+        else:
+            return False
 
     @property
     def active_thread_counter(self) -> int:
+        """The number of active threads still running as part of a batch operation.
+
+        Returns:
+            (int): The number of active threads still running.
+        """
+
         return self._active_thread_counter
 
     @active_thread_counter.setter
     def active_thread_counter(self, value: int) -> None:
         self._active_thread_counter = value
 
-    def change_output_directory(self, use_user_dir: bool, new_user_directory: str):
+    @property
+    def image_data_id_dictionary(self) -> dict:
+        """The dictionary storing the :class:`ImageData` objects for the images currently open.
+
+        Returns:
+            (dict): dictionary storing the :class:`ImageData` objects for the images currently open.
+        """
+
+        return self._image_data_id_dictionary
+
+    def change_output_directory(self, use_user_dir: bool, new_user_directory: str) -> None:
+        """Change the output directory for colour palette reports in the ColourPaletteExtractor.ini settings file.
+
+        Args:
+            use_user_dir (bool): True if the user-selected output directory is to be used. If False, use default
+                temporary output directory.
+            new_user_directory (str): The path to the new user-selected output directory
+        """
+
         print("Updating output directory...")
 
         # Update settings file
@@ -138,27 +190,9 @@ class ColourPaletteExtractorModel:
         self._settings.setValue("output directory/user directory", new_user_directory)
         self._settings.sync()
 
-        # TODO: if user dr is none but was selected - throw an exception?
+    def write_default_settings(self) -> None:
+        """Write the default settings to the ColourPaletteExtractor.ini settings file."""
 
-    def _read_settings(self):
-        print("Reading application settings...")
-
-        # Try and set a location config file?? - make the application portable?
-        self._settings = get_settings()
-
-        print(self._settings.fileName())
-
-        # Check if settings file exists
-        if not self._settings.contains('output directory/user directory'):
-            print("Settings file not found...")
-            self.write_default_settings()
-        else:
-            print("Settings file found...")
-            self._settings.setValue('output directory/temporary directory',
-                                    self._temp_dir.name)  # Update path to new temporary directory
-            self._settings.sync()
-
-    def write_default_settings(self):
         print("Writing default settings to config file...")
 
         # Set default main window preferences
@@ -183,59 +217,44 @@ class ColourPaletteExtractorModel:
         # Update settings file
         self._settings.sync()
 
-    def evaluate_expression(self, expression):
-        """slot function.
-        :param expression:
-        :return:
-        """
-
-        try:
-            result = str(eval(expression, {}, {}))
-        except Exception:
-            result = ColourPaletteExtractorModel.ERROR_MSG
-
-        return result
-
     def close_temporary_directory(self) -> None:
+        """Delete the temporary output directory associated with the instance of the application."""
+
         self._temp_dir.cleanup()  # Removing temporary directory
 
-    def _get_algorithm(self, algorithm: type[PaletteAlgorithm] = None):
-        if algorithm is None:
-            print(self._settings.value("algorithm/selected algorithm"))
-            print(self._settings.value("algorithm/selected algorithm")())
-            return self._settings.value("algorithm/selected algorithm")()  # Create a new instance of the algorithm
+    def set_algorithm(self, algorithm_class: type[PaletteAlgorithm] = DEFAULT_ALGORITHM) -> None:
+        """Set the algorithm used to generate the colour palette of an image.
 
-        else:
-            print("Using temporary algorithm...")
-            if self._check_algorithm_valid(algorithm_class_name=algorithm):
-                return algorithm()
-            else:
-                # TODO throw exception
-                pass
+        If no algorithm_class_name is provided, the :const:`DEFAULT_ALGORITHM` is used.
 
-    def _check_algorithm_valid(self, algorithm_class_name):
+        Args:
+            algorithm_class (type[PaletteAlgorithm]): The algorithm class.
+        """
 
-        # Check if provided class name is a sub-class of PaletteAlgorithm
-        if issubclass(algorithm_class_name, PaletteAlgorithm):
-            return True
-        else:
-            pass
-            # TODO: throw error here
-
-    def set_algorithm(self, algorithm_class_name=DEFAULT_ALGORITHM):
-        """Set the algorithm use to extract the colour palette of an image."""
-
-        # Check if provided class name is a sub-class of PaletteAlgorithm
-        if self._check_algorithm_valid(algorithm_class_name=algorithm_class_name):
-            print("Updating selected algorithm to " + str(algorithm_class_name) + "...")
+        # Check if provided class name is a valid sub-class of PaletteAlgorithm
+        if self._check_algorithm_valid(algorithm_class=algorithm_class):
+            print("Updating selected algorithm to " + str(algorithm_class) + "...")
 
             # Update settings file
-            self._settings.setValue("algorithm/selected algorithm", algorithm_class_name)
+            self._settings.setValue("algorithm/selected algorithm", algorithm_class)
             self._settings.sync()
 
-    def add_image(self, file_name_and_path: str):
-        """From the path to an image, create a new image_data object and add it to the
-         dictionary of image_data objects with a new ID number."""
+    def add_image(self, file_name_and_path: str) -> tuple[str, ImageData]:
+        """Given the path to an image, create a new :class:`ImageData` object and return it and its ID key.
+
+        Args:
+            file_name_and_path (str): Path to the image.
+
+        Returns:
+            (str): The dictionary key ('Tab_xx') for the new :class:`ImageData` object in the
+                :attr:`image_data_id_dictionary`.
+            (ImageData): The new :class:`ImageData` object for holding information about the image (e.g., the colour
+                palette, the recoloured image etc.)
+
+        Raises:
+            KeyError: If the generated dictionary key already exists in the model's dictionary of ImageData objects
+                (:attr:`image_data_id_dictionary`).
+        """
 
         # Create new ImageData object to hold image (and later the colour palette)
         new_image_data = ImageData(file_name_and_path)
@@ -243,40 +262,62 @@ class ColourPaletteExtractorModel:
         # Add to image dictionary
         new_image_data_id = ("Tab_" + str(self._image_data_id_counter))
         self._image_data_id_counter += 1
-        self._image_data_id_dictionary[new_image_data_id] = new_image_data
-        # TODO: Add checks to make sure new key doesn't overwrite a current key
+
+        if new_image_data_id not in  self._image_data_id_dictionary:
+            self._image_data_id_dictionary[new_image_data_id] = new_image_data
+        else:
+            raise KeyError("The key:", new_image_data_id,
+                           ", already exists in the model's dictionary of ImageData objects!")
 
         return new_image_data_id, new_image_data
 
-    def remove_image_data(self, image_data_id):
-        """Remove image from list of images by its index."""
-        # self._images.pop(i)
+    def remove_image_data(self, image_data_id: str) -> None:
+        """Remove :class:`ImageData` object from the dictionary of images (:attr:`image_data_id_dictionary`) by its key.
+
+        Args:
+            image_data_id (str): The dictionary key ('Tab_xx') for the :class:`ImageData` object in the
+                :attr:`image_data_id_dictionary` that should be removed.
+        """
+
         self._image_data_id_dictionary.pop(image_data_id)
-        # TODO: add checks if not found
 
-    # def _get_image_copy(self, image_data_id):
-    #     print("Retrieving copy of image...")
-    #     image_data = self._image_data_id_dictionary.get(image_data_id)
-    #
-    #     return image_data.image.copy()
+    def get_image_data(self, image_data_id: str) -> ImageData:
+        """Returns the :class:`ImageData` object with the given ID/key in the :attr:`image_data_id_dictionary`.
 
-    def get_image_data(self, image_data_id):
+        Args:
+            image_data_id (str): The dictionary key/ID ('Tab_xx') for the :class:`ImageData` object in the
+                :attr:`image_data_id_dictionary` that should be returned.
+
+        Returns:
+            (ImageData): :class:`ImageData` object with the given ID/key.
+        """
+
         return self._image_data_id_dictionary.get(image_data_id)
-        # TODO: Add checks for the index in case it is out of range
 
-    @property
-    def image_data_id_dictionary(self):
-        return self._image_data_id_dictionary
+    def generate_palette(self, image_data_id: str, tab: NewTab = None,
+                         progress_callback=None, algorithm: type[PaletteAlgorithm] = None) -> None:
+        """Generate the colour palette for the image in the :class:`ImageData` object with the given image_data_id ID.
 
-    def generate_palette(self, image_data_id, tab, progress_callback=None, temp_algorithm=None):
+        The recoloured image, colour palette and relative frequencies of each colour are added to the
+        :class:`ImageData` object with the image_data_id dictionary key.
+
+        Args:
+            image_data_id (str): The dictionary key/ID ('Tab_xx') for the :class:`ImageData` object in the
+                :attr:`image_data_id_dictionary` for which the colour palette of its associated image
+                is to be generated for.
+            tab (NewTab): The :class:`NewTab` linked to the image that is to have its colour palette generated.
+            progress_callback (QtCore.SignalInstance): Signal that when emitted, is used to update the GUI.
+            algorithm (type[PaletteAlgorithm]): The algorithm class to be used to generate the colur palette.
+        """
+
         print("Generating colour palette for image:", image_data_id)
 
         image_data = self.get_image_data(image_data_id)
         image_data.continue_thread = True
 
         # Get algorithm and process image with it
-        algorithm = self._get_algorithm(algorithm=temp_algorithm)
-        if progress_callback is not None:
+        algorithm = self._get_algorithm(algorithm=algorithm)
+        if progress_callback is not None and tab is not None:
             algorithm.set_progress_callback(progress_callback, tab, image_data)
 
         # Set algorithm type used for the given image
@@ -289,51 +330,51 @@ class ColourPaletteExtractorModel:
 
         # Check if image_data_id still exists
         if image_data_id in self._image_data_id_dictionary:
-            # Assigning properties to image_data
+
+            # Assign properties to image_data
             self._image_data_id_dictionary[image_data_id].recoloured_image = new_recoloured_image
             self._image_data_id_dictionary[image_data_id].colour_palette = image_colour_palette
             self._image_data_id_dictionary[image_data_id].colour_palette_relative_frequency = new_relative_frequencies
 
-            # Sorting colour palette by relative frequency
+            # Sort colour palette by relative frequency
             self._image_data_id_dictionary[image_data_id].sort_colour_palette(reverse=True)
 
-        # print(new_recoloured_image.shape, len(image_colour_palette))
+    def _read_settings(self) -> None:
+        """Read in the application settings from the ColourPaletteExtractor.ini settings file."""
 
+        print("Reading in application settings...")
+        self._settings = get_settings()
 
-if __name__ == "__main__":
+        # Check if settings file exists
+        if not self._settings.contains('output directory/user directory'):
+            print("Settings file not found...")
+            self.write_default_settings()
+        else:
+            print("Settings file found...")
+            self._settings.setValue('output directory/temporary directory',
+                                    self._temp_dir.name)  # Update path to new temporary directory
+            self._settings.sync()
 
-    # data_dir = "data"
-    # print(__file__)
-    # os.getcwd() - where script executed from!
-    # print(argv[0])  # Gives you absolute path to the file that was run - this could be useful later on
+    def _get_algorithm(self, algorithm: type[PaletteAlgorithm] = None) -> PaletteAlgorithm:
+        """Get an instance of the algorithm class to be used to generate the colour palette of an image.
 
-    file_name = argv[1]
+        If no algorithm is provided, the selected algorithm in the ColourPaletteExtractor.ini settings file.
 
-    if len(argv) == 3:
-        model_type = argv[2]
+        Args:
+            algorithm (type[PaletteAlgorithm]): (Optional). If provided, it is checked to make sure that it is a
+                valid algorithm class and and instance of that class is returned.
 
-    recoloured_image, colour_palette, relative_frequencies = generate_colour_palette_from_image(file_name)
+        Returns:
+            (PaletteAlgorithm): Instance of the algorithm class.
+        """
 
-    # print(os.path.isfile(file_name))
+        if algorithm is None:
+            # Create a new instance of the selected algorithm in the settings
+            return self._settings.value("algorithm/selected algorithm")()
 
-    # # Check if file is an image
-    # found = False
-    # for file_type in model.supported_image_types:
-    #     file_type = "." + file_type
-    #     if search(file_type, file_name):
-    #         found = True
-    #         # model.add_image()
-    #         break
-    # Check if file can be found
-    #
-    #
-    # # Check if file is a path
-    # if os.path.isdir(file_name):
-    #     print("Found directory")
-
-    # TODO Check inputs
-    # If provided with a directory, apply to all valid files inside
-    # Else if just a file - just do that one
-    # If provided with a second argument - this is used to control the algorithm used to extract
-
-    # model.add_image()
+        else:
+            # Use provided algorithm class
+            if self._check_algorithm_valid(algorithm_class=algorithm):
+                return algorithm()
+            else:
+                raise ValueError(algorithm, "is not a valid Class type!")

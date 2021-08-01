@@ -17,7 +17,6 @@
 
 from __future__ import annotations
 from functools import partial  # Import partial to connect signals with methods that need to take extra arguments
-from multiprocessing import Process
 
 import numpy as np
 from PySide2 import QtCore
@@ -511,6 +510,8 @@ class ColourPaletteExtractorController(QRunnable):
 
     def _finish_generation(self, i: int) -> None:
         """Update tab with the given tab index i and the GUI actions after generation of the colour palette or report.
+
+        Only used when the thread has been run as part of a batch operation.
 
         Args:
             i (int): Tab index
