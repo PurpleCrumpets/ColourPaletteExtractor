@@ -200,21 +200,6 @@ class CielabCube:
         self._pixels.append(pixel)
         self._c_stars.append(c_star)
 
-    # def calculate_mean_c_star(self):
-    #     """Calculate the mean C* value for the pixels in the cube.
-    #
-    #     Returns:
-    #
-    #     """
-    #     c_stars_array = np.array(self._c_stars)
-    #
-    #     if c_stars_array.size != 0:
-    #         x = c_stars_array.mean()
-    #         print(x.type())
-    #         print(self._c_stars.type())
-    #         return c_stars_array.mean()
-    #     # TODO: add checks
-
 
 def get_relative_frequencies(relevant_cubes: list[CielabCube], total_pixels: int) -> list[float]:
     """Calculate the relative frequency of each colour (relevant colour) in the recoloured image.
@@ -233,31 +218,3 @@ def get_relative_frequencies(relevant_cubes: list[CielabCube], total_pixels: int
         frequencies.append(frequency)
 
     return frequencies
-
-
-# def get_cielab_cube(cubes, pixel_coordinates):
-#     """Return the cube with the same simplified coordinates as the given pixel.
-#
-#     Args:
-#         cubes:
-#         pixel_coordinates:
-#
-#     Returns:
-#
-#     """
-#
-#     print(cubes.type())
-#
-#     # pixel_coordinates = np.ndarray.tolist(pixel_coordinates)
-#     cube_found = False
-#     for cube in cubes:
-#         cube_coordinates = cube.get_cube_coordinates()
-#         # print(pixel_coordinates.type)
-#         if pixel_coordinates[0] == cube_coordinates[0]:
-#             # if pixel_coordinates == cube_coordinates:
-#             cube_found = True
-#             return cube
-#         # print(pixel_coordinates)
-#         # print(cube_coordinates)
-#         # print(cube_coordinates.type)
-#     print("Cube not found for pixel with coordinates: ", pixel_coordinates)

@@ -12,6 +12,14 @@ Subpackages
 Submodules
 ----------
 
+colourpaletteextractor.model.dummyimagescript module
+----------------------------------------------------
+
+.. automodule:: colourpaletteextractor.model.dummyimagescript
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 colourpaletteextractor.model.generatereport module
 --------------------------------------------------
 
