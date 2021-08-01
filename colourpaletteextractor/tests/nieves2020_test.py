@@ -15,9 +15,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-import numpy as np
-import pytest
-
 from colourpaletteextractor.model.algorithms import nieves2020
 from colourpaletteextractor.tests.helpers import helperfunctions
 
@@ -218,7 +215,6 @@ def test_primary_requirements_1():
     assert 1 == relative_frequencies[colour_palette.index([255, 255, 255])]
 
 
-
 def test_primary_requirements_2():
     image = helperfunctions.get_image("./colourpaletteextractor/tests/testImages/4-grey-96-white.png")
 
@@ -235,7 +231,6 @@ def test_primary_requirements_2():
     assert len(colour_palette) == 2
     assert [255, 255, 255] in colour_palette
     assert [196, 196, 196] in colour_palette
-
 
 
 def test_primary_requirements_3():
@@ -326,7 +321,7 @@ def test_primary_requirements_3():
     assert 0.04 == relative_frequencies[colour_palette.index([103, 155, 144])]  # Colour 13
     assert 0.04 == relative_frequencies[colour_palette.index([255, 72, 0])]  # Colour 14
     assert 0.04 == relative_frequencies[colour_palette.index([19, 163, 144])]  # Colour 15
-    assert 0.04 == relative_frequencies[colour_palette.index([0, 69, 0] )]  # Colour 16
+    assert 0.04 == relative_frequencies[colour_palette.index([0, 69, 0])]  # Colour 16
     assert 0.04 == relative_frequencies[colour_palette.index([0, 71, 107])]  # Colour 17
     assert 0.04 == relative_frequencies[colour_palette.index([0, 79, 205])]  # Colour 18
 
@@ -339,6 +334,7 @@ def test_primary_requirements_3():
     assert 0.04 == relative_frequencies[colour_palette.index([249, 90, 78])]  # Colour 25
 
     assert len(colour_palette) == 25
+
 
 def test_closest_relevant_colour_used_to_recolour_pixel():
     image = helperfunctions.get_image("./colourpaletteextractor/tests/testImages/2-beige-10-sand-88-blue.png")
@@ -375,4 +371,3 @@ def test_closest_relevant_colour_used_to_recolour_pixel():
     assert (recoloured_image[0][2][:] == [209, 198, 161]).all
     assert (recoloured_image[0][3][:] == [209, 198, 161]).all
     assert (recoloured_image[0][4][:] == [0, 67, 139]).all
-

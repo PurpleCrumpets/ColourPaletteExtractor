@@ -230,7 +230,16 @@ class MainView(QMainWindow):
             event.ignore()
 
     def _set_size_and_shape(self) -> None:
-        """Set the size and shape of the main window of the GUI."""
+        """Set the size and shape of the main window of the GUI.
+
+        Adapted from: `ref3`_
+
+        Accessed: 25/07/21
+
+        .. _ref3:
+           https://stackoverflow.com/questions/9357944/how-to-make-a-widget-in-the-center-of-the-screen-in-pyside-pyqt
+
+        """
         settings = get_settings()
 
         settings.beginGroup("main window")
@@ -246,9 +255,6 @@ class MainView(QMainWindow):
             self.move(position)
         else:
             # Centre screen based on its current size
-            # Adapted from:
-            # https: //stackoverflow.com/questions/9357944/how-to-make-a-widget-in-the-center-of-the-screen-in-pyside-pyqt
-            # Accessed: 25/07/21
             center_point = QtGui.QScreen.availableGeometry(QApplication.primaryScreen()).center()
             fg = self.frameGeometry()
             fg.moveCenter(center_point)
