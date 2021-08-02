@@ -35,6 +35,7 @@ from skimage.io import imsave
 from fpdf import FPDF, HTMLMixin
 
 from colourpaletteextractor import _version
+from colourpaletteextractor import _settings
 from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.model.model import get_settings
 from colourpaletteextractor.view.tabview import NewTab
@@ -165,14 +166,14 @@ class ReportGenerator:
 
         # Check if output directory exists, if not create it
         if not os.path.isdir(self._output_dir):
-            if _version.__VERBOSE__:
+            if _settings.__VERBOSE__:
                 print("Output directory for colour palette reports not found, creating new output directory...")
             os.makedirs(self._output_dir)
         else:
-            if _version.__VERBOSE__:
+            if _settings.__VERBOSE__:
                 print("Output directory for colour palette reports found...")
 
-        if _version.__VERBOSE__:
+        if _settings.__VERBOSE__:
             print("Output directory for colour palette report: ", self._output_dir)
 
     def _set_progress(self, new_progress) -> None:
@@ -214,7 +215,7 @@ class ReportGenerator:
         pdf.add_page()
 
         # Add original image
-        if _version.__VERBOSE__:
+        if _settings.__VERBOSE__:
             print("Adding original image to report...")
         self._add_image(pdf=pdf,
                         image=self._image_data.image,
@@ -224,7 +225,7 @@ class ReportGenerator:
             return None
 
         # Add recoloured image
-        if _version.__VERBOSE__:
+        if _settings.__VERBOSE__:
             print("Adding recoloured image to report...")
         self._add_image(pdf=pdf,
                         image=self._image_data.recoloured_image,
@@ -234,7 +235,7 @@ class ReportGenerator:
             return None
 
         # Create colour frequency chart
-        if _version.__VERBOSE__:
+        if _settings.__VERBOSE__:
             print("Creating and adding colour frequency chart to report...")
         pdf.add_page()
         self._add_chart(pdf=pdf)  # Add chart
@@ -267,7 +268,7 @@ class ReportGenerator:
         # Check if PDF already exists and iterating its name if so
         count = 1
         while os.path.isfile(pdf_path):
-            if _version.__VERBOSE__:
+            if _settings.__VERBOSE__:
                 print(file_name + " already exists, trying to find a valid name...")
             file_name = name + extension + '(' + str(count) + ')' + '.pdf'
             pdf_path = os.path.join(self._output_dir, file_name)
@@ -289,7 +290,7 @@ class ReportGenerator:
                 pdf_path = pdf_path.replace(")", "^)")
 
         # Opening PDF by calling the system
-        if _version.__VERBOSE__:
+        if _settings.__VERBOSE__:
             print("Opening colour palette PDF report...")
         if sys.platform == "win32":
             subprocess.Popen(pdf_path, shell=True)

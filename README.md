@@ -116,7 +116,7 @@ use the following command to run the application from the terminal:
       python3 -m colourpaletteextractor.__main__
 
 If you wish to have a verbose output to the terminal when generating a colour palette or a colour palette report, the
-variable ```__VERBOSE__```  in the ```_version.py``` module will need to be changed from ```False``` to ```True```.
+variable ```__VERBOSE__```  in the ```_settings.py``` module will need to be changed from ```False``` to ```True```.
 
 
 
@@ -174,6 +174,9 @@ Please make sure that the relevant permissions have been set to allow for these 
 to them using the terminal on macOS, or the command prompt on Windows 10 and run these files. If all goes well, you
 should find the compiled applications inside the ```dist``` folder of ```ColourPaletteExtractor-Executables```. 
 
+If you wish to update the author of the application, the name of the application, its current version number, or the
+organisation associated 
+with the application, please update the variables in the ```_version.py``` module accordingly. 
 
 ### 4.3) Compiling Code Documentation
 

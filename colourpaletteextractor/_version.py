@@ -27,9 +27,6 @@ __organisation__ = "The University of St Andrews"
 __application_name__ = "ColourPaletteExtractor"
 """Name of the application."""
 
-__VERBOSE__ = True
-"""Turn on/off generation print statements to the terminal."""
-
 
 def get_header() -> str:
     """Returns a brief description of the application, the copyright year, the author and the application' version.
