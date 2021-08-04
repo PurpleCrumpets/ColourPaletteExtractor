@@ -1,8 +1,10 @@
 # ColourPaletteExtractor
 
-ColourPaletteExtractor is a simple tool to generate the colour palette of an image. Built using Python, it can be used
-on a computer running either Windows 10, or a Mac running macOS Mojave (10.14) or later. While the source code *may*
-run on a computer running a Linux operating system, there is no guarantee that it will work; further tweaks may be necessary.
+```ColourPaletteExtractor``` is a simple tool to generate the colour palette of an image. Built using Python, it can be used
+on a computer running either Windows 10, or an Intel Mac running macOS Mojave (10.14) or later. While the source code *may*
+run on a computer using a Linux operating system, there is no guarantee that it will work. Additional tweaks may be necessary.
+Furthermore, the compiled macOS version of ```ColourPaletteExtractor``` has not been tested on an Apple Silicon Mac; therefore,
+it may be necessary to recompile the application.
 
 ## 1) Licencing
     ColourPaletteExtractor Copyright (C) 2021  Tim Churchfield
@@ -132,9 +134,9 @@ the ```ColourPaletteExtractor/docs/build/html``` directory. The ```index.html```
 ## 4) Compiling Instructions
 
 To build the ```ColourPaletteExtractor``` application from the source code, it is highly recommended that a new
-Python virtual environment is set-up. This will allow for the minimum number of Python packages to be installed, 
+Python virtual environment is set-up*. This will allow for the minimum number of Python packages to be installed, 
 reducing the size of the resultant application. Please install the Python packages listed in the ```requirements.txt```
-[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt)*. On macOS,
+[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt)**. On macOS,
 navigate to the directory containing the ```requirements.txt``` file and use the
 following commands can be used to install the required packages for your new Python virtual environment:
 
@@ -150,7 +152,10 @@ On Windows, the following commands perform the same task:
       py -m pip install -r requirements.txt
 
 
-*Please 
+*See the [Python Packaging User Guide](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+for more information on how to create and maintain a Python virtual environment.
+
+**Please 
 note that the ```Sphinx```, ```sphinx-rtd-theme```, ```rinohtype``` and ```pytest``` packages are only required if you
 wish to rebuild the
 documentation (the first three packages) or run the test suite for the implemented algorithms (the final package).
