@@ -55,7 +55,8 @@ class ImageData:
 
         else:
             self._file_name_and_path = file_name_and_path
-            self._image = img_as_ubyte(io.imread(file_name_and_path))
+            test = io.imread(file_name_and_path)
+            self._image = img_as_ubyte(io.imread(file_name_and_path))  # Import as ubyte to avoid memory issues
 
             if self._image.shape == 4:  # Removing Alpha channel from image
                 self._image = color.rgba2rgb(self._image)
