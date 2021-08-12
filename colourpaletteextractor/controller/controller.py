@@ -469,7 +469,7 @@ class ColourPaletteExtractorController(QRunnable):
         """
 
         # Get image data
-        image_data_id = self._view.tabs.currentWidget().image_id
+        image_data_id = self._view.tabs.widget(tab_index).image_id
         image_data = self._model.get_image_data(image_data_id)
 
         image_data.continue_thread = False
