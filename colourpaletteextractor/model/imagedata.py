@@ -21,7 +21,7 @@ import os.path
 
 import numpy as np
 from PySide2.QtGui import QImage
-from skimage import io, color
+from skimage import io, color, img_as_ubyte
 
 import colourpaletteextractor.model.algorithms.palettealgorithm as palettealgorithm
 
@@ -55,7 +55,7 @@ class ImageData:
 
         else:
             self._file_name_and_path = file_name_and_path
-            self._image = io.imread(file_name_and_path)
+            self._image = img_as_ubyte(io.imread(file_name_and_path))
 
             if self._image.shape == 4:  # Removing Alpha channel from image
                 self._image = color.rgba2rgb(self._image)
