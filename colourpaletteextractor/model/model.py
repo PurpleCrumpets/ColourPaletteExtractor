@@ -19,10 +19,11 @@ import errno
 import os
 import sys
 import tempfile
+from typing import Optional
 
 import numpy as np
 
-from PySide2.QtCore import QStandardPaths, QSettings, QSize
+from PySide2.QtCore import QStandardPaths, QSettings, QSize, QPoint
 
 from colourpaletteextractor import _version
 from colourpaletteextractor.model.imagedata import ImageData
@@ -148,6 +149,49 @@ class ColourPaletteExtractorModel:
             return True
         else:
             return False
+
+    @staticmethod
+    def write_view_settings(size: QSize, position: QPoint) -> None:
+        """Write the main window's size and shape to the settings file.
+
+        Args:
+            size (QSize): The size of the GUI.
+            position (QPoint): The position of the GUI.
+        """
+
+        settings = get_settings()
+
+        settings.beginGroup("main window")
+        settings.setValue("position", position)
+        settings.setValue("size", size)
+        settings.endGroup()
+
+        settings.sync()
+
+    @staticmethod
+    def read_view_settings() -> tuple[Optional[QSize], Optional[QPoint]]:
+        """Get the size and shape of the main window of the GUI.
+
+        Returns:
+            (Optional[QSize]): The size of the main window. None if the appropriate setting cannot be found.
+            (Optional[QPoint]): The position of the main window. None if the appropriate setting cannot be found.
+        """
+
+        settings = get_settings()
+        settings.beginGroup("main window")
+
+        size = None
+        position = None
+
+        # Get size of main window
+        if settings.contains('size'):
+            size = settings.value("size")
+
+        # Get position of main window
+        if settings.contains('position'):
+            position = settings.value("position")
+
+        return size, position
 
     @property
     def active_thread_counter(self) -> int:

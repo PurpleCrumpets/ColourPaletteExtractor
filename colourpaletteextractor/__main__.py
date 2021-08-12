@@ -55,14 +55,19 @@ if __name__ == '__main__':
         qtmodern.styles._STYLESHEET = root / 'qtmodern/style.qss'
         qtmodern.windows._FL_STYLESHEET = root / 'qtmodern/frameless.qss'
 
-    model = model.ColourPaletteExtractorModel()  # Model
+    # Model
+    model = model.ColourPaletteExtractorModel()
 
     # Create instance of QApplication
     app = QApplication(sys.argv)
     app.setAttribute(Qt.AA_DisableWindowContextHelpButton)  # Disable QDialog's question mark button
 
-    view = mainview.MainView()  # View
-    controller = controller.ColourPaletteExtractorController(model=model, view=view)  # Controller
+    # View
+    size, position = model.read_view_settings()
+    view = mainview.MainView(size=size, position=position)
+
+    # Controller
+    controller = controller.ColourPaletteExtractorController(model=model, view=view)
 
     # Setting up dark mode for Windows applications
     if sys.platform == "win32":

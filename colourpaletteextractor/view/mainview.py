@@ -22,7 +22,7 @@ import os
 import darkdetect
 
 from PySide2 import QtGui
-from PySide2.QtCore import Qt, QDir
+from PySide2.QtCore import Qt, QDir, QSize, QPoint
 from PySide2.QtGui import QIcon, QKeySequence, QPixmap
 from PySide2.QtWidgets import QMainWindow, QToolBar, QFileDialog, QTabWidget, QAction, QToolButton, QWidget, \
     QSizePolicy, QMessageBox, QApplication
@@ -31,13 +31,14 @@ import colourpaletteextractor.view.otherviews as otherviews
 import colourpaletteextractor.view.tabview as tabview
 
 from colourpaletteextractor import _version
-from colourpaletteextractor.model.model import get_settings
 
 
 class MainView(QMainWindow):
     """The main window of the ColourPaletteExtractor application.
 
     Args:
+        size (QSize): Size of the main window. Default is None.
+        position (QPoint): Position of the main window. Default is None.
         parent: Parent object of the MainWindow. Defaults to None.
 
 
@@ -112,7 +113,7 @@ class MainView(QMainWindow):
     else:
         default_new_tab_image = "images:how-to-light-mode.png"
 
-    def __init__(self, parent=None):
+    def __init__(self, size: QSize = None, position: QPoint = None, parent=None):
 
         # Show GUI when using a Mac:
         # See: https://www.loekvandenouweland.com/content/pyside2-big-sur-does-not-show-window.html
@@ -141,7 +142,7 @@ class MainView(QMainWindow):
         QDir.addSearchPath("images", os.path.join(MainView.resources_path, "images"))
 
         self._create_gui()  # Generate main GUI components
-        self._set_size_and_shape()  # Set size/shape of GUI
+        self._set_size_and_shape(size=size, position=position)  # Set size/shape of GUI
 
     def show_file_dialog_box(self, supported_file_types: set[str]) -> tuple[list[str], str]:
         """Show the dialog box for importing images.
@@ -222,14 +223,13 @@ class MainView(QMainWindow):
             self.close_action.trigger()
 
             # Save main window size and position to settings
-            self._write_settings()
             print("Closing " + _version.__application_name__ + "...")
             event.accept()
         else:
             # Ignore the close event
             event.ignore()
 
-    def _set_size_and_shape(self) -> None:
+    def _set_size_and_shape(self, size: QSize, position: QPoint) -> None:
         """Set the size and shape of the main window of the GUI.
 
         Adapted from: `ref3`_
@@ -239,19 +239,15 @@ class MainView(QMainWindow):
         .. _ref3:
            https://stackoverflow.com/questions/9357944/how-to-make-a-widget-in-the-center-of-the-screen-in-pyside-pyqt
 
+       Args:
+           size (QSize): The size of the main window.
+           position (QPoint): The position of the main window.
         """
-        settings = get_settings()
 
-        settings.beginGroup("main window")
-
-        # Resize main window
-        if settings.contains('size'):
-            size = settings.value("size")
+        if size is not None:
             self.resize(size)
 
-        # Reposition main window
-        if settings.contains('position'):
-            position = settings.value("position")
+        if position is not None:
             self.move(position)
         else:
             # Centre screen based on its current size
@@ -259,8 +255,6 @@ class MainView(QMainWindow):
             fg = self.frameGeometry()
             fg.moveCenter(center_point)
             self.move(fg.topLeft())
-
-        settings.endGroup()
 
     def _create_gui(self) -> None:
         """Assemble the GUI components.
@@ -289,18 +283,6 @@ class MainView(QMainWindow):
 
         self.preferences = otherviews.PreferencesWidget()  # Create preferences panel
         self.batch_progress_widget = otherviews.BatchGenerationProgressWidget()  # Create batch generation progress box
-
-    def _write_settings(self) -> None:
-        """Write the main window's size and shape to the settings file."""
-
-        settings = get_settings()
-
-        settings.beginGroup("main window")
-        settings.setValue("position", self.pos())
-        settings.setValue("size", self.size())
-        settings.endGroup()
-
-        settings.sync()
 
     def _set_main_window_properties(self):
         """Set the properties of the main window of the GUI."""

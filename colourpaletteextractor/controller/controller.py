@@ -181,10 +181,15 @@ class ColourPaletteExtractorController(QRunnable):
         self._view.batch_progress_widget.cancel_batch_button.clicked.connect(self._send_stop_signals_to_batch_threads)
 
     def _close_application(self) -> None:
-        """Remove the application's temporary directory and its contents."""
+        """Remove the application's temporary directory and its contents, and update the settings file."""
 
         print("Removing temporary directory and its contents...")
         self._model.close_temporary_directory()
+
+        print("Saving GUI size and position to the settings file...")
+        size = self._view.size()
+        position = self._view.pos()
+        self._model.write_view_settings(size=size, position=position)
 
     def _open_file(self) -> None:
         """Open the file dialog box and create a :class:`tabview.NewTab` object for each newly imported image."""
