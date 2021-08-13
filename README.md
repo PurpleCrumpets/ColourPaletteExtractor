@@ -18,7 +18,7 @@ it may be necessary to recompile the application.
 The latest version of ColourPaletteExtractor can be obtained from
 [GitHub](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/releases). Download the ```zip``` 
 file that best matches your computer's operating system (found under ```Assets```) and extract its contents to a suitable
-folder. For macOS, simply double-click the ```ColourPaletteExtractor``` application to open it. On Windows 10, open 
+location. For macOS, simply double-click the ```ColourPaletteExtractor``` application to open it. On Windows 10, open 
 the ```ColourPaletteExtractor``` folder and double-click the ```ColourPaletteExtractor.exe``` executable file.
 
 
@@ -36,10 +36,10 @@ that the setting for ```Allow apps downloaded from:``` is set to ```App Store an
 
 ### 2.2) Windows 10 Specifics
 
-On Windows 10, you anti-virus software may decide to quarantine the ```ColourPaletteExtractor.exe``` file or other 
+On Windows 10, your anti-virus software may decide to quarantine the ```ColourPaletteExtractor.exe``` file or other 
 components of the application while it checks that they are not harmful.
 This may take a while and prevent the application from running. It may be necessary to either add the folder containing 
-the application to your anti-virus' whitelist (preferable) or disable your anti-virus whilst using the application (not
+the application to your anti-virus' whitelist (preferable), or disable your anti-virus whilst using the application (not
 recommended, do so at your own risk). If disabling your anti-virus, **please** remember 
 to turn it back on once you have finished! You may also need to run the application as an administrator.
 
@@ -52,11 +52,12 @@ algorithm you wish to use. This will be remembered the next time you open the ap
 To uninstall the application, simply delete the folder and its contents that you downloaded in Section 2.
 
 ColourPaletteExtractor also creates a settings file, ```ColourPaletteExtractor.ini```, that is used to store your 
-preferences between uses. This is not automatically removed when you delete the application and should be manually
+preferences between uses. This is not automatically removed when you delete the application and needs to be manually
 deleted.
 
 On macOS, this file can be found at the following path; simply delete the ```The University of St Andrews```
-folder and its contents.
+folder and its contents. If the ```.config``` folder does not appear in the ```YOUR_USERNAME``` folder, you will need to
+make hidden folders visible. This can be done using the keyboard shortcut: ```Cmd+Shift+.```.
 
       /Users/YOUR_USERNAME/.config/The University of St Andrews/ColourPaletteExtractor.ini
 
@@ -70,18 +71,19 @@ On Windows 10, the same settings file can be found at:
 Upon opening the application, you will be greeted with a simple quick start guide. This explains how to
 obtain the colour palette of an image, as well as how to generate a report that summarises this information. 
 It is also possible to analyse multiple images simultaneously; options to generate the colour palette for all open
-images, and their summary reports can be found under the *view* menu of the application.
+images and their summary reports can be found under the ```View``` menu of the application.
 
 The recoloured image is created by reassigning each pixel's colour to the most representative colour found in the colour
 palette. For the algorithm proposed by Nieves et al. (2020), this is the colour in the colour palette that is closest to
-the pixel's colour in the CIELAB colour space (the shortest Euclidean distance). The graph above shows the relative
-frequency of the colours in the colour palette when used to recolour the original image. On the X-axis, each label
-refers to the colour's sRGB triplet.
+the pixel's colour in the CIELAB colour space (the shortest Euclidean distance). 
+
+The colour palette report contains a graph showing the relative frequency of the colours in the colour palette when used 
+to recolour the original image. On the X-axis of the graph, each label refers to the colour's sRGB triplet.
 
 The time required to generate the colour palette of an image is directly proportional to the dimensions of the image.
 It can take upwards of several minutes to obtain the colour palette of high resolution images. If multiple images are to be
-anaylsed, it may be beneficial to reduce the resolution of the images to reduce the time required to process them. 
-However, this may affect the make-up of the colour palette, as well as the relative frequency of each colour
+anaylsed, it may be beneficial to scale down the resolution of the images to reduce the time required to process them. 
+However, this *may* affect the make-up of the colour palette, as well as the relative frequency of each colour
 in the recoloured image.
 
 ![Quick Start Guide](./colourpaletteextractor/view/resources/images/how-to-dark-mode.png)
@@ -98,17 +100,18 @@ for more information). Alternative algorithms can be found in the ```colourpalet
 
 If you wish to use this function, please make sure
 that you have installed Python 3.9 or later, as well as the Python packages listed in the ```requirements.txt```
-[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt). It
-may also be desirable to install these packages under a new Python virtual environment to prevent any conflicts with 
+[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt) \*. It
+may also be desirable to install these packages under a new Python virtual environment\*\* to prevent any conflicts with 
 other packages you may have installed. 
 
 A sample script, ```colourpaletteextractor/examples/generatecolourpaletteexample.py```, is provided that shows
 how this can be achieved. It returns the recoloured image using only the colours found in the colour palette, the 
 colour palette itself, and the relative frequencies of these colours in the recoloured image. To run this script, 
 activate your new Python virtual environment (see Section 4), navigate to the ```ColourPaletteExtractor``` folder, and
-use the following command to run the script:
+use the following command to run the script (when using Windows, you may need to substitute ```python3``` with ```py```):
 
       python3 -m colourpaletteextractor.examples.generatecolourpaletteexample
+
 
 
 Alternatively, it may be desirable to run the ```ColourPaletteExtractor``` application from the terminal.
@@ -121,24 +124,31 @@ If you wish to have a verbose output to the terminal when generating a colour pa
 variable ```__VERBOSE__```  in the ```_settings.py``` module will need to be changed from ```False``` to ```True```.
 
 
+\* Please 
+note that the ```Sphinx```, ```sphinx-rtd-theme```, ```rinohtype``` and ```pytest``` packages are only required if you
+wish to rebuild the
+documentation (the first three packages) or run the test suite for the implemented algorithms (the final package).
 
+\*\* See the [Python Packaging User Guide](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+for more information on how to create and maintain a Python virtual environment.
 
 ### 3.2) Source Code Documentation
 
 A set of [HTML files](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/html)
 have been produced to support the future develop and maintenance of ```ColourPaletteExtractor```. These can be found in
-the ```ColourPaletteExtractor/docs/build/html``` directory. The ```index.html``` contains the documentation homepage.
+the ```ColourPaletteExtractor/docs/build/html``` directory. The ```index.html``` contains the documentation homepage. 
+The documentation is also available as a [PDF document](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/pdf).
 
 
 
 ## 4) Compiling Instructions
 
 To build the ```ColourPaletteExtractor``` application from the source code, it is highly recommended that a new
-Python virtual environment is set-up*. This will allow for the minimum number of Python packages to be installed, 
+Python virtual environment is set-up. This will allow for the minimum number of Python packages to be installed, 
 reducing the size of the resultant application. Please install the Python packages listed in the ```requirements.txt```
-[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt)**. On macOS,
+[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt). On macOS,
 navigate to the directory containing the ```requirements.txt``` file and use the
-following commands can be used to install the required packages for your new Python virtual environment:
+following commands to install the required packages for your new Python virtual environment:
 
       source /path/to/my/Python/virtual/environment/bin/activate
 
@@ -152,13 +162,6 @@ On Windows, the following commands perform the same task:
       py -m pip install -r requirements.txt
 
 
-*See the [Python Packaging User Guide](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
-for more information on how to create and maintain a Python virtual environment.
-
-**Please 
-note that the ```Sphinx```, ```sphinx-rtd-theme```, ```rinohtype``` and ```pytest``` packages are only required if you
-wish to rebuild the
-documentation (the first three packages) or run the test suite for the implemented algorithms (the final package).
 
 ### 4.1) Configuration File
 
@@ -177,13 +180,13 @@ the path to your Python virtual environment, as well as the output directory you
 Please make sure that the relevant permissions have been set to allow for these script to be run (i.e.,
 ```chmod 755 create_executables.sh```). Navigate
 to them using the terminal on macOS, or the command prompt on Windows 10 and run these files. If all goes well, you
-should find the compiled applications inside the ```dist``` folder of ```ColourPaletteExtractor-Executables```. 
+should find the compiled applications inside the ```dist``` folder of your chosen output directory (i.e., ```ColourPaletteExtractor-Executables```). 
 
 If you wish to update the author of the application, the name of the application, its current version number, or the
 organisation associated 
 with the application, please update the variables in the ```_version.py``` module accordingly. 
 
-### 4.3) Compiling Code Documentation
+### 4.3) Compiling the Code Documentation
 
 Additional documentation for the source code is available as a set of 
 [HTML files](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/html) or 
@@ -193,25 +196,25 @@ respectively, can be used to recompile the documentation. As with the
 application build scripts discussed in Section 4.2, please make sure the configuration files have been updated to reflect
 the path to your Python virtual environment.
 
-Navigate to the ```ColourPaletteExtractor``` directory and run the script, making sure that the script has
-the appropriate execution permissions as discussed before in relation to the application build scripts.
+Navigate to the ```ColourPaletteExtractor``` directory and run the appropriate script, making sure that the script has
+the appropriate execution permissions as discussed before in relation to the application build scripts (Section 4.2).
 
-## 5) Running the Algorithm Unit Test Suite
+## 5) Running the Algorithm's Unit Tests
 
-A set of unit tests were developed to help confirm that the implemented colour palette extraction algorithm was working
+A suite of unit tests were developed to help confirm that the implemented colour palette extraction algorithm was working
 as intended. These can be found in ```tests/nieves2020_test.py``` module. The ```macOS_test_suite_runner.sh``` and 
 ```windows_test_suite_runner.bat``` scripts be used to run these tests on macOS and Windows 10, respectively. 
-As with the build scripts, please make sure the configuration files have been updated to 
+As with the build scripts (Section 4.2), please make sure the configuration files have been updated to 
 reflect the path to your Python virtual environment.
 
 Please also make sure that the relevant permissions have been set to allow the script to be executed 
 (```chmod 755 test_suite_runner.sh```). Using the terminal, navigate to the ```ColourPaletteExtractor``` directory
-and run the bash script. The results from the test suite are printed to the terminal.
+and run the appropriate script. The results from the test suite are printed to the terminal.
 
 
 ## 6) Implementing a New Algorithm
 
-Implementing a new algorithm is relatively straight-forward, with most of the infrastructure already in place. Please
+Implementing a new algorithm is relatively straight-forward as most of the infrastructure is already in place. Please
 follow the instructions below to add a new algorithm to the application.
 
 1) Create a new subclass of ```PaletteAlgorithm``` in a new module ```mymodule.py``` of the ```algorithms``` package 
@@ -225,7 +228,7 @@ import colourpaletteextractor.model.algorithms.palettealgorithm as palettealgori
 class MyNewAlgorithm(palettealgorithm.PaletteAlgorithm):
 
     name = "Boggis, Bunce and Bean (1970)"
-    url = "www.a-lovely-link-to-my-algorithm.com"
+    url = "www.one-fat-one-short-one-lean.com"
 
     def __init__(self):
         """Constructor."""
@@ -267,9 +270,9 @@ green and blue colour channels of the 8-bit sRGB colour space. The fourth channe
 has a transparency layer (e.g., some PNG images) and may need to be removed depending on your approach to generating the
 colour palette.
 
-The output from the method should be an ```np.array``` representing the recoloured image using only colours in the
-colour palette, the list of RGB triplets, each represented by an ``np.array``, and the list of relative frequencies 
-of each colour in the colour palette as found in the recoloured image stored as a ```float```. 
+The output from the method should be an ```np.array``` representing the recoloured image using only the colours found in the
+colour palette, the colours in the colour palette as a list of RGB triplets, each represented by an ``np.array``, and the list of relative frequencies 
+of each colour in the colour palette as found in the recoloured image, each stored as a ```float```. 
 
 2) Add the following import statement for the new module ```mymodule.py``` to the top of the ```model.py``` module so
    the new algorithm can be picked up by the GUI and added as a new algorithm in the settings panel.
@@ -288,20 +291,20 @@ loop can be divided up over the loop.
 
 By updating the progress bar, the execution status set by the user is also checked. By adding the following two
 lines of code underneath any progress bar update (see the example above for how it could be used), the 
-generation of the colour palette to be gracefully cancelled by the user.
+generation of the colour palette can be gracefully cancelled by the user.
 
       if not self._continue_thread:
         return None, [], []
 
 
 ### 6.2) Changing the Default Algorithm
-Changing the default algorithm used by ```ColourPaletteExtractor``` is very straightforward, requiring two
-small changes to the ```ColourPaletteExtractorModel``` class (found in the ```model``` module). To set the default
+Changing the default algorithm used by ```ColourPaletteExtractor``` is very straightforward, requiring a
+small change to the ```ColourPaletteExtractorModel``` class (found in the ```model.py``` module). To set the default algorithm
 to your new algorithm, edit the ```DEFAULT_ALGORITHM``` static variable of the ```ColourPaletteExtractorModel``` class to your new 
 algorithm:
 
       class ColourPaletteExtractorModel:
-         DEFAULT_ALGORITHM = mymodule.MyNewAlgorithm
+         DEFAULT_ALGORITHM: type[PaletteAlgorithm] = mymodule.MyNewAlgorithm
 
 
 Note: This is the name of the class, *not* an instance of the class!
