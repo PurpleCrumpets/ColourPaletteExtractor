@@ -543,7 +543,6 @@ class ColourPaletteExtractorController(QRunnable):
         Args:
             tab (NewTab): Tab linked to the image that is to have its colour palette report generated.
             progress_callback (QtCore.SignalInstance): Signal that when emitted, is used to update the GUI.
-
         """
 
         if tab is None:
@@ -551,7 +550,6 @@ class ColourPaletteExtractorController(QRunnable):
 
         # Get image data
         image_id = tab.image_id
-        image_data = self._model.get_image_data(image_id)
 
         print("Generating PDF colour palette report for image: " + image_id + "...")
 
@@ -561,9 +559,7 @@ class ColourPaletteExtractorController(QRunnable):
         progress_callback.emit(tab, 0)
 
         # Generate report
-        generatereport.generate_report(tab=tab,
-                                       image_data=image_data,
-                                       progress_callback=progress_callback)
+        self._model.generate_report(tab=tab, progress_callback=progress_callback)
 
         # Update tab properties and refresh tab
         self._toggle_tab_button_states(tab=tab, activate=True)  # Re-enable buttons for the given tab

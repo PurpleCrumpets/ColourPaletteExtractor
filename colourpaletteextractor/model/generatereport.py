@@ -24,6 +24,7 @@ from typing import Union
 
 import matplotlib
 import matplotlib.pyplot as plt
+from PySide2.QtCore import QSettings
 from matplotlib.container import BarContainer
 from matplotlib.figure import Figure
 from matplotlib.axes import SubplotBase
@@ -37,19 +38,20 @@ from fpdf import FPDF, HTMLMixin
 from colourpaletteextractor import _version
 from colourpaletteextractor import _settings
 from colourpaletteextractor.model.imagedata import ImageData
-from colourpaletteextractor.model.model import get_settings
 from colourpaletteextractor.view.tabview import NewTab
 
 matplotlib.pyplot.switch_backend("Agg")  # Allow for plotting of non-interactive plots
 
 
-def generate_report(tab: NewTab, image_data: ImageData, progress_callback: QtCore.SignalInstance) -> None:
+def generate_report(tab: NewTab, image_data: ImageData, settings: QSettings,
+                    progress_callback: QtCore.SignalInstance) -> None:
     """Generate a colour palette report for an image.
 
     Args:
         tab (NewTab): The tab associated with the image to be analysed.
         image_data (ImageData): The ImageData object holding the image's data (the original image, the recoloured image,
             and the colour palette).
+        settings (QSettings): The settings for the ColourPaletteExtraction application.
         progress_callback (QtCore.SignalInstance): Signal that when emitted, is used to update the GUI.
 
     Raises:
@@ -68,7 +70,7 @@ def generate_report(tab: NewTab, image_data: ImageData, progress_callback: QtCor
         raise ValueError("The provided ImageData object does not have any colours in the colour palette!")
 
     # Get report generator object
-    generator = ReportGenerator(tab=tab, image_data=image_data,
+    generator = ReportGenerator(tab=tab, image_data=image_data, settings=settings,
                                 progress_callback=progress_callback)
 
     # Create report
@@ -86,7 +88,6 @@ class ColourPaletteReport(FPDF, HTMLMixin):
     Args:
         image_data (ImageData): The ImageData object holding the image's data (the original image, the recoloured image,
             and the colour palette).
-
     """
 
     A4_HEIGHT = 297  # mm
@@ -144,11 +145,12 @@ class ReportGenerator:
         tab (NewTab): The tab associated with the image to be analysed.
         image_data (ImageData): The ImageData object holding the image's data (the original image, the recoloured image,
             and the colour palette).
+        settings (QSettings): The settings for the ColourPaletteExtraction application.
         progress_callback (QtCore.SignalInstance): Signal that when emitted, is used to update the GUI.
-
     """
 
-    def __init__(self, tab: NewTab, image_data: ImageData, progress_callback: QtCore.SignalInstance) -> None:
+    def __init__(self, tab: NewTab, image_data: ImageData, settings: QSettings,
+                 progress_callback: QtCore.SignalInstance) -> None:
 
         self._tab = tab
         self._image_data = image_data
@@ -157,7 +159,6 @@ class ReportGenerator:
         self._continue_thread = True  # Execution status of the thread
 
         # Select output directory
-        settings = get_settings()
         self._temp_dir = settings.value("output directory/temporary directory")
         if int(settings.value("output directory/use user directory")) == 0:
             self._output_dir = settings.value("output directory/temporary directory")

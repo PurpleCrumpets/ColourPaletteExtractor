@@ -22,10 +22,12 @@ import tempfile
 from typing import Optional
 
 import numpy as np
+from PySide2 import QtCore
 
 from PySide2.QtCore import QStandardPaths, QSettings, QSize, QPoint
 
 from colourpaletteextractor import _version
+from colourpaletteextractor.model import generatereport
 from colourpaletteextractor.model.imagedata import ImageData
 from colourpaletteextractor.model.algorithms import nieves2020
 from colourpaletteextractor.model.algorithms.palettealgorithm import PaletteAlgorithm
@@ -306,7 +308,7 @@ class ColourPaletteExtractorModel:
         new_image_data_id = ("Tab_" + str(self._image_data_id_counter))
         self._image_data_id_counter += 1
 
-        if new_image_data_id not in  self._image_data_id_dictionary:
+        if new_image_data_id not in self._image_data_id_dictionary:
             self._image_data_id_dictionary[new_image_data_id] = new_image_data
         else:
             raise KeyError("The key:", new_image_data_id,
@@ -337,8 +339,25 @@ class ColourPaletteExtractorModel:
 
         return self._image_data_id_dictionary.get(image_data_id)
 
+    def generate_report(self, tab: NewTab, progress_callback: QtCore.SignalInstance) -> None:
+        """Generate the colour palette report for the image linked to the given :class:`NewTab`.
+
+        Args:
+            tab (NewTab): The :class:`NewTab` linked to the image that is to have its colour palette report generated.
+            progress_callback (QtCore.SignalInstance): Signal that when emitted, is used to update the GUI.
+        """
+        # Get image data
+        image_id = tab.image_id
+        image_data = self.get_image_data(image_id)
+        settings = get_settings()
+
+        # Generate colour palette report
+        generatereport.generate_report(tab=tab, image_data=image_data,
+                                       settings=settings, progress_callback=progress_callback)
+
     def generate_palette(self, image_data_id: str, tab: NewTab = None,
-                         progress_callback=None, algorithm: type[PaletteAlgorithm] = None) -> None:
+                         progress_callback: QtCore.SignalInstance = None,
+                         algorithm: type[PaletteAlgorithm] = None) -> None:
         """Generate the colour palette for the image in the :class:`ImageData` object with the given image_data_id ID.
 
         The recoloured image, colour palette and relative frequencies of each colour are added to the
