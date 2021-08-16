@@ -18,6 +18,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import Optional
 
 import numpy as np
 from skimage import color
@@ -489,8 +490,10 @@ class Nieves2020OffsetCubes(Nieves2020):
         # Calculate how many cubes to generate
         return (np.floor_divide(lab, self._cube_size)).astype(int)  # Cube coordinates for each pixel
 
-    def _divide_cielab_space(self, lab: np.array, final_percent: int) -> tuple[np.array, np.array]:
+    def _divide_cielab_space(self, lab: np.array, final_percent: int) -> Optional[tuple[np.array, np.array]]:
         """Generate CIELAB cubes for the image, returning the coordinates of the cube that each pixel is to be assigned.
+
+        Returns none if the thread created to generate the colour palette is cancelled.
 
         Args:
             lab (np.array): The image in the CIELAB colour space.
@@ -598,8 +601,10 @@ class Nieves2020CentredCubes(Nieves2020):
         cube_assignments = (cube_assignments / self._cube_size).astype(int)
         return cube_assignments  # Cube coordinates for each pixel
 
-    def _divide_cielab_space(self, lab: np.array, final_percent: int) -> tuple[np.array, np.array]:
+    def _divide_cielab_space(self, lab: np.array, final_percent: int) -> Optional[tuple[np.array, np.array]]:
         """Generate CIELAB cubes for the image, returning the coordinates of the cube that each pixel is to be assigned.
+
+        Returns none if the thread created to generate the colour palette is cancelled.
 
         Args:
             lab (np.array): The image in the CIELAB colour space.
