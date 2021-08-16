@@ -15,7 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-__version__ = "0.5.5"
+__version__ = "0.5.6"
 """Version number of the application."""
 
 __author__ = "Tim Churchfield"

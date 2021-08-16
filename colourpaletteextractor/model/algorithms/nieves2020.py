@@ -28,8 +28,6 @@ import colourpaletteextractor.model.algorithms.cielabcube as cielabcube
 import colourpaletteextractor.model.algorithms.palettealgorithm as palettealgorithm
 
 from colourpaletteextractor import _settings
-from colourpaletteextractor import _version
-
 
 class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
     """Abstract class representing an algorithm to extract the colour palette from an image.
@@ -275,7 +273,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
                     if num_pixels > threshold_pixel_count:  # possibly >= (pseudo-code in paper uses >)
 
                         if _settings.__VERBOSE__:
-                            print("Cube meets primary requirements with:", num_pixels, "out of", pixel_count, "pixels")
+                            print("Cube with coordinates: " + str(cube.coordinates)
+                                  + " meets primary requirements with:", num_pixels, "out of", pixel_count, "pixels")
 
                         cube.relevant = True
 
@@ -299,7 +298,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
                             cube.relevant = True
 
                             if _settings.__VERBOSE__:
-                                print("Cube below meets secondary requirements for C*...")
+                                print("Cube below with coordinates: " + str(cube.coordinates)
+                                      + " meets secondary requirements for C*...")
                                 print("----C* cube count:", c_star_cube_count,
                                       "; L* cube count:", l_star_cube_count,
                                       "; Threshold pixel count:", threshold_pixel_count,
@@ -310,7 +310,8 @@ class Nieves2020(palettealgorithm.PaletteAlgorithm, ABC):
                             cube.relevant = True
 
                             if _settings.__VERBOSE__:
-                                print("Cube below meets secondary requirements for L*...")
+                                print("Cube below with coordinates: " + str(cube.coordinates)
+                                      + " meets tertiary requirements for L*...")
                                 print("----C* cube count:", c_star_cube_count,
                                       "; L* cube count:", l_star_cube_count,
                                       "; Threshold pixel count:", threshold_pixel_count,

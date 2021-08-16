@@ -14,5 +14,5 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-__VERBOSE__ = True
+__VERBOSE__ = False
 """Turn on/off prints statements to the terminal for colour palette and colour palette report generation."""
