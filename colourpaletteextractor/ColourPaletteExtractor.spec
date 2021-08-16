@@ -84,7 +84,7 @@ if sys.platform == "darwin":
              name='ColourPaletteExtractor.app',
              icon='app_icon.icns',
              bundle_identifier=None,
-             version='0.5.5',
+             version='0.5.6',
              info_plist={
                'NSPrincipalClass': 'NSApplication',
                'NSAppleScriptEnabled': False,
