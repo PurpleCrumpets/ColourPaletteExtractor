@@ -16,7 +16,7 @@ it may be necessary to recompile the application.
 ## 2) Download Instructions
 
 The latest version of ColourPaletteExtractor can be obtained from
-[GitHub](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/releases). Download the ```zip``` 
+[GitHub](https://github.com/PurpleCrumpets/ColourPaletteExtractor/releases). Download the ```zip``` 
 file that best matches your computer's operating system (found under ```Assets```) and extract its contents to a suitable
 location. For macOS, simply double-click the ```ColourPaletteExtractor``` application to open it. On Windows 10, open 
 the ```ColourPaletteExtractor``` folder and double-click the ```ColourPaletteExtractor.exe``` executable file.
@@ -100,7 +100,7 @@ for more information). Alternative algorithms can be found in the ```colourpalet
 
 If you wish to use this function, please make sure
 that you have installed Python 3.9 or later, as well as the Python packages listed in the ```requirements.txt```
-[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt) \*. It
+[file](https://github.com/PurpleCrumpets/ColourPaletteExtractor/blob/master/requirements.txt) \*. It
 may also be desirable to install these packages under a new Python virtual environment\*\* to prevent any conflicts with 
 other packages you may have installed. 
 
@@ -134,10 +134,10 @@ for more information on how to create and maintain a Python virtual environment.
 
 ### 3.2) Source Code Documentation
 
-A set of [HTML files](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/html)
+A set of [HTML files](https://github.com/PurpleCrumpets/ColourPaletteExtractor/tree/master/docs/build/html)
 have been produced to support the future develop and maintenance of ```ColourPaletteExtractor```. These can be found in
 the ```ColourPaletteExtractor/docs/build/html``` directory. The ```index.html``` contains the documentation homepage. 
-The documentation is also available as a [PDF document](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/pdf).
+The documentation is also available as a [PDF document](https://github.com/PurpleCrumpets/ColourPaletteExtractor/tree/master/docs/build/pdf).
 
 
 
@@ -146,7 +146,7 @@ The documentation is also available as a [PDF document](https://github.com/Purpl
 To build the ```ColourPaletteExtractor``` application from the source code, it is highly recommended that a new
 Python virtual environment is set-up. This will allow for the minimum number of Python packages to be installed, 
 reducing the size of the resultant application. Please install the Python packages listed in the ```requirements.txt```
-[file](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/blob/master/requirements.txt). On macOS,
+[file](https://github.com/PurpleCrumpets/ColourPaletteExtractor/blob/master/requirements.txt). On macOS,
 navigate to the directory containing the ```requirements.txt``` file and use the
 following commands to install the required packages for your new Python virtual environment:
 
@@ -189,8 +189,8 @@ with the application, please update the variables in the ```_version.py``` modul
 ### 4.3) Compiling the Code Documentation
 
 Additional documentation for the source code is available as a set of 
-[HTML files](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/html) or 
-as a [PDF document](https://github.com/PurpleCrumpets/MSc-CS-Project---ColourPaletteExtractor/tree/master/docs/build/pdf). 
+[HTML files](https://github.com/PurpleCrumpets/ColourPaletteExtractor/tree/master/docs/build/html) or 
+as a [PDF document](https://github.com/PurpleCrumpets/ColourPaletteExtractor/tree/master/docs/build/pdf). 
 On macOS and Windows 10, the ```macOS_create_documentation.sh``` and ```windows_create_documentation.bat``` scripts,
 respectively, can be used to recompile the documentation. As with the
 application build scripts discussed in Section 4.2, please make sure the configuration files have been updated to reflect
